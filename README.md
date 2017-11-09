@@ -8,7 +8,8 @@
 
 ## Requirements
 
-|-|-|
+|platform|prequisites|
+|--------|-----------|
 |Windows|docker|
 
 
