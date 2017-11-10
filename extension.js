@@ -6,11 +6,10 @@ const utilities = require('./lib/utilities.js');
 
 function activate(context) {
     console.log('Congratulations, your extension "vsc-extension-ansible" is now active!');
-    var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
-
-    var playbook = vscode.window.activeTextEditor.document.fileName;
-
+    var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");    
+    
     let runpb = vscode.commands.registerCommand('extension.ansible-playbook', function () {
+        var playbook = vscode.window.activeTextEditor.document.fileName;                
         vscode.window.showInputBox({ value: playbook, prompt: 'Please input playbook name', placeHolder: 'playbook', password: false })
             .then((input) => {
                 if (input != undefined && input != '') {
