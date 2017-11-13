@@ -8,10 +8,18 @@
     "vscode": "^1.17.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Snippets"
+  ],
+  "keywords": [
+    "ansible",
+    "playbook",
+    "azure",
+    "ansible module"
   ],
   "activationEvents": [
-    "onCommand:extension.ansible-playbook"
+    "onCommand:extension.ansible-playbook",
+    "onCommand:extension.ansible-commands"
   ],
   "main": "./extension",
   "contributes": {
@@ -19,7 +27,14 @@
       {
         "command": "extension.ansible-playbook",
         "title": "Run Ansible Playbook",
-        "args": "playbook"
+        "args": "playbook",
+        "category": "ansible"
+      },
+      {
+        "command": "extension.ansible-commands",
+        "title": "Run Ansible Commands",
+        "args": "arguments",
+        "category": "ansible"
       }
     ],
     "snippets": [

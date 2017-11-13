@@ -9,17 +9,15 @@ function activate(context) {
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
 
     let runpb = vscode.commands.registerCommand('extension.ansible-playbook', function () {
-        var playbook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : null;
-        vscode.window.showInputBox({ value: playbook, prompt: 'Please input playbook name', placeHolder: 'playbook', password: false })
-            .then((input) => {
-                if (input != undefined && input != '') {
-                    playbook = input;
-                }
-                utilities.runPlayBook(playbook, outputChannel);
-            });
+        utilities.runPlayBook(outputChannel);
+    });
+
+    let runcmd = vscode.commands.registerCommand('extension.ansible-commands', function () {
+        utilities.runAnsibleCommands(outputChannel);
     });
 
     context.subscriptions.push(runpb);
+    context.subscriptions.push(runcmd);
 }
 
 // this method is called when your extension is deactivated
