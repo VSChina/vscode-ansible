@@ -14,7 +14,9 @@ before_install:
 
 install:
   - npm install
+  - npm install -g vsce
 
 script:
   - npm run eslint
+  - vsce package
   # - npm test --silent
