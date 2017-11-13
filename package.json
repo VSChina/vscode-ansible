@@ -21,6 +21,12 @@
         "title": "Run Ansible Playbook",
         "args": "playbook"
       }
+    ],
+    "snippets": [
+      {
+        "language": "yaml",
+        "path": "./snippets/snippets.json"
+      }
     ]
   },
   "scripts": {

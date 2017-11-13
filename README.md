@@ -1,3 +1,5 @@
+[![Travis CI](https://travis-ci.org/VSChina/vsc-extension-ansible.svg?branch=master)](https://travis-ci.org/VSChina/vsc-extension-ansible)
+
 # Visual Studio Code extension for Ansible
 
 ## Features
