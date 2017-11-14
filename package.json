@@ -42,6 +42,13 @@
         "language": "yaml",
         "path": "./snippets/snippets.json"
       }
+    ],
+    "grammars": [
+      {
+        "language": "yaml",
+        "scopeName": "source.ansible",
+        "path": "./syntaxes/Ansible.tmLanguage"
+      }
     ]
   },
   "scripts": {
