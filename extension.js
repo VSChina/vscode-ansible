@@ -8,11 +8,11 @@ function activate(context) {
     console.log('Congratulations, your extension "vsc-extension-ansible" is now active!');
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
 
-    let runpb = vscode.commands.registerCommand('extension.ansible-playbook', function () {
+    let runpb = vscode.commands.registerCommand('vsc-extension-ansible.ansible-playbook', function () {
         utilities.runPlayBook(outputChannel);
     });
 
-    let runcmd = vscode.commands.registerCommand('extension.ansible-commands', function () {
+    let runcmd = vscode.commands.registerCommand('vsc-extension-ansible.ansible-commands', function () {
         utilities.runAnsibleCommands(outputChannel);
     });
 

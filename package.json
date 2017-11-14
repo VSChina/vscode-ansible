@@ -18,20 +18,20 @@
     "ansible module"
   ],
   "activationEvents": [
-    "onCommand:extension.ansible-playbook",
-    "onCommand:extension.ansible-commands"
+    "onCommand:vsc-extension-ansible.ansible-playbook",
+    "onCommand:vsc-extension-ansible.ansible-commands"
   ],
   "main": "./extension",
   "contributes": {
     "commands": [
       {
-        "command": "extension.ansible-playbook",
+        "command": "vsc-extension-ansible.ansible-playbook",
         "title": "Run Ansible Playbook",
         "args": "playbook",
         "category": "ansible"
       },
       {
-        "command": "extension.ansible-commands",
+        "command": "vsc-extension-ansible.ansible-commands",
         "title": "Run Ansible Commands",
         "args": "arguments",
         "category": "ansible"

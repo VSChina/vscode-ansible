@@ -18,5 +18,5 @@ install:
 
 script:
   - npm run eslint
+  - npm test --silent
   - vsce package
-  # - npm test --silent
