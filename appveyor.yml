@@ -8,8 +8,7 @@ install:
   - npm --version
 
 build_script:
-
-
-test_script:
   - npm run eslint
+
+test_script:  
   - npm run test
