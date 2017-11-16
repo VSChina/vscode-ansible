@@ -19,7 +19,8 @@
   ],
   "activationEvents": [
     "onCommand:vsc-extension-ansible.ansible-playbook",
-    "onCommand:vsc-extension-ansible.ansible-commands"
+    "onCommand:vsc-extension-ansible.ansible-commands",
+    "onCommand:vsc-extension-ansible.ansible-terminal"
   ],
   "main": "./extension",
   "contributes": {
@@ -48,6 +49,14 @@
         "language": "yaml",
         "scopeName": "source.ansible",
         "path": "./syntaxes/Ansible.tmLanguage"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vsc-extension-ansible.ansible-terminal",
+        "key": "ctrl+f5",
+        "mac": "cmd+f5",
+        "when": "editorTextFocus"
       }
     ]
   },
