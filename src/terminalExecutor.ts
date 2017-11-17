@@ -1,10 +1,19 @@
 'use strict'
 
-const vscode = require('vscode');
+import * as vscode from 'vscode';
 
 var terminals = [];
 
-function runInTerminal(commands, terminal) {
+vscode.window.onDidCloseTerminal(function (terminal) {
+    if (terminals === undefined)
+        return;
+    if (terminals[terminal.name])
+    {
+        delete terminals[terminal.name];
+    }
+})
+
+export function runInTerminal(commands, terminal) {
     if (terminals === undefined || terminals[terminal] === undefined) {
         terminals[terminal] = vscode.window.createTerminal(terminal);
     }
@@ -14,5 +23,3 @@ function runInTerminal(commands, terminal) {
     });
 
 }
-
-exports.runInTerminal = runInTerminal
