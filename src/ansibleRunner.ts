@@ -13,7 +13,7 @@ const terminalName = 'ansible';
 export function runAnsibleDockerInTerminal(outputChannel) {
 
     var sourceFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    var targetFolder = '/' + vscode.workspace.name;
+    var targetFolder = '/' + (vscode.workspace as any).name;
 
     var sourcePlaybook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : '';
     var targetPlaybook = path.join(targetFolder, path.relative(sourceFolder, sourcePlaybook));
