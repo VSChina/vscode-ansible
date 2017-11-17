@@ -20,7 +20,8 @@
   "activationEvents": [
     "onCommand:vsc-extension-ansible.ansible-playbook",
     "onCommand:vsc-extension-ansible.ansible-commands",
-    "onCommand:vsc-extension-ansible.ansible-terminal"
+    "onCommand:vsc-extension-ansible.ansible-terminal",
+    "onCommand:vsc-extension-ansible.ansible-config"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -40,6 +41,12 @@
       {
         "command": "vsc-extension-ansible.ansible-terminal",
         "title": "Terminal",
+        "args": "arguments",
+        "category": "ansible"
+      },
+      {
+        "command": "vsc-extension-ansible.ansible-config",
+        "title": "Configuration",
         "args": "arguments",
         "category": "ansible"
       }
