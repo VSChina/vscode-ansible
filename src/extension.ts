@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import * as utilities from './utilities'; 
 import * as ansibleRunner from './ansibleRunner';
+import { loadConfig } from './utilities';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -30,7 +31,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 
     let runpb = vscode.commands.registerCommand('vsc-extension-ansible.ansible-playbook', () => {
-
         utilities.runPlayBook(outputChannel);
     });
 
@@ -42,10 +42,19 @@ export function activate(context: vscode.ExtensionContext) {
         ansibleRunner.runAnsibleDockerInTerminal(outputChannel);
     })
 
+    let editConfig = vscode.commands.registerCommand('vsc-extension-ansible.ansible-config', () => {
+        vscode.workspace.openTextDocument(utilities.getConfigPath()).then( (document) => {
+            vscode.window.showTextDocument(document);
+        });
+    })
+
+
     context.subscriptions.push(runpb);
     context.subscriptions.push(runcmd);
     context.subscriptions.push(runterminal);
+    context.subscriptions.push(editConfig);
     
+    utilities.setExtensionPath(context.extensionPath);
 }
 
 // this method is called when your extension is deactivated

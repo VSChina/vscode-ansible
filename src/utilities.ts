@@ -5,6 +5,7 @@ import * as utilities from './utilities';
 import * as ansibleRunner from './ansibleRunner';
 import * as child_process from 'child_process';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const dockerImageName = 'williamyeh/ansible:ubuntu16.04';
 
@@ -140,4 +141,28 @@ export function runAnsibleCommands(outputChannel) {
                 });
             }
         })
+}
+
+var config: any = null;
+var extensionPath = "";
+
+export function setExtensionPath(path: string) {
+    extensionPath = path;
+}
+
+export function getConfigPath() {
+    return extensionPath + '/config.json';
+}
+export function loadConfig() : any {
+    try {
+        config = JSON.parse(fs.readFileSync(getConfigPath()).toString());
+    } catch (e) {
+        config = {};
+    }
+
+    return config;
+}
+
+export function saveConfig() {
+    fs.writeFileSync(getConfigPath(), JSON.stringify(config, null, 2));
 }
