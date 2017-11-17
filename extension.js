@@ -17,7 +17,7 @@ function activate(context) {
     });
 
     let runterminal = vscode.commands.registerCommand('vsc-extension-ansible.ansible-terminal', function () {
-        ansibleRunner.runAnsibleDokcerInTerminal(outputChannel);
+        ansibleRunner.runAnsibleDockerInTerminal(outputChannel);
     })
 
     context.subscriptions.push(runpb);
