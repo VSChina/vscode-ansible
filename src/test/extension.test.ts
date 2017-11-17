@@ -1,10 +1,10 @@
 /* global suite, test */
 
-const assert = require('assert');
-const vscode = require('vscode');
+import * as assert from 'assert';
+import * as vscode from 'vscode';
 const extensionId = 'yungez.vsc-extension-ansible';
 
-suite("Extension Tests", function () {
+suite("Extension Tests", () => {
 
     test("should be present", function () {
         assert.ok(vscode.extensions.getExtension(extensionId));
@@ -17,7 +17,7 @@ suite("Extension Tests", function () {
             extension.activate().then(function () {
                 assert.ok('extension activated');
             }, function () {
-                assert.fail('extension failed to activate!');
+                assert.fail(false, true, 'extension failed to activate!');
             })
         }
     })
@@ -37,7 +37,7 @@ suite("Extension Tests", function () {
 
                 assert.equal(foundCmds.length, COMMANDS.length, 'some commands are not registered properly');
             }, function () {
-                assert.fail('failed to getCommands!');
+                assert.fail(false, true, 'failed to getCommands!');
             })
         });
     })
@@ -50,7 +50,7 @@ suite("Extension Tests", function () {
                     assert.ok('cmd run done.' + result);
                 },
                 function () {
-                    assert.fail('failed to run ansible cmd!');
+                    assert.fail(false, true, 'failed to run ansible cmd!');
                 }
             )
         })

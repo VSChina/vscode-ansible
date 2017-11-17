@@ -1,16 +1,19 @@
 'use strict'
 
-const vscode = require('vscode');
-const path = require('path');
-const terminalExecutor = require('./terminalExecutor.js');
-const utilities = require('./utilities.js');
+
+import * as vscode from 'vscode';
+import * as utilities from './utilities'; 
+import * as child_process from 'child_process';
+import * as path from 'path';
+import * as terminalExecutor from './terminalExecutor';
+
 const dockerImageName = 'dockiot/ansible';
 const terminalName = 'ansible';
 
-function runAnsibleDockerInTerminal(outputChannel) {
+export function runAnsibleDockerInTerminal(outputChannel) {
 
     var sourceFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    var targetFolder = '/' + vscode.workspace.name;
+    var targetFolder = '/' + (vscode.workspace as any).name;
 
     var sourcePlaybook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : '';
     var targetPlaybook = path.join(targetFolder, path.relative(sourceFolder, sourcePlaybook));
@@ -34,5 +37,3 @@ function runAnsibleDockerInTerminal(outputChannel) {
     }
 
 }
-
-exports.runAnsibleDockerInTerminal = runAnsibleDockerInTerminal

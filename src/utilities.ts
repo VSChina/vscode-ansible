@@ -1,13 +1,16 @@
 'use strict'
 
-const vscode = require('vscode');
-const path = require('path');
+import * as vscode from 'vscode';
+import * as utilities from './utilities'; 
+import * as ansibleRunner from './ansibleRunner';
+import * as child_process from 'child_process';
+import * as path from 'path';
+
 const dockerImageName = 'williamyeh/ansible:ubuntu16.04';
-const child_process = require('child_process');
 
 const seperator = Array(50).join('=');
 
-function localExecCmd(cmd, args, outputChannel, cb) {
+export function localExecCmd(cmd, args, outputChannel, cb) {
     try {
         var cp = require('child_process').spawn(cmd, args);
 
@@ -40,7 +43,7 @@ function localExecCmd(cmd, args, outputChannel, cb) {
 }
 
 
-function isDockerInstalled(outputChannel, cb) {
+export function isDockerInstalled(outputChannel, cb) {
     if (process.platform === 'win32') {
         localExecCmd('cmd.exe', ['/c', 'docker', '-v'], outputChannel, function (err) {
             if (err) {
@@ -53,7 +56,7 @@ function isDockerInstalled(outputChannel, cb) {
     }
 }
 
-function isAnsibleInstalled(outputChannel, cb) {
+export function isAnsibleInstalled(outputChannel, cb) {
     child_process.exec("type ansible").on('exit', function (code) {
         if (!code) {
             cb();
@@ -66,7 +69,7 @@ function isAnsibleInstalled(outputChannel, cb) {
     })
 }
 
-function runPlayBook(outputChannel) {
+export function runPlayBook(outputChannel) {
     outputChannel.append(seperator + '\nRun playbook: ' + playbook + '\n');
     outputChannel.show();
 
@@ -86,18 +89,18 @@ function runPlayBook(outputChannel) {
                 isDockerInstalled(outputChannel, function (err) {
                     if (!err) {
                         localExecCmd('cmd.exe', ['/c', 'docker', 'run',
-                            '--rm', '-v', playbook + ':' + targetFile, dockerImageName, 'ansible-playbook', targetFile], outputChannel);
+                            '--rm', '-v', playbook + ':' + targetFile, dockerImageName, 'ansible-playbook', targetFile], outputChannel, null);
                     }
                 });
             } else {
                 isAnsibleInstalled(outputChannel, function () {
-                    localExecCmd('ansible-playbook', [playbook], outputChannel);
+                    localExecCmd('ansible-playbook', [playbook], outputChannel, null);
                 });
             }
         })
 }
 
-function validatePlaybook(playbook, outputChannel) {
+export function validatePlaybook(playbook, outputChannel) {
     var message = seperator + '\nValidate playbook: passed.\n';
     var isValid = true;
 
@@ -113,7 +116,7 @@ function validatePlaybook(playbook, outputChannel) {
     return isValid;
 }
 
-function runAnsibleCommands(outputChannel) {
+export function runAnsibleCommands(outputChannel) {
     var cmds = 'ansible --version';
     vscode.window.showInputBox({ value: cmds, prompt: 'Please input ansible commands', placeHolder: 'commands', password: false })
         .then((input) => {
@@ -128,20 +131,13 @@ function runAnsibleCommands(outputChannel) {
             if (process.platform === 'win32') {
                 isDockerInstalled(outputChannel, function (err) {
                     if (!err) {
-                        localExecCmd('cmd.exe', ['/c', 'docker', 'run', '--rm', dockerImageName].concat(cmds.split(' ')), outputChannel);
+                        localExecCmd('cmd.exe', ['/c', 'docker', 'run', '--rm', dockerImageName].concat(cmds.split(' ')), outputChannel, null);
                     }
                 });
             } else {
                 isAnsibleInstalled(outputChannel, function () {
-                    localExecCmd(cmds.split(' ')[0], cmds.split(' ').slice(0), outputChannel);
+                    localExecCmd(cmds.split(' ')[0], cmds.split(' ').slice(0), outputChannel, null);
                 });
             }
         })
 }
-
-exports.localExecCmd = localExecCmd;
-exports.runPlayBook = runPlayBook;
-exports.runAnsibleCommands = runAnsibleCommands;
-exports.validatePlaybook = validatePlaybook;
-exports.isDockerInstalled = isDockerInstalled;
-exports.isAnsibleInstalled = isAnsibleInstalled;
