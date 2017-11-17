@@ -36,6 +36,12 @@
         "title": "Run Ansible Commands",
         "args": "arguments",
         "category": "ansible"
+      },
+      {
+        "command": "vsc-extension-ansible.ansible-terminal",
+        "title": "Terminal",
+        "args": "arguments",
+        "category": "ansible"
       }
     ],
     "snippets": [
