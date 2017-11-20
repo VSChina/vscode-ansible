@@ -1,13 +1,15 @@
 'use strict'
 
 import * as vscode from 'vscode';
-import * as utilities from './utilities'; 
-import * as ansibleRunner from './ansibleRunner';
 import * as child_process from 'child_process';
 import * as path from 'path';
+import * as fsExtra from 'fs-extra';
+import * as yamljs from 'yamljs';
+import * as utilities from './utilities'; 
+import * as ansibleRunner from './ansibleRunner';
+import { workspace } from 'vscode';
 
-const dockerImageName = 'williamyeh/ansible:ubuntu16.04';
-
+const dockerImageName = 'dockiot/ansible';
 const seperator = Array(50).join('=');
 
 export function localExecCmd(cmd, args, outputChannel, cb) {
@@ -70,26 +72,39 @@ export function isAnsibleInstalled(outputChannel, cb) {
 }
 
 export function runPlayBook(outputChannel) {
-    outputChannel.append(seperator + '\nRun playbook: ' + playbook + '\n');
-    outputChannel.show();
-
     var playbook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : null;
     vscode.window.showInputBox({ value: playbook, prompt: 'Please input playbook name', placeHolder: 'playbook', password: false })
         .then((input) => {
             if (input != undefined && input != '') {
                 playbook = input;
             }
+
+            outputChannel.append(seperator + '\nRun playbook: ' + playbook + '\n');
+            outputChannel.show();
+        
             var fileName = path.parse(playbook).base;
             var targetFile = '/' + fileName;
 
             if (!validatePlaybook(playbook, outputChannel)) {
                 return;
             }
+
+            // get environment variables
+            var envOptions = [];
+            var credentials = parseCredentialsFile(outputChannel);
+            if (credentials) {
+                for(var item in credentials) {
+                    envOptions.push('-e');
+                    envOptions.push(item + '=' + credentials[item]);
+                }                
+            }
+
             if (process.platform === 'win32') {
                 isDockerInstalled(outputChannel, function (err) {
                     if (!err) {
-                        localExecCmd('cmd.exe', ['/c', 'docker', 'run',
-                            '--rm', '-v', playbook + ':' + targetFile, dockerImageName, 'ansible-playbook', targetFile], outputChannel, null);
+                        var dockerRunOptions = ['/c', 'docker', 'run', '--rm', '-v', playbook + ':' + targetFile],
+                        dockerRunOptions = dockerRunOptions.concat(envOptions).concat([dockerImageName, 'ansible-playbook', targetFile]);
+                        localExecCmd('cmd.exe', dockerRunOptions, outputChannel, null);
                     }
                 });
             } else {
@@ -140,4 +155,29 @@ export function runAnsibleCommands(outputChannel) {
                 });
             }
         })
+}
+
+// return array of credential items
+// eg. azure_subs_id xxxxx
+export function parseCredentialsFile(outputChannel) {
+    var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');
+    var credentials = [];
+            
+    if (configValue === undefined || configValue === '') {
+        outputChannel.append('Not specify ansible credentials file.');
+        outputChannel.show();
+        return;
+    }
+    var credFilePath = path.resolve(vscode.workspace.workspaceFolders[0].uri.fsPath, configValue);
+    
+    if (fsExtra.pathExistsSync(credFilePath)) {
+        var creds = yamljs.load(credFilePath);        
+        
+        for (var cloudprovider in creds) {
+            for (var configItem in creds[cloudprovider]) {
+                credentials[configItem] = creds[cloudprovider][configItem];
+            }
+        }
+    }
+    return credentials;
 }
