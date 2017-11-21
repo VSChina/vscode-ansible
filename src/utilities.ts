@@ -162,10 +162,11 @@ export function validatePlaybook(playbook, outputChannel) {
         isValid = false;
     }
 
-    // todo: more validation
-    outputChannel.append(message);
-    outputChannel.show();
-
+    if (outputChannel) {
+        // todo: more validation
+        outputChannel.append(message);
+        outputChannel.show();
+    }
     return isValid;
 }
 
