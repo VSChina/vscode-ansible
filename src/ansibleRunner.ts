@@ -1,8 +1,7 @@
 'use strict'
 
-
 import * as vscode from 'vscode';
-import * as utilities from './utilities'; 
+import * as utilities from './utilities';
 import * as child_process from 'child_process';
 import * as path from 'path';
 import * as terminalExecutor from './terminalExecutor';
@@ -20,7 +19,16 @@ export function runAnsibleDockerInTerminal(outputChannel) {
 
     var containerId = 'ansible' + Date.now();
 
-    var cmd = 'docker run -it -v ' + sourceFolder + ':' + targetFolder + ' --name ' + containerId + ' ' + dockerImageName + ' /bin/bash';
+    // get environment variables
+    var envOptions = '';
+    var credentials = utilities.parseCredentialsFile(outputChannel);
+    if (credentials) {
+        for(var item in credentials) {
+            envOptions += ' -e ' + item + '=' + credentials[item];
+        }                
+    }
+
+    var cmd = 'docker run -it -v ' + sourceFolder + ':' + targetFolder + ' --name ' + containerId + envOptions + ' ' + dockerImageName + ' /bin/bash';
 
     if (!utilities.validatePlaybook(sourcePlaybook, outputChannel)) {
         return;

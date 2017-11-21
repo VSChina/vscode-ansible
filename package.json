@@ -64,10 +64,22 @@
         "mac": "cmd+f5",
         "when": "editorTextFocus"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Ansible Extension Configuration",
+      "type": "object",
+      "properties": {
+        "ansible.credentialsFile": {
+          "type": "string",
+          "default": "credentials.yml",
+          "description": "Ansible credential file path",
+          "scope": "resource"
+        }
+      }
+    }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
@@ -79,7 +91,12 @@
     "vscode": "^1.1.6",
     "eslint": "^4.6.1",
     "path": "^0.12.7",
+    "fs-extra": "^4.0.2",
+    "yamljs": "^0.3.0",
     "@types/node": "^7.0.43",
     "@types/mocha": "^2.2.42"
-  }
+  },
+  "extensionDependencies": [
+    "ms-vscode.azure-account"
+  ]
 }
