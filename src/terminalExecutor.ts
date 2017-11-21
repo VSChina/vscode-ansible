@@ -19,6 +19,8 @@ export function startTerminal(terminalName, cb) {
             // check if terminal is configured -- if not, set default configuration
         let cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
         
+        cmd = "default";
+
         if (cmd === "default") {
             if (process.platform === 'win32') {
                 let pthSplit =  vscode.workspace.rootPath.split(path.sep);
@@ -39,6 +41,16 @@ export function startTerminal(terminalName, cb) {
         
         terminals[terminalName] = terminal;
 
+        // Note on launching command in the terminal:
+        // In theory we could use second and third parameter of createTerminal() function to pass command and parameters.
+        // That can work well on macOS and Linux, but on windows there are several problems:
+        // (1) Third parameter doesn't work
+        // (2) we could create xxx.bat file instead and just launch cmd via this file, but depending on version of
+        //     Visual Studio Code (32bit / 64bit) bat file will be executed either in 32 or 64 bit PowerShell.
+        //     In 32bit PowerShell locations of binaries may be different, for example:
+        //       C:\WINDOWS\Sysnative\bash.exe in 32bit PS
+        //       C:\WINDOWS\System32\bash.exe in 64bit PS
+        //    (docker.exe is available from both x86 and x64)
         if (cmd != "") {
             terminal.show();
             terminal.sendText(cmd);
