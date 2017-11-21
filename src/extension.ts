@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     let runterminal = vscode.commands.registerCommand('vsc-extension-ansible.ansible-terminal', () => {
-        terminalExecutor.startTerminal('ansible');
+        terminalExecutor.startTerminal('ansible', function() {});
     })
 
     let playbookinterminal = vscode.commands.registerCommand('vsc-extension-ansible.ansible-playbook-in-terminal', () => {
