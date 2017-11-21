@@ -74,6 +74,12 @@
           "default": "credentials.yml",
           "description": "Ansible credential file path",
           "scope": "resource"
+        },
+        "ansible.terminalInitCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Command to be run in terminal after it starts",
+          "scope": "resource"
         }
       }
     }
