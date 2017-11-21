@@ -13,11 +13,23 @@ vscode.window.onDidCloseTerminal(function (terminal) {
     }
 })
 
-export function runInTerminal(commands, terminal) {
+export function startTerminal(terminal) {
     if (terminals === undefined || terminals[terminal] === undefined) {
         terminals[terminal] = vscode.window.createTerminal(terminal);
+
+        let cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand');
+
+        if (cmd != ""){
+            terminals[terminal].sendText(cmd);
+        }
     }
     terminals[terminal].show();
+}
+
+export function runInTerminal(commands, terminal) {
+    
+    startTerminal(terminal);
+
     commands.forEach(element => {
         terminals[terminal].sendText(element);
     });
