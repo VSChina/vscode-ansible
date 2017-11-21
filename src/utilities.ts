@@ -133,20 +133,6 @@ export function runPlaybookInTerminal() {
                 return;
             }
 
-            // check if terminal is configured -- if not, set default configuration
-            let cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
-            
-            if (cmd === "unconfigured") {
-                if (process.platform === 'win32') {
-                    // for windows we will start docker with appropriate command
-                    cmd = "docker run --rm -it -v $workspace:/current --workdir /current " + dockerImageName + " bash ; exit";
-                    vscode.workspace.getConfiguration('ansible').update('terminalInitCommand', cmd);
-                } else {
-                    // for anything else than windows, just use default terminal by default
-                    vscode.workspace.getConfiguration('ansible').update('terminalInitCommand', '');
-                }
-            }
-
             // normalize path to current workspace directory
             playbook = path.normalize(path.relative(vscode.workspace.rootPath, playbook));
             

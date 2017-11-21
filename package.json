@@ -84,7 +84,7 @@
         },
         "ansible.terminalInitCommand": {
           "type": "string",
-          "default": "unconfigured",
+          "default": "default",
           "description": "Command to be run in terminal after it starts",
           "scope": "resource"
         }
