@@ -20,7 +20,8 @@
   "activationEvents": [
     "onCommand:vsc-extension-ansible.ansible-playbook",
     "onCommand:vsc-extension-ansible.ansible-commands",
-    "onCommand:vsc-extension-ansible.ansible-terminal"
+    "onCommand:vsc-extension-ansible.ansible-terminal",
+    "onCommand:vsc-extension-ansible.ansible-playbook-in-terminal"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -40,6 +41,12 @@
       {
         "command": "vsc-extension-ansible.ansible-terminal",
         "title": "Terminal",
+        "args": "arguments",
+        "category": "ansible"
+      },
+      {
+        "command": "vsc-extension-ansible.ansible-playbook-in-terminal",
+        "title": "Run Ansible Playbook in Terminal",
         "args": "arguments",
         "category": "ansible"
       }
@@ -73,6 +80,12 @@
           "type": "string",
           "default": "credentials.yml",
           "description": "Ansible credential file path",
+          "scope": "resource"
+        },
+        "ansible.terminalInitCommand": {
+          "type": "string",
+          "default": "default",
+          "description": "Command to be run in terminal after it starts",
           "scope": "resource"
         }
       }

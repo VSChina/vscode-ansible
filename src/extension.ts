@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import * as utilities from './utilities'; 
 import * as ansibleRunner from './ansibleRunner';
+import * as terminalExecutor from './terminalExecutor';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vsc-extension-ansible" is now active!');    
@@ -18,12 +19,17 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     let runterminal = vscode.commands.registerCommand('vsc-extension-ansible.ansible-terminal', () => {
-        ansibleRunner.runAnsibleDockerInTerminal(outputChannel);
+        terminalExecutor.startTerminal('ansible', function() {});
+    })
+
+    let playbookinterminal = vscode.commands.registerCommand('vsc-extension-ansible.ansible-playbook-in-terminal', () => {
+        utilities.runPlaybookInTerminal();
     })
 
     context.subscriptions.push(runpb);
     context.subscriptions.push(runcmd);
     context.subscriptions.push(runterminal);
+    context.subscriptions.push(playbookinterminal);
     
 }
 

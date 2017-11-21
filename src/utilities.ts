@@ -7,6 +7,8 @@ import * as fsExtra from 'fs-extra';
 import * as yamljs from 'yamljs';
 import * as utilities from './utilities'; 
 import * as ansibleRunner from './ansibleRunner';
+import * as terminalExecutor from './terminalExecutor';
+
 import { workspace } from 'vscode';
 
 const dockerImageName = 'dockiot/ansible';
@@ -115,6 +117,28 @@ export function runPlayBook(outputChannel) {
         })
 }
 
+export function runPlaybookInTerminal() {
+    var playbook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : null;
+    vscode.window.showInputBox({ value: playbook, prompt: 'Please input playbook name', placeHolder: 'playbook', password: false })
+        .then((input) => {
+            if (input != undefined && input != '') {
+                playbook = input;
+            }
+        
+            var fileName = path.parse(playbook).base;
+            var targetFile = '/' + fileName;
+
+            if (!validatePlaybook(playbook, null)) {
+                // [ZKK] display message that playbook is invalid here
+                return;
+            }
+
+            // normalize path to current workspace directory
+            playbook = path.normalize(path.relative(vscode.workspace.rootPath, playbook));
+            
+            terminalExecutor.runInTerminal([ "ansible-playbook " + playbook ], "ansible");
+        })
+}
 export function validatePlaybook(playbook, outputChannel) {
     var message = seperator + '\nValidate playbook: passed.\n';
     var isValid = true;
@@ -124,10 +148,11 @@ export function validatePlaybook(playbook, outputChannel) {
         isValid = false;
     }
 
-    // todo: more validation
-    outputChannel.append(message);
-    outputChannel.show();
-
+    if (outputChannel) {
+        // todo: more validation
+        outputChannel.append(message);
+        outputChannel.show();
+    }
     return isValid;
 }
 
