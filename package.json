@@ -96,6 +96,11 @@
     "@types/node": "^7.0.43",
     "@types/mocha": "^2.2.42"
   },
+  "dependencies": {
+    "path": "^0.12.7",
+    "fs-extra": "^4.0.2",
+    "yamljs": "^0.3.0"
+  },    
   "extensionDependencies": [
     "ms-vscode.azure-account"
   ]
