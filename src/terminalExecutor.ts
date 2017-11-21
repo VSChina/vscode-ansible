@@ -18,7 +18,8 @@ export function startTerminal(terminal) {
         terminals[terminal] = vscode.window.createTerminal(terminal);
 
         let cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand');
-
+        cmd = cmd.replace('$workspace', vscode.workspace.rootPath);
+        
         if (cmd != ""){
             terminals[terminal].sendText(cmd);
         }
