@@ -19,8 +19,6 @@ export function startTerminal(terminalName, cb) {
             // check if terminal is configured -- if not, set default configuration
         let cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
         
-        cmd = "default";
-
         if (cmd === "default") {
             if (process.platform === 'win32') {
                 let pthSplit =  vscode.workspace.rootPath.split(path.sep);
