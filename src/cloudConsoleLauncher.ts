@@ -1,7 +1,6 @@
 import * as request from 'request-promise';
 import * as WS from 'ws';
 import { setTimeout } from 'timers';
-import * as sleep from 'system-sleep';
 
 const consoleApiVersion = '2017-08-01-preview';
 
