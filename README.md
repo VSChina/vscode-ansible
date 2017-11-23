@@ -1,5 +1,5 @@
-[![Travis CI](https://travis-ci.org/VSChina/vsc-extension-ansible.svg?branch=master)](https://travis-ci.org/VSChina/vsc-extension-ansible)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/i9ao4t9cvcck2vv3?svg=true)](https://ci.appveyor.com/project/yungez/vsc-extension-ansible)
+[![Travis CI](https://travis-ci.org/VSChina/vscode-ansible.svg?branch=master)](https://travis-ci.org/VSChina/vscode-ansible)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/i9ao4t9cvcck2vv3?svg=true)](https://ci.appveyor.com/project/yungez/vscode-ansible)
 
 # Visual Studio Code extension for Ansible
 

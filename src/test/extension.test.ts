@@ -2,7 +2,7 @@
 
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-const extensionId = 'yungez.vsc-extension-ansible';
+const extensionId = 'yungez.vscode-ansible';
 
 suite("Extension Tests", () => {
 
@@ -27,12 +27,12 @@ suite("Extension Tests", () => {
         extension.activate().then(function () {
             return vscode.commands.getCommands(true).then(function (commands) {
                 const COMMANDS = [
-                    'vsc-extension-ansible.ansible-playbook',
-                    'vsc-extension-ansible.ansible-commands'
+                    'vscode-ansible.ansible-playbook',
+                    'vscode-ansible.ansible-commands'
                 ].sort();
 
                 var foundCmds = commands.filter(function (e) {
-                    return e.startsWith('vsc-extension-ansible');
+                    return e.startsWith('vscode-ansible');
                 }).sort();
 
                 assert.equal(foundCmds.length, COMMANDS.length, 'some commands are not registered properly');
@@ -45,7 +45,7 @@ suite("Extension Tests", () => {
     test("should be able to run ansible command", function () {
         const extension = vscode.extensions.getExtension(extensionId);
         extension.activate().then(function () {
-            vscode.commands.executeCommand('vsc-extension-ansible.ansible-commands', 'ansible --version').then(
+            vscode.commands.executeCommand('vscode-ansible.ansible-commands', 'ansible --version').then(
                 function (result) {
                     assert.ok('cmd run done.' + result);
                 },
