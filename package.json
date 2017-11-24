@@ -20,28 +20,16 @@
     "ansible module"
   ],
   "repository": {
-    "url": "https://github.com/VSChina/vscode-ansible"
+    "url": "https://github.com/VSChina/vscode-ansible.git"
   },
   "homepage": "https://github.com/VSChina/vscode-ansible/blob/master/README.md",
   "activationEvents": [
-    "onCommand:vscode-ansible.ansible-playbook",
-    "onCommand:vscode-ansible.ansible-commands",
-    "onCommand:vscode-ansible.ansible-playbook-in-terminal",
-    "onCommand:vscode-ansible.ansible-cloudshell"
+    "onCommand:vscode-ansible.ansible-cloudshell",
+    "onCommand:vscode-ansible.ansible-playbook-in-terminal"
   ],
   "main": "./out/extension",
   "contributes": {
     "commands": [
-      {
-        "command": "vscode-ansible.ansible-playbook",
-        "title": "Run Ansible Playbook",
-        "category": "ansible"
-      },
-      {
-        "command": "vscode-ansible.ansible-commands",
-        "title": "Run Ansible Commands",
-        "category": "ansible"
-      },
       {
         "command": "vscode-ansible.ansible-cloudshell",
         "title": "Run Ansible Playbook in CloudShell",
@@ -81,14 +69,12 @@
         "ansible.credentialsFile": {
           "type": "string",
           "default": "credentials.yml",
-          "description": "Ansible credential file path",
-          "scope": "resource"
+          "description": "Ansible credential file path"
         },
         "ansible.terminalInitCommand": {
           "type": "string",
           "default": "default",
-          "description": "Command to be run in terminal after it starts",
-          "scope": "resource"
+          "description": "Command to be run in terminal after it starts"
         }
       }
     }

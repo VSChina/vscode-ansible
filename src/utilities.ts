@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as fsExtra from 'fs-extra';
 import * as yamljs from 'yamljs';
 import * as utilities from './utilities'; 
-import * as ansibleRunner from './ansibleRunner';
+import * as dockerRunner from './dockerRunner';
 import * as terminalExecutor from './terminalExecutor';
 
 import { workspace } from 'vscode';
