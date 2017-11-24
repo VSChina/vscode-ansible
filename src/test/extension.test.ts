@@ -27,8 +27,8 @@ suite("Extension Tests", () => {
         extension.activate().then(function () {
             return vscode.commands.getCommands(true).then(function (commands) {
                 const COMMANDS = [
-                    'vscode-ansible.ansible-playbook',
-                    'vscode-ansible.ansible-commands'
+                    'vscode-ansible.ansible-playbook-in-terminal',
+                    'vscode-ansible.ansible-cloudshell'
                 ].sort();
 
                 var foundCmds = commands.filter(function (e) {
@@ -39,20 +39,7 @@ suite("Extension Tests", () => {
             }, function () {
                 assert.fail(false, true, 'failed to getCommands!');
             })
-        });
-    })
 
-    test("should be able to run ansible command", function () {
-        const extension = vscode.extensions.getExtension(extensionId);
-        extension.activate().then(function () {
-            vscode.commands.executeCommand('vscode-ansible.ansible-commands', 'ansible --version').then(
-                function (result) {
-                    assert.ok('cmd run done.' + result);
-                },
-                function () {
-                    assert.fail(false, true, 'failed to run ansible cmd!');
-                }
-            )
-        })
+        });
     })
 });
