@@ -8,20 +8,19 @@ var terminals = [];
 vscode.window.onDidCloseTerminal(function (terminal) {
     if (terminals === undefined)
         return;
-    if (terminals[terminal.name])
-    {
+    if (terminals[terminal.name]) {
         delete terminals[terminal.name];
     }
 })
 
 export function startTerminal(terminalName, cb) {
     if (terminals === undefined || terminals[terminalName] === undefined) {
-            // check if terminal is configured -- if not, set default configuration
+        // check if terminal is configured -- if not, set default configuration
         let cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
-        
+
         if (cmd === "default") {
             if (process.platform === 'win32') {
-                let pthSplit =  vscode.workspace.rootPath.split(path.sep);
+                let pthSplit = vscode.workspace.rootPath.split(path.sep);
                 pthSplit.shift();
                 let pth = path.posix.sep + pthSplit.join(path.posix.sep);
 
@@ -36,7 +35,7 @@ export function startTerminal(terminalName, cb) {
         }
 
         var terminal = vscode.window.createTerminal(terminalName);
-        
+
         terminals[terminalName] = terminal;
 
         // Note on launching command in the terminal:
@@ -53,7 +52,7 @@ export function startTerminal(terminalName, cb) {
             terminal.show();
             terminal.sendText(cmd);
 
-            setTimeout(function() {
+            setTimeout(function () {
                 cb();
             }, 3000)
 
@@ -65,10 +64,10 @@ export function startTerminal(terminalName, cb) {
 }
 
 export function runInTerminal(commands, terminal) {
-    
-    startTerminal(terminal, function() {
+
+    startTerminal(terminal, function () {
         commands.forEach(element => {
             terminals[terminal].sendText(element);
-        });    
+        });
     });
 }
