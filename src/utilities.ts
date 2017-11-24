@@ -117,7 +117,7 @@ export function runPlayBook(outputChannel) {
         })
 }
 
-export function runPlaybookInTerminal() {
+export function runPlaybookInTerminal(): void {
     var playbook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : null;
     vscode.window.showInputBox({ value: playbook, prompt: 'Please input playbook name', placeHolder: 'playbook', password: false })
         .then((input) => {
@@ -128,6 +128,12 @@ export function runPlaybookInTerminal() {
             var fileName = path.parse(playbook).base;
             var targetFile = '/' + fileName;
 
+            // if test related file detected -- just run test
+            if (isTestRelatedFile(playbook)) {
+                runTest(playbook);
+                return;
+            }
+
             if (!validatePlaybook(playbook, null)) {
                 // [ZKK] display message that playbook is invalid here
                 return;
@@ -136,9 +142,65 @@ export function runPlaybookInTerminal() {
             // normalize path to current workspace directory
             playbook = path.normalize(path.relative(vscode.workspace.rootPath, playbook));
             
+            // (3a) run playbook
             terminalExecutor.runInTerminal([ "ansible-playbook " + playbook ], "ansible");
+
+            // (3b) or run integration or sanity test
         })
 }
+
+function runTest(playbook: string) : void {
+
+    let fileName: string = "";
+    let testName: string = "";
+    let ansibleLocalDir: string = "";
+    let ansibleRemoteDir: string = "";
+
+    // firstly get test name
+    if (playbook.endsWith(".py")) {
+        fileName = path.parse(playbook).base;
+        testName = fileName.split(".")[0];
+    }
+
+    // secondly get ansible root directory
+    // XXX - just hack for now
+    ansibleLocalDir = "c:\\dev\\ansible-hatchery\\python";
+    ansibleRemoteDir = "/home/zim/ansible";
+
+    // copy files
+    copyFileToTerminal(playbook, ansibleRemoteDir + "/lib/ansible/modules/cloud/azure/" + fileName, "ansible");
+    copyFileToTerminal(ansibleLocalDir + "\\test\\integration\\targets\\" + testName + "\\aliases", ansibleRemoteDir + "/test/integration/targets/" + testName + "/aliases", "ansible");
+    copyFileToTerminal(ansibleLocalDir + "\\test\\integration\\targets\\" + testName + "\\meta\\main.yml", ansibleRemoteDir + "/test/integration/targets/" + testName + "/meta/main.yml", "ansible");
+    copyFileToTerminal(ansibleLocalDir + "\\test\\integration\\targets\\" + testName + "\\tasks\\main.yml", ansibleRemoteDir + "/test/integration/targets/" + testName + "/tasks/main.yml", "ansible");
+}
+
+export function copyFileToTerminal(localPath: string, remotePath: string, terminal: string): boolean {
+
+    let pathElements: string[] = remotePath.split('/');
+    pathElements.pop();
+    let commands: string[] = [];
+    const data = fsExtra.readFileSync(localPath, { encoding: 'utf8' });
+    
+    commands.push("mkdir -p " + pathElements.join('/'));
+    commands.push('echo -e "' + data + '" > ' + remotePath);
+
+    // first make sure directory is there
+    terminalExecutor.runInTerminal(commands, "ansible");
+
+    return true;
+
+}
+
+export function isTestRelatedFile(playbook: string) {
+    if (playbook.endsWith(".py") && (playbook.indexOf('lib/ansible/modules') != -1)) {
+        return true;
+    } else if ((playbook.endsWith("main.yml")) && (playbook.indexOf('test/integration/targets') != -1)) {
+        return true;
+    }
+
+    return false;
+}
+
 export function validatePlaybook(playbook, outputChannel) {
     var message = seperator + '\nValidate playbook: passed.\n';
     var isValid = true;
