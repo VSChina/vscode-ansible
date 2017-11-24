@@ -5,7 +5,7 @@ import * as utilities from "./utilities";
 import { openCloudConsole, OSes } from './cloudConsole';
 import * as path from 'path';
 
-export async function runPlaybook(outputChannel): Promise<void> {
+export function runPlaybook(outputChannel) {
     const msgOption: MessageOptions = { modal: false };
     const msgItem: MessageItem = { title: 'Confirm' };
 
@@ -29,7 +29,7 @@ export async function runPlaybook(outputChannel): Promise<void> {
                         outputChannel.append(Constants.LineSeperator + '\nRun playbook in CloudShell: ' + playbook + '\n');
                         outputChannel.show();
 
-                        const accountApi: AzureAccount = await extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
+                        const accountApi: AzureAccount = extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
                         openCloudConsole(accountApi, OSes.Linux, [playbook], outputChannel).then(terminal => {
                             //terminal.sendText('ansible-plabybook ' + path.basename(playbook));
