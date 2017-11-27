@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { window, commands, MessageItem, OutputChannel } from 'vscode';
+import { window, commands, MessageItem, OutputChannel, Terminal, env } from 'vscode';
 import { AzureAccount, AzureSession } from './azure-account.api';
 import { getUserSettings, provisionConsole, Errors, resetConsole, delay, runInTerminal } from './cloudConsoleLauncher';
 import * as nls from 'vscode-nls';
@@ -14,6 +14,7 @@ import * as semver from 'semver';
 import { TIMEOUT } from 'dns';
 import * as ws from 'ws';
 import * as fsExtra from 'fs-extra';
+import { Constants } from './constants';
 
 const localize = nls.loadMessageBundle();
 
@@ -36,7 +37,7 @@ export const OSes: Record<string, OS> = {
 	}
 };
 
-export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel) {
+export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel, tempFile: string) {
 	return (async function retry(): Promise<any> {
 
 		const isWindows = process.platform === 'win32';
@@ -95,10 +96,10 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			shellArgs.shift();
 		}
 
-		let response = await runInTerminal(result.token.accessToken, consoleUri);
+		let response = await runInTerminal(result.token.accessToken, consoleUri, '');
 
 		// upload files to cloudshell
-		const retry_interval = 1000;
+		const retry_interval = 500;
 		const retry_times = 30;
 		for (var i = 0; i < retry_times; i++) {
 			if (response.readyState != ws.OPEN) {
@@ -106,7 +107,7 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			} else {
 				for (let file of files) {
 					const data = fsExtra.readFileSync(file, { encoding: 'utf8' });
-					outputChannel.append('Upload playbook to CloudShell: ' + file + ' as ' + path.basename(file));
+					outputChannel.append(Constants.LineSeperator + '\nUpload playbook to CloudShell: ' + file + ' as ' + path.basename(file) + '\n');
 					response.send('echo -e "' + data + '" > ' + path.basename(file) + ' \n');
 				}
 				break;
@@ -119,9 +120,11 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			shellArgs,
 			env: {
 				CLOUD_CONSOLE_ACCESS_TOKEN: result.token.accessToken,
-				CLOUD_CONSOLE_URI: consoleUri
+				CLOUD_CONSOLE_URI: consoleUri,
+				CLOUDSHELL_TEMP_FILE: tempFile
 			}
 		});
+
 		terminal.show();
 		return terminal;
 	})().catch(err => {

@@ -5,7 +5,7 @@ import * as child_process from 'child_process';
 import * as path from 'path';
 import * as fsExtra from 'fs-extra';
 import * as yamljs from 'yamljs';
-import * as utilities from './utilities'; 
+import * as utilities from './utilities';
 import * as dockerRunner from './dockerRunner';
 import * as terminalExecutor from './terminalExecutor';
 
@@ -83,7 +83,7 @@ export function runPlayBook(outputChannel) {
 
             outputChannel.append(seperator + '\nRun playbook: ' + playbook + '\n');
             outputChannel.show();
-        
+
             var fileName = path.parse(playbook).base;
             var targetFile = '/' + fileName;
 
@@ -95,17 +95,17 @@ export function runPlayBook(outputChannel) {
             var envOptions = [];
             var credentials = parseCredentialsFile(outputChannel);
             if (credentials) {
-                for(var item in credentials) {
+                for (var item in credentials) {
                     envOptions.push('-e');
                     envOptions.push(item + '=' + credentials[item]);
-                }                
+                }
             }
 
             if (process.platform === 'win32') {
                 isDockerInstalled(outputChannel, function (err) {
                     if (!err) {
                         var dockerRunOptions = ['/c', 'docker', 'run', '--rm', '-v', playbook + ':' + targetFile],
-                        dockerRunOptions = dockerRunOptions.concat(envOptions).concat([dockerImageName, 'ansible-playbook', targetFile]);
+                            dockerRunOptions = dockerRunOptions.concat(envOptions).concat([dockerImageName, 'ansible-playbook', targetFile]);
                         localExecCmd('cmd.exe', dockerRunOptions, outputChannel, null);
                     }
                 });
@@ -124,7 +124,7 @@ export function runPlaybookInTerminal() {
             if (input != undefined && input != '') {
                 playbook = input;
             }
-        
+
             var fileName = path.parse(playbook).base;
             var targetFile = '/' + fileName;
 
@@ -135,8 +135,8 @@ export function runPlaybookInTerminal() {
 
             // normalize path to current workspace directory
             playbook = path.normalize(path.relative(vscode.workspace.rootPath, playbook));
-            
-            terminalExecutor.runInTerminal([ "ansible-playbook " + playbook ], "ansible");
+
+            terminalExecutor.runInTerminal(["ansible-playbook " + playbook], "ansible");
         })
 }
 export function validatePlaybook(playbook, outputChannel) {
@@ -187,17 +187,17 @@ export function runAnsibleCommands(outputChannel) {
 export function parseCredentialsFile(outputChannel) {
     var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');
     var credentials = [];
-            
+
     if (configValue === undefined || configValue === '') {
         outputChannel.append('Not specify ansible credentials file.');
         outputChannel.show();
         return;
     }
     var credFilePath = path.resolve(vscode.workspace.workspaceFolders[0].uri.fsPath, configValue);
-    
+
     if (fsExtra.pathExistsSync(credFilePath)) {
-        var creds = yamljs.load(credFilePath);        
-        
+        var creds = yamljs.load(credFilePath);
+
         for (var cloudprovider in creds) {
             for (var configItem in creds[cloudprovider]) {
                 credentials[configItem] = creds[cloudprovider][configItem];

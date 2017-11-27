@@ -102,6 +102,7 @@
     "ms-rest": "^2.2.7",
     "ms-rest-azure": "^2.4.5",
     "opn": "^5.1.0",
+    "os": "^0.1.1",
     "path": "^0.12.7",
     "request-promise": "^4.2.2",
     "semver": "5.4.1",

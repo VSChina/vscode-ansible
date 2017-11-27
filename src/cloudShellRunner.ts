@@ -5,6 +5,11 @@ import * as utilities from "./utilities";
 import { openCloudConsole, OSes } from './cloudConsole';
 import * as path from 'path';
 import * as opn from 'opn';
+import * as fsExtra from 'fs-extra';
+import * as ost from 'os';
+import { setInterval, clearInterval } from 'timers';
+
+const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
 export function runPlaybook(outputChannel) {
     const installedExtension: any[] = vscode.extensions.all;
@@ -13,7 +18,7 @@ export function runPlaybook(outputChannel) {
     for (var i = 0; i < installedExtension.length; i++) {
         const ext = installedExtension[i];
         if (ext.id === Constants.AzureAccountExtensionId) {
-            azureAccount = ext.activate().then(() => {
+            azureAccount = ext.activate().then((azureAccount) => {
                 if (azureAccount) {
                     startCloudShell(outputChannel);
                 }
@@ -34,9 +39,9 @@ export function startCloudShell(outputChannel) {
     const msgOption: vscode.MessageOptions = { modal: false };
     const msgItem: vscode.MessageItem = { title: 'Confirm' };
 
-    const promptMsg = 'Warning: Run ansible playbook in Cloudshell will generate Azure storage usage fee since need uploading playbook to CloudShell!\n' +
+    const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell !' +
         'Please view detail at https://docs.microsoft.com/en-us/azure/cloud-shell/pricing';
-        vscode.window.showWarningMessage(promptMsg, msgOption, msgItem).then(
+    vscode.window.showWarningMessage(promptMsg, msgOption, msgItem).then(
         response => {
             if (response === msgItem) {
                 var playbook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : null;
@@ -51,17 +56,36 @@ export function startCloudShell(outputChannel) {
                             return;
                         }
 
-                        outputChannel.append(Constants.LineSeperator + '\nRun playbook in CloudShell: ' + playbook + '\n');
-                        outputChannel.show();
-
                         const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
-                        openCloudConsole(accountApi, OSes.Linux, [playbook], outputChannel).then(terminal => {
-                            //terminal.sendText('ansible-plabybook ' + path.basename(playbook));
+                        openCloudConsole(accountApi, OSes.Linux, [playbook], outputChannel, tempFile).then(terminal => {
+
+                            var count = 30;
+                            const interval = setInterval(function () {
+                                count--;
+                                if (count > 0) {
+                                    if (fsExtra.existsSync(tempFile)) {
+                                        fsExtra.removeSync(tempFile);
+                                        for (let file of [playbook]) {
+                                            outputChannel.append(Constants.LineSeperator + '\nRun playbook in CloudShell: ' + file + '\n');
+
+                                            terminal.sendText('ansible-playbook ' + path.basename(file));
+                                            terminal.show();
+                                        }
+                                        count = 0;
+                                    }
+                                } else {
+                                    stop(interval);
+                                }
+                            }, 500);
                         });
                     });
             }
         }
     )
 
+}
+
+function stop(interval) {
+    clearInterval(interval);
 }
