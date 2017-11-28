@@ -2,6 +2,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as utilities from './utilities';
 import { AzureAccount } from './azure-account.api';
 import { Constants } from './constants';
 import { TerminalRunner } from './terminalRunner';
@@ -12,6 +13,7 @@ import { TerminalExecutor } from './terminalExecutor';
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
+    utilities.generateCredentialsFile();
 
     var terminalRunner = new TerminalRunner(outputChannel);
     var cloudShellRunner = new CloudShellRunner(outputChannel);

@@ -89,15 +89,14 @@ export function validatePlaybook(playbook, outputChannel) {
 // return array of credential items
 // eg. azure_subs_id xxxxx
 export function parseCredentialsFile(outputChannel) {
-    var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');
-    var credentials = [];
-
+    var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');    
     if (configValue === undefined || configValue === '') {
         outputChannel.append('Not specify ansible credentials file.');
-        outputChannel.show();
         return;
     }
-    var credFilePath = path.resolve(vscode.workspace.workspaceFolders[0].uri.fsPath, configValue);
+    
+    var credFilePath = path.resolve(vscode.workspace.rootPath, configValue);
+    var credentials = [];
 
     if (fsExtra.pathExistsSync(credFilePath)) {
         var creds = yamljs.load(credFilePath);
