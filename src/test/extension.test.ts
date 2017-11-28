@@ -27,8 +27,8 @@ suite("Extension Tests", () => {
         extension.activate().then(function () {
             return vscode.commands.getCommands(true).then(function (commands) {
                 const COMMANDS = [
-                    'vscode-ansible.ansible-playbook-in-terminal',
-                    'vscode-ansible.ansible-cloudshell'
+                    'vscode-ansible.playbook-in-terminal',
+                    'vscode-ansible.cloudshell'
                 ].sort();
 
                 var foundCmds = commands.filter(function (e) {
