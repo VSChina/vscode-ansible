@@ -93,12 +93,11 @@ export function parseCredentialsFile(): string[] {
     if (configValue === undefined || configValue === '') {        
         return;
     }
-    
-    var credFilePath = path.resolve(vscode.workspace.rootPath, configValue);
+        
     var credentials = [];
 
-    if (fsExtra.pathExistsSync(credFilePath)) {
-        var creds = yamljs.load(credFilePath);
+    if (fsExtra.pathExistsSync(configValue)) {
+        var creds = yamljs.load(configValue);
 
         for (var cloudprovider in creds) {
             for (var configItem in creds[cloudprovider]) {

@@ -68,7 +68,7 @@
       "properties": {
         "ansible.credentialsFile": {
           "type": "string",
-          "default": "credentials.yml",
+          "default": "",
           "description": "Ansible credential file path"
         },
         "ansible.terminalInitCommand": {
