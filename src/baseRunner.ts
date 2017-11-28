@@ -10,7 +10,7 @@ export enum Option {
     local = "local"
 }
 
-export class BaseRunner {
+export abstract class BaseRunner {
     protected _outputChannel: vscode.OutputChannel;
 
     constructor(outputChannel: vscode.OutputChannel) {
@@ -29,7 +29,7 @@ export class BaseRunner {
         return process.platform === 'win32';
     }
 
-    public runPlaybook() {
+    public runPlaybook(): void {
         var playbook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : null;
         vscode.window.showInputBox({ value: playbook, prompt: 'Please input playbook name', placeHolder: 'playbook', password: false })
             .then((input) => {
@@ -51,8 +51,6 @@ export class BaseRunner {
             })
     }
 
-    protected runPlaybookInternal(playbook) {
-        // run playbooks
-    }
+    protected abstract runPlaybookInternal(playbook: string);
 }
 

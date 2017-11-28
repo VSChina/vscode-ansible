@@ -13,9 +13,9 @@ export class TerminalRunner extends BaseRunner {
         super(outputChannel);
     }
 
-    protected runPlaybookInternal(playbook) {
+    protected runPlaybookInternal(playbook: string): void {
         // - parse credential files if exists
-        const credentials = utilities.parseCredentialsFile(this._outputChannel);
+        const credentials = utilities.parseCredentialsFile();
         let cmds = [];
         let waitAfterInitCmd = false;
 
@@ -35,9 +35,9 @@ export class TerminalRunner extends BaseRunner {
         TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, waitAfterInitCmd, cmds.splice(1));
     }
 
-    protected getCmdsToTerminal(option, playbook, envs) {
+    protected getCmdsToTerminal(option: string, playbook: string, envs: string[]): string[] {
         var cmdsToTerminal = [];
-        if (option === 'docker') {
+        if (option === Option.docker) {
             // check if terminal init cmd is configured -- if not, set default docker command
             let cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
 

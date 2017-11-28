@@ -16,7 +16,7 @@ const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '
 
 export class CloudShellRunner extends BaseRunner {
 
-    protected runPlaybookInternal(playbook) {
+    protected runPlaybookInternal(playbook: string): void {
         const installedExtension: any[] = vscode.extensions.all;
 
         let azureAccount: AzureAccount;
@@ -41,7 +41,7 @@ export class CloudShellRunner extends BaseRunner {
     }
 
 
-    protected startCloudShell(playbook) {
+    protected startCloudShell(playbook: string): void {
         const msgOption: vscode.MessageOptions = { modal: false };
         const msgItem: vscode.MessageItem = { title: 'Confirm' };
 
@@ -78,7 +78,7 @@ export class CloudShellRunner extends BaseRunner {
 
     }
 
-    protected stop(interval) {
+    protected stop(interval: NodeJS.Timer): void {
         clearInterval(interval);
     }
 }

@@ -8,7 +8,7 @@ import * as yamljs from 'yamljs';
 import * as os from 'os';
 import { Constants } from "./constants";
 
-export function localExecCmd(cmd, args, outputChannel, cb) {
+export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
         var cp = require('child_process').spawn(cmd, args);
 
@@ -41,7 +41,7 @@ export function localExecCmd(cmd, args, outputChannel, cb) {
 }
 
 
-export function isDockerInstalled(outputChannel, cb) {
+export function isDockerInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
     if (process.platform === 'win32') {
         localExecCmd('cmd.exe', ['/c', 'docker', '-v'], outputChannel, function (err) {
             if (err) {
@@ -54,7 +54,7 @@ export function isDockerInstalled(outputChannel, cb) {
     }
 }
 
-export function isAnsibleInstalled(outputChannel, cb) {
+export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
     child_process.exec("type ansible").on('exit', function (code) {
         if (!code) {
             cb();
@@ -68,7 +68,7 @@ export function isAnsibleInstalled(outputChannel, cb) {
 }
 
 
-export function validatePlaybook(playbook, outputChannel) {
+export function validatePlaybook(playbook: string, outputChannel: vscode.OutputChannel): boolean {
     var message = Constants.LineSeperator + '\nValidate playbook: passed.\n';
     var isValid = true;
 
@@ -88,10 +88,9 @@ export function validatePlaybook(playbook, outputChannel) {
 
 // return array of credential items
 // eg. azure_subs_id xxxxx
-export function parseCredentialsFile(outputChannel) {
+export function parseCredentialsFile(): string[] {
     var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');    
-    if (configValue === undefined || configValue === '') {
-        outputChannel.append('Not specify ansible credentials file.');
+    if (configValue === undefined || configValue === '') {        
         return;
     }
     
@@ -110,7 +109,7 @@ export function parseCredentialsFile(outputChannel) {
     return credentials;
 }
 
-export function generateCredentialsFile() {
+export function generateCredentialsFile(): void {
     const credentialFilePath = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
 
     fsExtra.copySync(path.join(__dirname, '..', 'config', 'credentials.yml'), credentialFilePath);
