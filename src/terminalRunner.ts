@@ -19,25 +19,34 @@ export class TerminalRunner extends BaseRunner {
         let cmds = [];
         let waitAfterInitCmd = false;
 
+        var defaultOption = Option.docker;
+
         // - run playbook
         if (this.isWindows()) {
             // - on windows, run in docker
-            cmds = this.getCmdsToTerminal(Option.docker, playbook, credentials);
-            waitAfterInitCmd = true;
-            let initCmd = cmds[0];
-            TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, waitAfterInitCmd, cmds.splice(1));
-
+            this.ansibleInTerminal(defaultOption, playbook, credentials);
         } else {
             // - on other platforms, give user options to run in docker or local installation
             vscode.window.showQuickPick([Option.docker, Option.local], { placeHolder: "Select the way you'd like to run ansible", ignoreFocusOut: true })
                 .then((pick) => {
                     // check if local ansible is ready
-                    utilities.isAnsibleInstalled(this._outputChannel, () => {
-                        cmds = this.getCmdsToTerminal(pick, playbook, credentials);
-                        let initCmd = cmds[0];
-                        TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, waitAfterInitCmd, cmds.splice(1));
-                    });                    
+                    this.ansibleInTerminal(pick, playbook, credentials);
                 })
+        }
+    }
+
+    protected ansibleInTerminal(option, playbook, credentials) {
+        let cmds = this.getCmdsToTerminal(option, playbook, credentials);
+        let initCmd = cmds[0];
+
+        if (option === Option.docker) {
+            utilities.isDockerInstalled(this._outputChannel, () => {
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, true, cmds.splice(1));
+            });
+        } else if (option === Option.local) {
+            utilities.isAnsibleInstalled(this._outputChannel, () => {
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, false, cmds.splice(1));
+            });
         }
     }
 
