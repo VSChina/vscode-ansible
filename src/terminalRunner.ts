@@ -1,6 +1,6 @@
 "use strict";
 
-import { BaseRunner, Option } from './BaseRunner';
+import { BaseRunner, Option } from './baseRunner';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { Constants } from './constants';
