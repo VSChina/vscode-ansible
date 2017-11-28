@@ -1,6 +1,7 @@
 import * as request from 'request-promise';
 import * as WS from 'ws';
 import { setTimeout } from 'timers';
+import * as fsExtra from 'fs-extra';
 
 const consoleApiVersion = '2017-08-01-preview';
 
@@ -112,7 +113,7 @@ export async function resetConsole(accessToken: string, armEndpoint: string) {
 	}
 }
 
-async function connectTerminal(accessToken: string, consoleUri: string) {
+async function connectTerminal(accessToken: string, consoleUri: string, tempFilePath: string) {
 	console.log('Connecting terminal...');
 
 	for (let i = 0; i < 10; i++) {
@@ -137,6 +138,19 @@ async function connectTerminal(accessToken: string, consoleUri: string) {
 		// terminalIdleTimeout = res.idleTimeout || terminalIdleTimeout;
 
 		const ws = connectSocket(res.socketUri);
+
+		if (tempFilePath) {
+			const retry_interval = 500;
+			const retry_times = 30;
+			for (var m = 0; m < retry_times; m++) {
+				if (ws.readyState != ws.OPEN) {
+					await delay(retry_interval);
+				} else {
+					fsExtra.writeFileSync(tempFilePath, Date.now().toLocaleString() + ': cloud shell web socket opened.\n');
+					break;
+				}
+			}
+		}
 
 		process.stdout.on('resize', () => {
 			resize(accessToken, consoleUri, termId)
@@ -251,16 +265,19 @@ export async function delay(ms: number) {
 	return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
-export async function runInTerminal(accessToken: string, consoleUri: string) {
-	process.stdin.setRawMode!(true);
-	process.stdin.resume();
+export async function runInTerminal(accessToken: string, consoleUri: string, tempFile: string) {
+	if (tempFile) {
+		process.stdin.setRawMode!(true);
+		process.stdin.resume();
+	}
 
-	return connectTerminal(accessToken, consoleUri);
+	return connectTerminal(accessToken, consoleUri, tempFile);
 }
 
 export function main() {
 	const accessToken = process.env.CLOUD_CONSOLE_ACCESS_TOKEN!;
 	const consoleUri = process.env.CLOUD_CONSOLE_URI!;
-	runInTerminal(accessToken, consoleUri)
+	const tempFile = process.env.CLOUDSHELL_TEMP_FILE!;
+	return runInTerminal(accessToken, consoleUri, tempFile)
 		.catch(console.error);
 }
