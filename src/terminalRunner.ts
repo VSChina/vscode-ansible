@@ -26,14 +26,17 @@ export class TerminalRunner extends BaseRunner {
             waitAfterInitCmd = true;
             let initCmd = cmds[0];
             TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, waitAfterInitCmd, cmds.splice(1));
-            
+
         } else {
             // - on other platforms, give user options to run in docker or local installation
             vscode.window.showQuickPick([Option.docker, Option.local], { placeHolder: "Select the way you'd like to run ansible", ignoreFocusOut: true })
                 .then((pick) => {
-                    cmds = this.getCmdsToTerminal(pick, playbook, credentials);
-                    let initCmd = cmds[0];
-                    TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, waitAfterInitCmd, cmds.splice(1));
+                    // check if local ansible is ready
+                    utilities.isAnsibleInstalled(this._outputChannel, () => {
+                        cmds = this.getCmdsToTerminal(pick, playbook, credentials);
+                        let initCmd = cmds[0];
+                        TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, waitAfterInitCmd, cmds.splice(1));
+                    });                    
                 })
         }
     }
