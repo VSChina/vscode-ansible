@@ -24,19 +24,19 @@
   },
   "homepage": "https://github.com/VSChina/vscode-ansible/blob/master/README.md",
   "activationEvents": [
-    "onCommand:vscode-ansible.ansible-cloudshell",
-    "onCommand:vscode-ansible.ansible-playbook-in-terminal"
+    "onCommand:vscode-ansible.cloudshell",
+    "onCommand:vscode-ansible.playbook-in-terminal"
   ],
   "main": "./out/extension",
   "contributes": {
     "commands": [
       {
-        "command": "vscode-ansible.ansible-cloudshell",
+        "command": "vscode-ansible.cloudshell",
         "title": "Run Ansible Playbook in CloudShell",
         "category": "ansible"
       },
       {
-        "command": "vscode-ansible.ansible-playbook-in-terminal",
+        "command": "vscode-ansible.playbook-in-terminal",
         "title": "Run Ansible Playbook in Terminal",
         "category": "ansible"
       }
