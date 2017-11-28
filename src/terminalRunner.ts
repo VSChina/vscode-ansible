@@ -1,10 +1,10 @@
 "use strict";
 
-import { BaseRunner, Option } from "./BaseRunner";
-import * as vscode from "vscode";
-import * as path from "path";
-import { Constants } from "./constants";
-import * as utilities from "./utilities";
+import { BaseRunner, Option } from './BaseRunner';
+import * as vscode from 'vscode';
+import * as path from 'path';
+import { Constants } from './constants';
+import * as utilities from './utilities';
 import { TerminalExecutor } from './terminalExecutor';
 
 

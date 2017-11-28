@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as fsExtra from 'fs-extra';
 import * as yamljs from 'yamljs';
 import * as os from 'os';
-import { Constants } from "./constants";
+import { Constants } from './constants';
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {

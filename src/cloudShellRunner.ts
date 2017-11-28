@@ -1,10 +1,10 @@
 "use strict";
 
-import { BaseRunner } from "./baseRunner";
+import { BaseRunner } from './baseRunner';
 import * as vscode from 'vscode';
-import { AzureAccount } from "./azure-account.api";
-import { Constants } from "./constants";
-import * as utilities from "./utilities";
+import { AzureAccount } from './azure-account.api';
+import { Constants } from './constants';
+import * as utilities from './utilities';
 import { openCloudConsole, OSes } from './cloudConsole';
 import * as path from 'path';
 import * as opn from 'opn';
