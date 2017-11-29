@@ -6,6 +6,8 @@ import * as path from 'path';
 import { Constants } from './constants';
 import * as utilities from './utilities';
 import { TerminalExecutor } from './terminalExecutor';
+import TelemetryReporter from 'vscode-extension-telemetry';
+import { reporters } from 'mocha';
 
 
 export class TerminalRunner extends BaseRunner {
@@ -13,13 +15,13 @@ export class TerminalRunner extends BaseRunner {
         super(outputChannel);
     }
 
-    protected runPlaybookInternal(playbook: string): void {
+    protected runPlaybookInternal(playbook: string, reporter: TelemetryReporter): void {
         // - parse credential files if exists
         const credentials = utilities.parseCredentialsFile();
         let cmds = [];
         let waitAfterInitCmd = false;
 
-        var defaultOption = Option.docker;
+        var defaultOption: string = Option.docker;
 
         // - run playbook
         if (this.isWindows()) {
@@ -31,8 +33,10 @@ export class TerminalRunner extends BaseRunner {
                 .then((pick) => {
                     // check if local ansible is ready
                     this.ansibleInTerminal(pick, playbook, credentials);
+                    defaultOption = pick;
                 })
         }
+        reporter.sendTelemetryEvent('terminal', { option: defaultOption });
     }
 
     protected ansibleInTerminal(option, playbook, credentials) {
@@ -56,7 +60,7 @@ export class TerminalRunner extends BaseRunner {
             // check if terminal init cmd is configured -- if not, set default docker command
             var cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
 
-            var sourceFolder = vscode.workspace.rootPath;            
+            var sourceFolder = vscode.workspace.rootPath;
             var targetFolder = '/' + vscode.workspace.workspaceFolders[0].name;
 
             var targetPlaybook = path.relative(sourceFolder, playbook);
@@ -65,7 +69,7 @@ export class TerminalRunner extends BaseRunner {
             if (cmd === "default" || cmd === '') {
                 cmd = "docker run --rm -it -v $workspace:$targetFolder --workdir $targetFolder --name $containerId";
                 cmd = cmd.replace('$workspace', sourceFolder);
-                cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetFolder);                
+                cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetFolder);
                 cmd = cmd.replace('$containerId', containerId);
 
                 // add credential envs if any
