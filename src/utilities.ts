@@ -89,11 +89,11 @@ export function validatePlaybook(playbook: string, outputChannel: vscode.OutputC
 // return array of credential items
 // eg. azure_subs_id xxxxx
 export function parseCredentialsFile(): string[] {
-    var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');    
-    if (configValue === undefined || configValue === '') {        
+    var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');
+    if (configValue === undefined || configValue === '') {
         return;
     }
-        
+
     var credentials = [];
 
     if (fsExtra.pathExistsSync(configValue)) {
@@ -114,4 +114,8 @@ export function generateCredentialsFile(): void {
     fsExtra.copySync(path.join(__dirname, '..', 'config', 'credentials.yml'), credentialFilePath);
 
     vscode.workspace.getConfiguration('ansible').update('credentialsFile', credentialFilePath);
+}
+
+export function getUserAgent(): string {
+    return Constants.ExtensionId + '-' + vscode.extensions.getExtension(Constants.ExtensionId).packageJSON.version;
 }

@@ -79,6 +79,9 @@ export class TerminalRunner extends BaseRunner {
                     }
                 }
 
+                // add azure user agent
+                cmd += Constants.UserAgentName + '=' + utilities.getUserAgent();
+
                 cmd += ' ' + Constants.DockerImageName + ' bash';
                 cmdsToTerminal.push(cmd);
                 cmdsToTerminal.push('ansible-playbook ' + targetPlaybook);
@@ -92,6 +95,9 @@ export class TerminalRunner extends BaseRunner {
                     cmdsToTerminal.push('export ' + item + '=' + envs[item]);
                 }
             }
+
+            // add azure user agent
+            cmdsToTerminal.push('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
             cmdsToTerminal.push('ansible-playbook ' + playbook);
         }
         return cmdsToTerminal;
