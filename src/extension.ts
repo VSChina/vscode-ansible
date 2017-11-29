@@ -9,10 +9,10 @@ import { TerminalRunner } from './terminalRunner';
 import { CloudShellRunner } from './cloudShellRunner';
 import { TerminalExecutor } from './terminalExecutor';
 
-
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
+
     utilities.generateCredentialsFile();
 
     var terminalRunner = new TerminalRunner(outputChannel);

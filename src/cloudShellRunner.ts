@@ -11,6 +11,7 @@ import * as opn from 'opn';
 import * as fsExtra from 'fs-extra';
 import * as ost from 'os';
 import { setInterval, clearInterval } from 'timers';
+import { TelemetryClient } from './telemetryClient';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
@@ -26,6 +27,7 @@ export class CloudShellRunner extends BaseRunner {
                 azureAccount = ext.activate().then((azureAccount) => {
                     if (azureAccount) {
                         this.startCloudShell(playbook);
+                        TelemetryClient.sendEvent('cloudshell');
                     }
                 });
                 return;
@@ -70,6 +72,8 @@ export class CloudShellRunner extends BaseRunner {
                             }
                         }, 500);
                     });
+
+
                 } else if (response === cancelItem) {
                     opn('https://docs.microsoft.com/en-us/azure/cloud-shell/pricing');
                 }

@@ -6,6 +6,7 @@ import * as path from 'path';
 import { Constants } from './constants';
 import * as utilities from './utilities';
 import { TerminalExecutor } from './terminalExecutor';
+import { TelemetryClient } from './telemetryClient';
 
 
 export class TerminalRunner extends BaseRunner {
@@ -19,7 +20,7 @@ export class TerminalRunner extends BaseRunner {
         let cmds = [];
         let waitAfterInitCmd = false;
 
-        var defaultOption = Option.docker;
+        var defaultOption: string = Option.docker;
 
         // - run playbook
         if (this.isWindows()) {
@@ -31,8 +32,10 @@ export class TerminalRunner extends BaseRunner {
                 .then((pick) => {
                     // check if local ansible is ready
                     this.ansibleInTerminal(pick, playbook, credentials);
+                    defaultOption = pick;
                 })
         }
+        TelemetryClient.sendEvent('terminal', { option: defaultOption });
     }
 
     protected ansibleInTerminal(option, playbook, credentials) {
@@ -56,7 +59,7 @@ export class TerminalRunner extends BaseRunner {
             // check if terminal init cmd is configured -- if not, set default docker command
             var cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
 
-            var sourceFolder = vscode.workspace.rootPath;            
+            var sourceFolder = vscode.workspace.rootPath;
             var targetFolder = '/' + vscode.workspace.workspaceFolders[0].name;
 
             var targetPlaybook = path.relative(sourceFolder, playbook);
@@ -65,7 +68,7 @@ export class TerminalRunner extends BaseRunner {
             if (cmd === "default" || cmd === '') {
                 cmd = "docker run --rm -it -v $workspace:$targetFolder --workdir $targetFolder --name $containerId";
                 cmd = cmd.replace('$workspace', sourceFolder);
-                cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetFolder);                
+                cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetFolder);
                 cmd = cmd.replace('$containerId', containerId);
 
                 // add credential envs if any
