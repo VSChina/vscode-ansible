@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
 
-    const telemetryReporter = createReporter(context);
+    const reporter = createReporter(context);
 
     utilities.generateCredentialsFile();
 
