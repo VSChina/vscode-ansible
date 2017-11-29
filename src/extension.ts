@@ -8,13 +8,10 @@ import { Constants } from './constants';
 import { TerminalRunner } from './terminalRunner';
 import { CloudShellRunner } from './cloudShellRunner';
 import { TerminalExecutor } from './terminalExecutor';
-import { createReporter } from './telemetryReporter';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
-
-    const reporter = createReporter(context);
 
     utilities.generateCredentialsFile();
 
@@ -22,11 +19,11 @@ export function activate(context: vscode.ExtensionContext) {
     var cloudShellRunner = new CloudShellRunner(outputChannel);
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.playbook-in-terminal', () => {
-        terminalRunner.runPlaybook(reporter);
+        terminalRunner.runPlaybook();
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.cloudshell', () => {
-        cloudShellRunner.runPlaybook(reporter);
+        cloudShellRunner.runPlaybook();
     }));
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {

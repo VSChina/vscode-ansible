@@ -11,13 +11,13 @@ import * as opn from 'opn';
 import * as fsExtra from 'fs-extra';
 import * as ost from 'os';
 import { setInterval, clearInterval } from 'timers';
-import TelemetryReporter from 'vscode-extension-telemetry';
+import { TelemetryClient } from './telemetryClient';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
 export class CloudShellRunner extends BaseRunner {
 
-    protected runPlaybookInternal(playbook: string, reporter: TelemetryReporter): void {
+    protected runPlaybookInternal(playbook: string): void {
         const installedExtension: any[] = vscode.extensions.all;
 
         let azureAccount: AzureAccount;
@@ -27,7 +27,7 @@ export class CloudShellRunner extends BaseRunner {
                 azureAccount = ext.activate().then((azureAccount) => {
                     if (azureAccount) {
                         this.startCloudShell(playbook);
-                        reporter.sendTelemetryEvent('cloudshell');
+                        TelemetryClient.sendEvent('cloudshell');
                     }
                 });
                 return;

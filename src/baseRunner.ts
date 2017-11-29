@@ -4,7 +4,6 @@ import * as vscode from "vscode";
 import { Constants } from "./constants";
 import * as utilties from "./utilities";
 import * as path from "path";
-import TelemetryReporter from "vscode-extension-telemetry";
 
 export enum Option {
     docker = "docker",
@@ -31,7 +30,7 @@ export abstract class BaseRunner {
         return process.platform === 'win32';
     }
 
-    public runPlaybook(reporter: TelemetryReporter): void {
+    public runPlaybook(): void {
         var playbook = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : null;
         vscode.window.showInputBox({ value: playbook, prompt: 'Please input playbook name', placeHolder: 'playbook', password: false })
             .then((input) => {
@@ -46,10 +45,10 @@ export abstract class BaseRunner {
                     return;
                 }
 
-                return this.runPlaybookInternal(playbook, reporter);
+                return this.runPlaybookInternal(playbook);
             })
     }
 
-    protected abstract runPlaybookInternal(playbook: string, reporter: TelemetryReporter);
+    protected abstract runPlaybookInternal(playbook: string);
 }
 

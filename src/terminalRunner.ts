@@ -6,8 +6,7 @@ import * as path from 'path';
 import { Constants } from './constants';
 import * as utilities from './utilities';
 import { TerminalExecutor } from './terminalExecutor';
-import TelemetryReporter from 'vscode-extension-telemetry';
-import { reporters } from 'mocha';
+import { TelemetryClient } from './telemetryClient';
 
 
 export class TerminalRunner extends BaseRunner {
@@ -15,7 +14,7 @@ export class TerminalRunner extends BaseRunner {
         super(outputChannel);
     }
 
-    protected runPlaybookInternal(playbook: string, reporter: TelemetryReporter): void {
+    protected runPlaybookInternal(playbook: string): void {
         // - parse credential files if exists
         const credentials = utilities.parseCredentialsFile();
         let cmds = [];
@@ -36,7 +35,7 @@ export class TerminalRunner extends BaseRunner {
                     defaultOption = pick;
                 })
         }
-        reporter.sendTelemetryEvent('terminal', { option: defaultOption });
+        TelemetryClient.sendEvent('terminal', { option: defaultOption });
     }
 
     protected ansibleInTerminal(option, playbook, credentials) {
