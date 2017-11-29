@@ -62,6 +62,7 @@ export class CloudShellRunner extends BaseRunner {
                                 if (fsExtra.existsSync(tempFile)) {
                                     fsExtra.removeSync(tempFile);
 
+                                    terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
                                     terminal.sendText('ansible-playbook ' + path.basename(playbook));
                                     terminal.show();
 

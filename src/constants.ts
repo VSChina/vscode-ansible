@@ -4,4 +4,5 @@ export class Constants {
     public static AzureAccountExtensionId = 'ms-vscode.azure-account';
     public static DockerImageName = 'dockiot/ansible';
     public static AnsibleTerminalName = 'ansible';
+    public static UserAgentName = 'VSCODEEXT_USER_AGENT';    
 }
