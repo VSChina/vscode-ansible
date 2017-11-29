@@ -146,7 +146,7 @@ async function connectTerminal(accessToken: string, consoleUri: string, tempFile
 				if (ws.readyState != ws.OPEN) {
 					await delay(retry_interval);
 				} else {
-					fsExtra.writeFileSync(tempFilePath, Date.now().toLocaleString() + ': cloud shell web socket opened.\n');
+					fsExtra.writeFileSync(tempFilePath, Date.now() + ': cloud shell web socket opened.\n');
 					break;
 				}
 			}
