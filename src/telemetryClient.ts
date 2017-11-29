@@ -11,5 +11,5 @@ export class TelemetryClient {
         this._client.sendTelemetryEvent(eventName, properties);
     }
 
-    private static _client = new TelemetryReporter(Constants.ExtensionId, packageJson.version, packageJson.apiKey);
+    private static _client = new TelemetryReporter(Constants.ExtensionId, packageJson.version, packageJson.aiKey);
 }

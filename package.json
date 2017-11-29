@@ -19,6 +19,7 @@
     "azure",
     "ansible module"
   ],
+  "aiKey": "",
   "repository": {
     "url": "https://github.com/VSChina/vscode-ansible.git"
   },
