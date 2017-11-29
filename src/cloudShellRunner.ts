@@ -45,9 +45,9 @@ export class CloudShellRunner extends BaseRunner {
         const msgOption: vscode.MessageOptions = { modal: false };
         const msgItem: vscode.MessageItem = { title: 'Confirm' };
 
-        const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell !' +
-            'Please view detail at https://docs.microsoft.com/en-us/azure/cloud-shell/pricing.';
-        vscode.window.showWarningMessage(promptMsg, msgOption, msgItem).then(
+        const cancelItem: vscode.MessageItem = { title: "View detail" };
+        const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell !';
+        vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem).then(
             response => {
                 if (response === msgItem) {
                     const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
@@ -59,12 +59,10 @@ export class CloudShellRunner extends BaseRunner {
                             if (count > 0) {
                                 if (fsExtra.existsSync(tempFile)) {
                                     fsExtra.removeSync(tempFile);
-                                    for (let file of [playbook]) {
-                                        this._outputChannel.append(Constants.LineSeperator + '\nRun playbook in CloudShell: ' + file + '\n');
 
-                                        terminal.sendText('ansible-playbook ' + path.basename(file));
-                                        terminal.show();
-                                    }
+                                    terminal.sendText('ansible-playbook ' + path.basename(playbook));
+                                    terminal.show();
+
                                     count = 0;
                                 }
                             } else {
@@ -72,6 +70,8 @@ export class CloudShellRunner extends BaseRunner {
                             }
                         }, 500);
                     });
+                } else if (response === cancelItem) {
+                    opn('https://docs.microsoft.com/en-us/azure/cloud-shell/pricing');
                 }
             }
         )

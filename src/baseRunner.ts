@@ -40,9 +40,6 @@ export abstract class BaseRunner {
                 this._outputChannel.append(Constants.LineSeperator + '\nRun playbook: ' + playbook + '\n');
                 this._outputChannel.show();
 
-                var fileName = path.parse(playbook).base;
-                var targetFile = '/' + fileName;
-
                 if (!utilties.validatePlaybook(playbook, this._outputChannel)) {
                     return;
                 }
