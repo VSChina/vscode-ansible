@@ -7,6 +7,7 @@ import { Constants } from './constants';
 import * as utilities from './utilities';
 import { TerminalExecutor } from './terminalExecutor';
 import { TelemetryClient } from './telemetryClient';
+import { clearInterval } from 'timers';
 
 
 export class TerminalRunner extends BaseRunner {
@@ -16,7 +17,7 @@ export class TerminalRunner extends BaseRunner {
 
     protected runPlaybookInternal(playbook: string): void {
         // - parse credential files if exists
-        const credentials = utilities.parseCredentialsFile();
+        const credentials = utilities.parseCredentialsFile(this._outputChannel);
         let cmds = [];
         let waitAfterInitCmd = false;
 
@@ -39,31 +40,52 @@ export class TerminalRunner extends BaseRunner {
     }
 
     protected ansibleInTerminal(option, playbook, credentials) {
-        let cmds = this.getCmdsToTerminal(option, playbook, credentials);
+        let containerId = 'ansible' + Date.now();
+
+        let cmds = this.getCmdsToTerminal(option, playbook, credentials, containerId);
         let initCmd = cmds[0];
+        let subCmds = cmds.splice(1);
 
         if (option === Option.docker) {
             utilities.isDockerInstalled(this._outputChannel, () => {
-                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, true, cmds.splice(1));
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, true, subCmds, 180, function (terminal, interval) {
+                    require('child_process').exec('docker ps --filter name=' + containerId + ' --format {{.Status}}', (err, stdout, stderr) => {
+                        if (err || stderr) {
+                            console.log('err: ' + err + ' ' + stderr);
+                            return;
+                        }
+                        if (stdout) {
+                            // check if docker container is up
+                            if (stdout && stdout.indexOf('Up ') > -1) {
+
+                                // then send other commands to terminal
+                                for (let text of subCmds) {
+                                    terminal.sendText(text);
+                                }
+                                terminal.show();
+                                clearInterval(interval);
+                            }
+                        }
+                    })
+                });
             });
         } else if (option === Option.local) {
             utilities.isAnsibleInstalled(this._outputChannel, () => {
-                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, false, cmds.splice(1));
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName, false, cmds.splice(1), null, null);
             });
         }
     }
 
-    protected getCmdsToTerminal(option: string, playbook: string, envs: string[]): string[] {
+    protected getCmdsToTerminal(option: string, playbook: string, envs: string[], containerId: string): string[] {
         var cmdsToTerminal = [];
+
         if (option === Option.docker) {
             // check if terminal init cmd is configured -- if not, set default docker command
             var cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
 
             var sourceFolder = vscode.workspace.rootPath;
             var targetFolder = '/' + vscode.workspace.workspaceFolders[0].name;
-
             var targetPlaybook = path.relative(sourceFolder, playbook);
-            var containerId = 'ansible' + Date.now();
 
             if (cmd === "default" || cmd === '') {
                 cmd = "docker run --rm -it -v $workspace:$targetFolder --workdir $targetFolder --name $containerId";
@@ -80,7 +102,7 @@ export class TerminalRunner extends BaseRunner {
                 }
 
                 // add azure user agent
-                cmd += Constants.UserAgentName + '=' + utilities.getUserAgent();
+                //cmd += ' -e ' + Constants.UserAgentName + '=' + utilities.getUserAgent() + ' ';
 
                 cmd += ' ' + Constants.DockerImageName + ' bash';
                 cmdsToTerminal.push(cmd);
@@ -97,7 +119,7 @@ export class TerminalRunner extends BaseRunner {
             }
 
             // add azure user agent
-            cmdsToTerminal.push('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
+            //cmdsToTerminal.push('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
             cmdsToTerminal.push('ansible-playbook ' + playbook);
         }
         return cmdsToTerminal;

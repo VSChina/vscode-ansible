@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { setTimeout } from 'timers';
+import { setTimeout, clearInterval } from 'timers';
 
 var terminals = [];
 
@@ -13,7 +13,7 @@ export class TerminalExecutor {
         delete this.terminals[closedTerminal.name];
     }
 
-    public static runInTerminal(initCommand: string, terminalName: string, waitAfterInitCmd: boolean, commands: string[]): void {
+    public static runInTerminal(initCommand: string, terminalName: string, waitAfterInitCmd: boolean, commands: string[], retryTime: number, cb: Function): void {
         if (this.terminals === undefined || this.terminals[terminalName] === undefined) {
             var newterminal = vscode.window.createTerminal(terminalName);
             newterminal.show();
@@ -23,16 +23,19 @@ export class TerminalExecutor {
         terminal.sendText(initCommand);
 
         if (waitAfterInitCmd) {
-            setTimeout(function () {
-                for (var cmd in commands) {
-                    terminal.sendText(commands[cmd]);
+            var count = retryTime;
+            var interval = setInterval(function () {
+                count--;
+                if (count > 0) {
+                    cb(terminal, interval);
+                } else {
+                    clearInterval(interval);
                 }
-            }, 2000);
+            }, 1000);
         } else {
             for (var cmd in commands) {
                 terminal.sendText(commands[cmd]);
             }
         }
-
     }
 }

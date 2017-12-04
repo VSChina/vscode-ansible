@@ -10,7 +10,7 @@ import { Constants } from './constants';
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
-        var cp = require('child_process').spawn(cmd, args);
+        var cp = require('child_process').spawn(cmd, args);    
 
         cp.stdout.on('data', function (data) {
             if (outputChannel) {
@@ -88,12 +88,16 @@ export function validatePlaybook(playbook: string, outputChannel: vscode.OutputC
 
 // return array of credential items
 // eg. azure_subs_id xxxxx
-export function parseCredentialsFile(): string[] {
+export function parseCredentialsFile(outputChannel): string[] {
     var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');
     if (configValue === undefined || configValue === '') {
-        return;
+
+        outputChannel.show();
+        configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
     }
 
+    outputChannel.append('credential file: ' + configValue + '\n');
+    outputChannel.show();
     var credentials = [];
 
     if (fsExtra.pathExistsSync(configValue)) {
@@ -111,9 +115,9 @@ export function parseCredentialsFile(): string[] {
 export function generateCredentialsFile(): void {
     const credentialFilePath = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
 
-    fsExtra.copySync(path.join(__dirname, '..', 'config', 'credentials.yml'), credentialFilePath);
-
-    vscode.workspace.getConfiguration('ansible').update('credentialsFile', credentialFilePath);
+    if (!fsExtra.existsSync(credentialFilePath)) {
+        fsExtra.copySync(path.join(__dirname, '..', 'config', 'credentials.yml'), credentialFilePath);
+    }
 }
 
 export function getUserAgent(): string {
