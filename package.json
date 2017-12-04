@@ -57,7 +57,7 @@
     ],
     "keybindings": [
       {
-        "command": "vscode-ansible.ansible-playbook-in-terminal",
+        "command": "vscode-ansible.playbook-in-terminal",
         "key": "ctrl+f5",
         "mac": "cmd+f5",
         "when": "editorTextFocus"
