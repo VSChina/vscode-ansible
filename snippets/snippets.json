@@ -945,13 +945,13 @@
       "description": "",
       "body": [
         "- name: Create Alert Script to perform AWS server autoscaling",
-        "    avi_alertscriptconfig:",
-        "      username: ''",
-        "      controller: ''",
-        "      password: ''",
-        "      action_script: \"echo Hello\"",
-        "      name: AWS-Launch-Script",
-        "      tenant_ref: Demo"
+        "\t\tavi_alertscriptconfig:",
+        "\t\t\tusername: ''",
+        "\t\t\tcontroller: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\taction_script: \"echo Hello\"",
+        "\t\t\tname: AWS-Launch-Script",
+        "\t\t\ttenant_ref: Demo"
       ]
     },
     "avi_alertsyslogconfig": {
@@ -959,16 +959,16 @@
       "description": "",
       "body": [
         "- name: Create Alert Syslog object to forward all events to external syslog server",
-        "    avi_alertsyslogconfig:",
-        "      controller: ''",
-        "      name: Roberts-syslog",
-        "      password: ''",
-        "      syslog_servers:",
-        "      - syslog_server: 10.10.0.100",
-        "        syslog_server_port: 514",
-        "        udp: true",
-        "      tenant_ref: admin",
-        "      username: ''"
+        "\t\tavi_alertsyslogconfig:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tname: Roberts-syslog",
+        "\t\t\tpassword: ''",
+        "\t\t\tsyslog_servers:",
+        "\t\t\t- syslog_server: 10.10.0.100",
+        "\t\t\t\tsyslog_server_port: 514",
+        "\t\t\t\tudp: true",
+        "\t\t\ttenant_ref: admin",
+        "\t\t\tusername: ''"
       ]
     },
     "avi_analyticsprofile": {
@@ -976,63 +976,63 @@
       "description": "",
       "body": [
         "- name: Create a custom Analytics profile object",
-        "    avi_analyticsprofile:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      apdex_response_threshold: 500",
-        "      apdex_response_tolerated_factor: 4.0",
-        "      apdex_rtt_threshold: 250",
-        "      apdex_rtt_tolerated_factor: 4.0",
-        "      apdex_rum_threshold: 5000",
-        "      apdex_rum_tolerated_factor: 4.0",
-        "      apdex_server_response_threshold: 400",
-        "      apdex_server_response_tolerated_factor: 4.0",
-        "      apdex_server_rtt_threshold: 125",
-        "      apdex_server_rtt_tolerated_factor: 4.0",
-        "      conn_lossy_ooo_threshold: 50",
-        "      conn_lossy_timeo_rexmt_threshold: 20",
-        "      conn_lossy_total_rexmt_threshold: 50",
-        "      conn_lossy_zero_win_size_event_threshold: 2",
-        "      conn_server_lossy_ooo_threshold: 50",
-        "      conn_server_lossy_timeo_rexmt_threshold: 20",
-        "      conn_server_lossy_total_rexmt_threshold: 50",
-        "      conn_server_lossy_zero_win_size_event_threshold: 2",
-        "      disable_se_analytics: false",
-        "      disable_server_analytics: false",
-        "      exclude_client_close_before_request_as_error: false",
-        "      exclude_persistence_change_as_error: false",
-        "      exclude_server_tcp_reset_as_error: false",
-        "      exclude_syn_retransmit_as_error: false",
-        "      exclude_tcp_reset_as_error: false",
-        "      hs_event_throttle_window: 1209600",
-        "      hs_max_anomaly_penalty: 10",
-        "      hs_max_resources_penalty: 25",
-        "      hs_max_security_penalty: 100",
-        "      hs_min_dos_rate: 1000",
-        "      hs_performance_boost: 20",
-        "      hs_pscore_traffic_threshold_l4_client: 10.0",
-        "      hs_pscore_traffic_threshold_l4_server: 10.0",
-        "      hs_security_certscore_expired: 0.0",
-        "      hs_security_certscore_gt30d: 5.0",
-        "      hs_security_certscore_le07d: 2.0",
-        "      hs_security_certscore_le30d: 4.0",
-        "      hs_security_chain_invalidity_penalty: 1.0",
-        "      hs_security_cipherscore_eq000b: 0.0",
-        "      hs_security_cipherscore_ge128b: 5.0",
-        "      hs_security_cipherscore_lt128b: 3.5",
-        "      hs_security_encalgo_score_none: 0.0",
-        "      hs_security_encalgo_score_rc4: 2.5",
-        "      hs_security_hsts_penalty: 0.0",
-        "      hs_security_nonpfs_penalty: 1.0",
-        "      hs_security_selfsignedcert_penalty: 1.0",
-        "      hs_security_ssl30_score: 3.5",
-        "      hs_security_tls10_score: 5.0",
-        "      hs_security_tls11_score: 5.0",
-        "      hs_security_tls12_score: 5.0",
-        "      hs_security_weak_signature_algo_penalty: 1.0",
-        "      name: jason-analytics-profile",
-        "      tenant_ref: Demo"
+        "\t\tavi_analyticsprofile:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tapdex_response_threshold: 500",
+        "\t\t\tapdex_response_tolerated_factor: 4.0",
+        "\t\t\tapdex_rtt_threshold: 250",
+        "\t\t\tapdex_rtt_tolerated_factor: 4.0",
+        "\t\t\tapdex_rum_threshold: 5000",
+        "\t\t\tapdex_rum_tolerated_factor: 4.0",
+        "\t\t\tapdex_server_response_threshold: 400",
+        "\t\t\tapdex_server_response_tolerated_factor: 4.0",
+        "\t\t\tapdex_server_rtt_threshold: 125",
+        "\t\t\tapdex_server_rtt_tolerated_factor: 4.0",
+        "\t\t\tconn_lossy_ooo_threshold: 50",
+        "\t\t\tconn_lossy_timeo_rexmt_threshold: 20",
+        "\t\t\tconn_lossy_total_rexmt_threshold: 50",
+        "\t\t\tconn_lossy_zero_win_size_event_threshold: 2",
+        "\t\t\tconn_server_lossy_ooo_threshold: 50",
+        "\t\t\tconn_server_lossy_timeo_rexmt_threshold: 20",
+        "\t\t\tconn_server_lossy_total_rexmt_threshold: 50",
+        "\t\t\tconn_server_lossy_zero_win_size_event_threshold: 2",
+        "\t\t\tdisable_se_analytics: false",
+        "\t\t\tdisable_server_analytics: false",
+        "\t\t\texclude_client_close_before_request_as_error: false",
+        "\t\t\texclude_persistence_change_as_error: false",
+        "\t\t\texclude_server_tcp_reset_as_error: false",
+        "\t\t\texclude_syn_retransmit_as_error: false",
+        "\t\t\texclude_tcp_reset_as_error: false",
+        "\t\t\ths_event_throttle_window: 1209600",
+        "\t\t\ths_max_anomaly_penalty: 10",
+        "\t\t\ths_max_resources_penalty: 25",
+        "\t\t\ths_max_security_penalty: 100",
+        "\t\t\ths_min_dos_rate: 1000",
+        "\t\t\ths_performance_boost: 20",
+        "\t\t\ths_pscore_traffic_threshold_l4_client: 10.0",
+        "\t\t\ths_pscore_traffic_threshold_l4_server: 10.0",
+        "\t\t\ths_security_certscore_expired: 0.0",
+        "\t\t\ths_security_certscore_gt30d: 5.0",
+        "\t\t\ths_security_certscore_le07d: 2.0",
+        "\t\t\ths_security_certscore_le30d: 4.0",
+        "\t\t\ths_security_chain_invalidity_penalty: 1.0",
+        "\t\t\ths_security_cipherscore_eq000b: 0.0",
+        "\t\t\ths_security_cipherscore_ge128b: 5.0",
+        "\t\t\ths_security_cipherscore_lt128b: 3.5",
+        "\t\t\ths_security_encalgo_score_none: 0.0",
+        "\t\t\ths_security_encalgo_score_rc4: 2.5",
+        "\t\t\ths_security_hsts_penalty: 0.0",
+        "\t\t\ths_security_nonpfs_penalty: 1.0",
+        "\t\t\ths_security_selfsignedcert_penalty: 1.0",
+        "\t\t\ths_security_ssl30_score: 3.5",
+        "\t\t\ths_security_tls10_score: 5.0",
+        "\t\t\ths_security_tls11_score: 5.0",
+        "\t\t\ths_security_tls12_score: 5.0",
+        "\t\t\ths_security_weak_signature_algo_penalty: 1.0",
+        "\t\t\tname: jason-analytics-profile",
+        "\t\t\ttenant_ref: Demo"
       ]
     },
     "avi_api_session": {
@@ -1040,16 +1040,16 @@
       "description": "",
       "body": [
         "- name: Get Pool Information using avi_api_session",
-        "    avi_api_session:",
-        "      controller: \"{{ controller }}\"",
-        "      username: \"{{ username }}\"",
-        "      password: \"{{ password }}\"",
-        "      http_method: get",
-        "      path: pool",
-        "      params:",
-        "        name: \"{{ pool_name }}\"",
-        "      api_version: 16.4",
-        "    register: pool_results"
+        "\t\tavi_api_session:",
+        "\t\t\tcontroller: \"{{ controller }}\"",
+        "\t\t\tusername: \"{{ username }}\"",
+        "\t\t\tpassword: \"{{ password }}\"",
+        "\t\t\thttp_method: get",
+        "\t\t\tpath: pool",
+        "\t\t\tparams:",
+        "\t\t\t\tname: \"{{ pool_name }}\"",
+        "\t\t\tapi_version: 16.4",
+        "\t\tregister: pool_results"
       ]
     },
     "avi_applicationpersistenceprofile": {
@@ -1057,25 +1057,25 @@
       "description": "",
       "body": [
         "- name: Create an Application Persistence setting using http cookie.",
-        "    avi_applicationpersistenceprofile:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      http_cookie_persistence_profile:",
-        "        always_send_cookie: false",
-        "        cookie_name: My-HTTP",
-        "        key:",
-        "        - aes_key: ShYGZdMks8j6Bpvm2sCvaXWzvXms2Z9ob+TTjRy46lQ=",
-        "          name: c1276819-550c-4adf-912d-59efa5fd7269",
-        "        - aes_key: OGsyVk84VCtyMENFOW0rMnRXVnNrb0RzdG5mT29oamJRb0dlbHZVSjR1az0=",
-        "          name: a080de57-77c3-4580-a3ea-e7a6493c14fd",
-        "        - aes_key: UVN0cU9HWmFUM2xOUzBVcmVXaHFXbnBLVUUxMU1VSktSVU5HWjJOWmVFMTBUMUV4UmxsNk4xQmFZejA9",
-        "          name: 60478846-33c6-484d-868d-bbc324fce4a5",
-        "        timeout: 15",
-        "      name: My-HTTP-Cookie",
-        "      persistence_type: PERSISTENCE_TYPE_HTTP_COOKIE",
-        "      server_hm_down_recovery: HM_DOWN_PICK_NEW_SERVER",
-        "      tenant_ref: Demo"
+        "\t\tavi_applicationpersistenceprofile:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\thttp_cookie_persistence_profile:",
+        "\t\t\t\talways_send_cookie: false",
+        "\t\t\t\tcookie_name: My-HTTP",
+        "\t\t\t\tkey:",
+        "\t\t\t\t- aes_key: ShYGZdMks8j6Bpvm2sCvaXWzvXms2Z9ob+TTjRy46lQ=",
+        "\t\t\t\t\tname: c1276819-550c-4adf-912d-59efa5fd7269",
+        "\t\t\t\t- aes_key: OGsyVk84VCtyMENFOW0rMnRXVnNrb0RzdG5mT29oamJRb0dlbHZVSjR1az0=",
+        "\t\t\t\t\tname: a080de57-77c3-4580-a3ea-e7a6493c14fd",
+        "\t\t\t\t- aes_key: UVN0cU9HWmFUM2xOUzBVcmVXaHFXbnBLVUUxMU1VSktSVU5HWjJOWmVFMTBUMUV4UmxsNk4xQmFZejA9",
+        "\t\t\t\t\tname: 60478846-33c6-484d-868d-bbc324fce4a5",
+        "\t\t\t\ttimeout: 15",
+        "\t\t\tname: My-HTTP-Cookie",
+        "\t\t\tpersistence_type: PERSISTENCE_TYPE_HTTP_COOKIE",
+        "\t\t\tserver_hm_down_recovery: HM_DOWN_PICK_NEW_SERVER",
+        "\t\t\ttenant_ref: Demo"
       ]
     },
     "avi_applicationprofile": {
@@ -1083,64 +1083,64 @@
       "description": "",
       "body": [
         "- name: Create an Application Profile for HTTP application enabled for SSL traffic",
-        "    avi_applicationprofile:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      http_profile:",
-        "        cache_config:",
-        "          age_header: true",
-        "          aggressive: false",
-        "          date_header: true",
-        "          default_expire: 600",
-        "          enabled: false",
-        "          heuristic_expire: false",
-        "          max_cache_size: 0",
-        "          max_object_size: 4194304",
-        "          mime_types_group_refs:",
-        "          - admin:System-Cacheable-Resource-Types",
-        "          min_object_size: 100",
-        "          query_cacheable: false",
-        "          xcache_header: true",
-        "        client_body_timeout: 0",
-        "        client_header_timeout: 10000",
-        "        client_max_body_size: 0",
-        "        client_max_header_size: 12",
-        "        client_max_request_size: 48",
-        "        compression_profile:",
-        "          compressible_content_ref: admin:System-Compressible-Content-Types",
-        "          compression: false",
-        "          remove_accept_encoding_header: true",
-        "          type: AUTO_COMPRESSION",
-        "        connection_multiplexing_enabled: true",
-        "        hsts_enabled: false",
-        "        hsts_max_age: 365",
-        "        http_to_https: false",
-        "        httponly_enabled: false",
-        "        keepalive_header: false",
-        "        keepalive_timeout: 30000",
-        "        max_bad_rps_cip: 0",
-        "        max_bad_rps_cip_uri: 0",
-        "        max_bad_rps_uri: 0",
-        "        max_rps_cip: 0",
-        "        max_rps_cip_uri: 0",
-        "        max_rps_unknown_cip: 0",
-        "        max_rps_unknown_uri: 0",
-        "        max_rps_uri: 0",
-        "        post_accept_timeout: 30000",
-        "        secure_cookie_enabled: false",
-        "        server_side_redirect_to_https: false",
-        "        spdy_enabled: false",
-        "        spdy_fwd_proxy_mode: false",
-        "        ssl_client_certificate_mode: SSL_CLIENT_CERTIFICATE_NONE",
-        "        ssl_everywhere_enabled: false",
-        "        websockets_enabled: true",
-        "        x_forwarded_proto_enabled: false",
-        "        xff_alternate_name: X-Forwarded-For",
-        "        xff_enabled: true",
-        "      name: System-HTTP",
-        "      tenant_ref: admin",
-        "      type: APPLICATION_PROFILE_TYPE_HTTP"
+        "\t\tavi_applicationprofile:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\thttp_profile:",
+        "\t\t\t\tcache_config:",
+        "\t\t\t\t\tage_header: true",
+        "\t\t\t\t\taggressive: false",
+        "\t\t\t\t\tdate_header: true",
+        "\t\t\t\t\tdefault_expire: 600",
+        "\t\t\t\t\tenabled: false",
+        "\t\t\t\t\theuristic_expire: false",
+        "\t\t\t\t\tmax_cache_size: 0",
+        "\t\t\t\t\tmax_object_size: 4194304",
+        "\t\t\t\t\tmime_types_group_refs:",
+        "\t\t\t\t\t- admin:System-Cacheable-Resource-Types",
+        "\t\t\t\t\tmin_object_size: 100",
+        "\t\t\t\t\tquery_cacheable: false",
+        "\t\t\t\t\txcache_header: true",
+        "\t\t\t\tclient_body_timeout: 0",
+        "\t\t\t\tclient_header_timeout: 10000",
+        "\t\t\t\tclient_max_body_size: 0",
+        "\t\t\t\tclient_max_header_size: 12",
+        "\t\t\t\tclient_max_request_size: 48",
+        "\t\t\t\tcompression_profile:",
+        "\t\t\t\t\tcompressible_content_ref: admin:System-Compressible-Content-Types",
+        "\t\t\t\t\tcompression: false",
+        "\t\t\t\t\tremove_accept_encoding_header: true",
+        "\t\t\t\t\ttype: AUTO_COMPRESSION",
+        "\t\t\t\tconnection_multiplexing_enabled: true",
+        "\t\t\t\thsts_enabled: false",
+        "\t\t\t\thsts_max_age: 365",
+        "\t\t\t\thttp_to_https: false",
+        "\t\t\t\thttponly_enabled: false",
+        "\t\t\t\tkeepalive_header: false",
+        "\t\t\t\tkeepalive_timeout: 30000",
+        "\t\t\t\tmax_bad_rps_cip: 0",
+        "\t\t\t\tmax_bad_rps_cip_uri: 0",
+        "\t\t\t\tmax_bad_rps_uri: 0",
+        "\t\t\t\tmax_rps_cip: 0",
+        "\t\t\t\tmax_rps_cip_uri: 0",
+        "\t\t\t\tmax_rps_unknown_cip: 0",
+        "\t\t\t\tmax_rps_unknown_uri: 0",
+        "\t\t\t\tmax_rps_uri: 0",
+        "\t\t\t\tpost_accept_timeout: 30000",
+        "\t\t\t\tsecure_cookie_enabled: false",
+        "\t\t\t\tserver_side_redirect_to_https: false",
+        "\t\t\t\tspdy_enabled: false",
+        "\t\t\t\tspdy_fwd_proxy_mode: false",
+        "\t\t\t\tssl_client_certificate_mode: SSL_CLIENT_CERTIFICATE_NONE",
+        "\t\t\t\tssl_everywhere_enabled: false",
+        "\t\t\t\twebsockets_enabled: true",
+        "\t\t\t\tx_forwarded_proto_enabled: false",
+        "\t\t\t\txff_alternate_name: X-Forwarded-For",
+        "\t\t\t\txff_enabled: true",
+        "\t\t\tname: System-HTTP",
+        "\t\t\ttenant_ref: admin",
+        "\t\t\ttype: APPLICATION_PROFILE_TYPE_HTTP"
       ]
     },
     "avi_authprofile": {
@@ -1148,35 +1148,35 @@
       "description": "",
       "body": [
         "- name: Create user authorization profile based on the LDAP",
-        "    avi_authprofile:",
-        "      controller: ''",
-        "      password: ''",
-        "      username: ''",
-        "      http:",
-        "        cache_expiration_time: 5",
-        "        group_member_is_full_dn: false",
-        "      ldap:",
-        "        base_dn: dc=avi,dc=local",
-        "        bind_as_administrator: true",
-        "        port: 389",
-        "        security_mode: AUTH_LDAP_SECURE_NONE",
-        "        server:",
-        "        - 10.10.0.100",
-        "        settings:",
-        "          admin_bind_dn: user@avi.local",
-        "          group_filter: (objectClass=*)",
-        "          group_member_attribute: member",
-        "          group_member_is_full_dn: true",
-        "          group_search_dn: dc=avi,dc=local",
-        "          group_search_scope: AUTH_LDAP_SCOPE_SUBTREE",
-        "          ignore_referrals: true",
-        "          password: password",
-        "          user_id_attribute: samAccountname",
-        "          user_search_dn: dc=avi,dc=local",
-        "          user_search_scope: AUTH_LDAP_SCOPE_ONE",
-        "      name: ProdAuth",
-        "      tenant_ref: admin",
-        "      type: AUTH_PROFILE_LDAP"
+        "\t\tavi_authprofile:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tusername: ''",
+        "\t\t\thttp:",
+        "\t\t\t\tcache_expiration_time: 5",
+        "\t\t\t\tgroup_member_is_full_dn: false",
+        "\t\t\tldap:",
+        "\t\t\t\tbase_dn: dc=avi,dc=local",
+        "\t\t\t\tbind_as_administrator: true",
+        "\t\t\t\tport: 389",
+        "\t\t\t\tsecurity_mode: AUTH_LDAP_SECURE_NONE",
+        "\t\t\t\tserver:",
+        "\t\t\t\t- 10.10.0.100",
+        "\t\t\t\tsettings:",
+        "\t\t\t\t\tadmin_bind_dn: user@avi.local",
+        "\t\t\t\t\tgroup_filter: (objectClass=*)",
+        "\t\t\t\t\tgroup_member_attribute: member",
+        "\t\t\t\t\tgroup_member_is_full_dn: true",
+        "\t\t\t\t\tgroup_search_dn: dc=avi,dc=local",
+        "\t\t\t\t\tgroup_search_scope: AUTH_LDAP_SCOPE_SUBTREE",
+        "\t\t\t\t\tignore_referrals: true",
+        "\t\t\t\t\tpassword: password",
+        "\t\t\t\t\tuser_id_attribute: samAccountname",
+        "\t\t\t\t\tuser_search_dn: dc=avi,dc=local",
+        "\t\t\t\t\tuser_search_scope: AUTH_LDAP_SCOPE_ONE",
+        "\t\t\tname: ProdAuth",
+        "\t\t\ttenant_ref: admin",
+        "\t\t\ttype: AUTH_PROFILE_LDAP"
       ]
     },
     "avi_backup": {
@@ -1226,26 +1226,26 @@
       "description": "",
       "body": [
         "- name: Create a VMware cloud with write access mode",
-        "    avi_cloud:",
-        "      username: ''",
-        "      controller: ''",
-        "      password: ''",
-        "      apic_mode: false",
-        "      dhcp_enabled: true",
-        "      enable_vip_static_routes: false",
-        "      license_type: LIC_CORES",
-        "      mtu: 1500",
-        "      name: VCenter Cloud",
-        "      prefer_static_routes: false",
-        "      tenant_ref: admin",
-        "      vcenter_configuration:",
-        "        datacenter_ref: /api/vimgrdcruntime/datacenter-2-10.10.20.100",
-        "        management_network: /api/vimgrnwruntime/dvportgroup-103-10.10.20.100",
-        "        password: password",
-        "        privilege: WRITE_ACCESS",
-        "        username: user",
-        "        vcenter_url: 10.10.20.100",
-        "      vtype: CLOUD_VCENTER"
+        "\t\tavi_cloud:",
+        "\t\t\tusername: ''",
+        "\t\t\tcontroller: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tapic_mode: false",
+        "\t\t\tdhcp_enabled: true",
+        "\t\t\tenable_vip_static_routes: false",
+        "\t\t\tlicense_type: LIC_CORES",
+        "\t\t\tmtu: 1500",
+        "\t\t\tname: VCenter Cloud",
+        "\t\t\tprefer_static_routes: false",
+        "\t\t\ttenant_ref: admin",
+        "\t\t\tvcenter_configuration:",
+        "\t\t\t\tdatacenter_ref: /api/vimgrdcruntime/datacenter-2-10.10.20.100",
+        "\t\t\t\tmanagement_network: /api/vimgrnwruntime/dvportgroup-103-10.10.20.100",
+        "\t\t\t\tpassword: password",
+        "\t\t\t\tprivilege: WRITE_ACCESS",
+        "\t\t\t\tusername: user",
+        "\t\t\t\tvcenter_url: 10.10.20.100",
+        "\t\t\tvtype: CLOUD_VCENTER"
       ]
     },
     "avi_cloudconnectoruser": {
@@ -1253,16 +1253,16 @@
       "description": "",
       "body": [
         "- name: Create a Cloud connector user that is used for integration into cloud platforms",
-        "    avi_cloudconnectoruser:",
-        "      controller: ''",
-        "      name: root",
-        "      password: ''",
-        "      private_key: |",
-        "        -----BEGIN RSA PRIVATE KEY-----",
-        "        -----END RSA PRIVATE KEY-----'",
-        "      public_key: 'ssh-rsa ...'",
-        "      tenant_ref: admin",
-        "      username: ''"
+        "\t\tavi_cloudconnectoruser:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tname: root",
+        "\t\t\tpassword: ''",
+        "\t\t\tprivate_key: |",
+        "\t\t\t\t-----BEGIN RSA PRIVATE KEY-----",
+        "\t\t\t\t-----END RSA PRIVATE KEY-----'",
+        "\t\t\tpublic_key: 'ssh-rsa ...'",
+        "\t\t\ttenant_ref: admin",
+        "\t\t\tusername: ''"
       ]
     },
     "avi_cloudproperties": {
@@ -1476,24 +1476,24 @@
       "description": "",
       "body": [
         "- name: Create an IP Address Group configuration",
-        "    avi_ipaddrgroup:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      name: Client-Source-Block",
-        "      prefixes:",
-        "      - ip_addr:",
-        "          addr: 10.0.0.0",
-        "          type: V4",
-        "        mask: 8",
-        "      - ip_addr:",
-        "          addr: 172.16.0.0",
-        "          type: V4",
-        "        mask: 12",
-        "      - ip_addr:",
-        "          addr: 192.168.0.0",
-        "          type: V4",
-        "        mask: 16"
+        "\t\tavi_ipaddrgroup:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tname: Client-Source-Block",
+        "\t\t\tprefixes:",
+        "\t\t\t- ip_addr:",
+        "\t\t\t\t\taddr: 10.0.0.0",
+        "\t\t\t\t\ttype: V4",
+        "\t\t\t\tmask: 8",
+        "\t\t\t- ip_addr:",
+        "\t\t\t\t\taddr: 172.16.0.0",
+        "\t\t\t\t\ttype: V4",
+        "\t\t\t\tmask: 12",
+        "\t\t\t- ip_addr:",
+        "\t\t\t\t\taddr: 192.168.0.0",
+        "\t\t\t\t\ttype: V4",
+        "\t\t\t\tmask: 16"
       ]
     },
     "avi_ipamdnsproviderprofile": {
@@ -1501,24 +1501,24 @@
       "description": "",
       "body": [
         "- name: Create IPAM DNS provider setting",
-        "    avi_ipamdnsproviderprofile:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      internal_profile:",
-        "        dns_service_domain:",
-        "        - domain_name: ashish.local",
-        "          num_dns_ip: 1",
-        "          pass_through: true",
-        "          record_ttl: 100",
-        "        - domain_name: guru.local",
-        "          num_dns_ip: 1",
-        "          pass_through: true",
-        "          record_ttl: 200",
-        "        ttl: 300",
-        "      name: Ashish-DNS",
-        "      tenant_ref: Demo",
-        "      type: IPAMDNS_TYPE_INTERNAL"
+        "\t\tavi_ipamdnsproviderprofile:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tinternal_profile:",
+        "\t\t\t\tdns_service_domain:",
+        "\t\t\t\t- domain_name: ashish.local",
+        "\t\t\t\t\tnum_dns_ip: 1",
+        "\t\t\t\t\tpass_through: true",
+        "\t\t\t\t\trecord_ttl: 100",
+        "\t\t\t\t- domain_name: guru.local",
+        "\t\t\t\t\tnum_dns_ip: 1",
+        "\t\t\t\t\tpass_through: true",
+        "\t\t\t\t\trecord_ttl: 200",
+        "\t\t\t\tttl: 300",
+        "\t\t\tname: Ashish-DNS",
+        "\t\t\ttenant_ref: Demo",
+        "\t\t\ttype: IPAMDNS_TYPE_INTERNAL"
       ]
     },
     "avi_microservicegroup": {
@@ -1526,13 +1526,13 @@
       "description": "",
       "body": [
         "- name: Create a Microservice Group that can be used for setting up Network security policy",
-        "    avi_microservicegroup:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      description: Group created by my Secure My App UI.",
-        "      name: vs-msg-marketing",
-        "      tenant_ref: admin"
+        "\t\tavi_microservicegroup:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tdescription: Group created by my Secure My App UI.",
+        "\t\t\tname: vs-msg-marketing",
+        "\t\t\ttenant_ref: admin"
       ]
     },
     "avi_network": {
@@ -1554,18 +1554,18 @@
       "description": "",
       "body": [
         "- name: Create a network profile for an UDP application",
-        "    avi_networkprofile:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      name: System-UDP-Fast-Path",
-        "      profile:",
-        "        type: PROTOCOL_TYPE_UDP_FAST_PATH",
-        "        udp_fast_path_profile:",
-        "          per_pkt_loadbalance: false",
-        "          session_idle_timeout: 10",
-        "          snat: true",
-        "      tenant_ref: admin"
+        "\t\tavi_networkprofile:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tname: System-UDP-Fast-Path",
+        "\t\t\tprofile:",
+        "\t\t\t\ttype: PROTOCOL_TYPE_UDP_FAST_PATH",
+        "\t\t\t\tudp_fast_path_profile:",
+        "\t\t\t\t\tper_pkt_loadbalance: false",
+        "\t\t\t\t\tsession_idle_timeout: 10",
+        "\t\t\t\t\tsnat: true",
+        "\t\t\ttenant_ref: admin"
       ]
     },
     "avi_networksecuritypolicy": {
@@ -1573,24 +1573,24 @@
       "description": "",
       "body": [
         "- name: Create a network security policy to block clients represented by ip group known_attackers",
-        "    avi_networksecuritypolicy:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      name: vs-gurutest-ns",
-        "      rules:",
-        "      - action: NETWORK_SECURITY_POLICY_ACTION_TYPE_DENY",
-        "        age: 0",
-        "        enable: true",
-        "        index: 1",
-        "        log: false",
-        "        match:",
-        "          client_ip:",
-        "            group_refs:",
-        "            - Demo:known_attackers",
-        "            match_criteria: IS_IN",
-        "        name: Rule 1",
-        "      tenant_ref: Demo"
+        "\t\tavi_networksecuritypolicy:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tname: vs-gurutest-ns",
+        "\t\t\trules:",
+        "\t\t\t- action: NETWORK_SECURITY_POLICY_ACTION_TYPE_DENY",
+        "\t\t\t\tage: 0",
+        "\t\t\t\tenable: true",
+        "\t\t\t\tindex: 1",
+        "\t\t\t\tlog: false",
+        "\t\t\t\tmatch:",
+        "\t\t\t\t\tclient_ip:",
+        "\t\t\t\t\t\tgroup_refs:",
+        "\t\t\t\t\t\t- Demo:known_attackers",
+        "\t\t\t\t\t\tmatch_criteria: IS_IN",
+        "\t\t\t\tname: Rule 1",
+        "\t\t\ttenant_ref: Demo"
       ]
     },
     "avi_pkiprofile": {
@@ -1800,47 +1800,47 @@
       "description": "",
       "body": [
         "- name: Create SSL profile with list of allowed ciphers",
-        "    avi_sslprofile:",
-        "      controller: ''",
-        "      username: ''",
-        "      password: ''",
-        "      accepted_ciphers: >",
-        "        ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:",
-        "        ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:",
-        "        AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:",
-        "        AES256-SHA:DES-CBC3-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:",
-        "        ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA",
-        "      accepted_versions:",
-        "      - type: SSL_VERSION_TLS1",
-        "      - type: SSL_VERSION_TLS1_1",
-        "      - type: SSL_VERSION_TLS1_2",
-        "      cipher_enums:",
-        "      - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-        "      - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-        "      - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-        "      - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-        "      - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-        "      - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
-        "      - TLS_RSA_WITH_AES_128_GCM_SHA256",
-        "      - TLS_RSA_WITH_AES_256_GCM_SHA384",
-        "      - TLS_RSA_WITH_AES_128_CBC_SHA256",
-        "      - TLS_RSA_WITH_AES_256_CBC_SHA256",
-        "      - TLS_RSA_WITH_AES_128_CBC_SHA",
-        "      - TLS_RSA_WITH_AES_256_CBC_SHA",
-        "      - TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-        "      - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-        "      - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
-        "      - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-        "      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-        "      - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-        "      - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-        "      name: PFS-BOTH-RSA-EC",
-        "      send_close_notify: true",
-        "      ssl_rating:",
-        "        compatibility_rating: SSL_SCORE_EXCELLENT",
-        "        performance_rating: SSL_SCORE_EXCELLENT",
-        "        security_score: '100.0'",
-        "      tenant_ref: Demo"
+        "\t\tavi_sslprofile:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\taccepted_ciphers: >",
+        "\t\t\t\tECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:",
+        "\t\t\t\tECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:",
+        "\t\t\t\tAES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:",
+        "\t\t\t\tAES256-SHA:DES-CBC3-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:",
+        "\t\t\t\tECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA",
+        "\t\t\taccepted_versions:",
+        "\t\t\t- type: SSL_VERSION_TLS1",
+        "\t\t\t- type: SSL_VERSION_TLS1_1",
+        "\t\t\t- type: SSL_VERSION_TLS1_2",
+        "\t\t\tcipher_enums:",
+        "\t\t\t- TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+        "\t\t\t- TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+        "\t\t\t- TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+        "\t\t\t- TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+        "\t\t\t- TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+        "\t\t\t- TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+        "\t\t\t- TLS_RSA_WITH_AES_128_GCM_SHA256",
+        "\t\t\t- TLS_RSA_WITH_AES_256_GCM_SHA384",
+        "\t\t\t- TLS_RSA_WITH_AES_128_CBC_SHA256",
+        "\t\t\t- TLS_RSA_WITH_AES_256_CBC_SHA256",
+        "\t\t\t- TLS_RSA_WITH_AES_128_CBC_SHA",
+        "\t\t\t- TLS_RSA_WITH_AES_256_CBC_SHA",
+        "\t\t\t- TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+        "\t\t\t- TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+        "\t\t\t- TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+        "\t\t\t- TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+        "\t\t\t- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+        "\t\t\t- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+        "\t\t\t- TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+        "\t\t\tname: PFS-BOTH-RSA-EC",
+        "\t\t\tsend_close_notify: true",
+        "\t\t\tssl_rating:",
+        "\t\t\t\tcompatibility_rating: SSL_SCORE_EXCELLENT",
+        "\t\t\t\tperformance_rating: SSL_SCORE_EXCELLENT",
+        "\t\t\t\tsecurity_score: '100.0'",
+        "\t\t\ttenant_ref: Demo"
       ]
     },
     "avi_stringgroup": {
@@ -1848,23 +1848,23 @@
       "description": "",
       "body": [
         "- name: Create a string group configuration",
-        "    avi_stringgroup:",
-        "      controller: ''",
-        "      password: ''",
-        "      username: ''",
-        "      kv:",
-        "      - key: text/html",
-        "      - key: text/xml",
-        "      - key: text/plain",
-        "      - key: text/css",
-        "      - key: text/javascript",
-        "      - key: application/javascript",
-        "      - key: application/x-javascript",
-        "      - key: application/xml",
-        "      - key: application/pdf",
-        "      name: System-Compressible-Content-Types",
-        "      tenant_ref: admin",
-        "      type: SG_TYPE_STRING"
+        "\t\tavi_stringgroup:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tkv:",
+        "\t\t\t- key: text/html",
+        "\t\t\t- key: text/xml",
+        "\t\t\t- key: text/plain",
+        "\t\t\t- key: text/css",
+        "\t\t\t- key: text/javascript",
+        "\t\t\t- key: application/javascript",
+        "\t\t\t- key: application/x-javascript",
+        "\t\t\t- key: application/xml",
+        "\t\t\t- key: application/pdf",
+        "\t\t\tname: System-Compressible-Content-Types",
+        "\t\t\ttenant_ref: admin",
+        "\t\t\ttype: SG_TYPE_STRING"
       ]
     },
     "avi_systemconfiguration": {
@@ -1886,17 +1886,17 @@
       "description": "",
       "body": [
         "- name: Create Tenant using Service Engines in provider mode",
-        "    avi_tenant:",
-        "      controller: ''",
-        "      password: ''",
-        "      username: ''",
-        "      config_settings:",
-        "        se_in_provider_context: false",
-        "        tenant_access_to_provider_se: true",
-        "        tenant_vrf: false",
-        "      description: VCenter, Open Stack, AWS Virtual services",
-        "      local: true",
-        "      name: Demo"
+        "\t\tavi_tenant:",
+        "\t\t\tcontroller: ''",
+        "\t\t\tpassword: ''",
+        "\t\t\tusername: ''",
+        "\t\t\tconfig_settings:",
+        "\t\t\t\tse_in_provider_context: false",
+        "\t\t\t\ttenant_access_to_provider_se: true",
+        "\t\t\t\ttenant_vrf: false",
+        "\t\t\tdescription: VCenter, Open Stack, AWS Virtual services",
+        "\t\t\tlocal: true",
+        "\t\t\tname: Demo"
       ]
     },
     "avi_trafficcloneprofile": {
@@ -2084,25 +2084,25 @@
       "description": "",
       "body": [
         "- name: Create sample container group",
-        "    azure_rm_aci:",
-        "    resource_group: testrg",
-        "    name: mynewcontainergroup",
-        "    os_type: linux",
-        "    ip_address: public",
-        "    ports:",
-        "      - 80",
-        "      - 81",
-        "    containers:",
-        "      - name: mycontainer1",
-        "        image: httpd",
-        "        memory: 1.5",
-        "        ports:",
-        "          - 80",
-        "      - name: mycontainer2",
-        "        image: httpd",
-        "        memory: 1.5",
-        "        ports:",
-        "          - 81"
+        "\tazure_rm_aci:",
+        "\t\tresource_group: testrg",
+        "\t\tname: mynewcontainergroup",
+        "\t\tos_type: linux",
+        "\t\tip_address: public",
+        "\t\tports:",
+        "\t\t\t- 80",
+        "\t\t\t- 81",
+        "\t\tcontainers:",
+        "\t\t\t- name: mycontainer1",
+        "\t\t\t\timage: httpd",
+        "\t\t\t\tmemory: 1.5",
+        "\t\t\t\tports:",
+        "\t\t\t\t\t- 80",
+        "\t\t\t- name: mycontainer2",
+        "\t\t\t\timage: httpd",
+        "\t\t\t\tmemory: 1.5",
+        "\t\t\t\tports:",
+        "\t\t\t\t\t- 81"
       ]
     },
     "azure_rm_acr": {
@@ -2110,16 +2110,16 @@
       "description": "",
       "body": [
         "- name: Create an azure container registry",
-        "      azure_rm_acr:",
-        "        name: testacr1",
-        "        location: eastus",
-        "        resource_group: testrg",
-        "        state: present",
-        "        admin_user_enabled: True",
-        "        sku: Premium",
-        "        tags:",
-        "            Release: beta1",
-        "            Environment: Production"
+        "\tazure_rm_acr:",
+        "\t\tname: testacr1",
+        "\t\tlocation: eastus",
+        "\t\tresource_group: testrg",
+        "\t\tstate: present",
+        "\t\tadmin_user_enabled: True",
+        "\t\tsku: Premium",
+        "\t\ttags:",
+        "\t\t\tRelease: beta1",
+        "\t\t\tEnvironment: Production"
       ]
     },
     "azure_rm_acs": {
@@ -2127,28 +2127,28 @@
       "description": "",
       "body": [
         "- name: Create an azure container services instance running Kubernetes",
-        "      azure_rm_acs:",
-        "        name: acctestcontservice1",
-        "        location: eastus",
-        "        resource_group: Testing",
-        "        orchestration_platform: Kubernetes",
-        "        master_profile:",
-        "            - count: 3",
-        "              dns_prefix: acsk8smasterdns",
-        "        linux_profile:",
-        "            - admin_username: azureuser",
-        "              ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA...",
-        "        service_principal:",
-        "            - client_id: \"cf72ca99-f6b9-4004-b0e0-bee10c521948\"",
-        "              client_secret: \"mySPNp@ssw0rd!\"",
-        "        agent_pool_profiles:",
-        "            - name: default",
-        "              count: 5",
-        "              dns_prefix: acsk8sagent",
-        "              vm_size: Standard_D2_v2",
-        "        diagnostics_profile: false",
-        "        tags:",
-        "            Environment: Production"
+        "\tazure_rm_acs:",
+        "\t\tname: acctestcontservice1",
+        "\t\tlocation: eastus",
+        "\t\tresource_group: Testing",
+        "\t\torchestration_platform: Kubernetes",
+        "\t\tmaster_profile:",
+        "\t\t\t- count: 3",
+        "\t\t\t\tdns_prefix: acsk8smasterdns",
+        "\t\tlinux_profile:",
+        "\t\t\t- admin_username: azureuser",
+        "\t\t\t\tssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA...",
+        "\t\tservice_principal:",
+        "\t\t\t- client_id: \"cf72ca99-f6b9-4004-b0e0-bee10c521948\"",
+        "\t\t\t\tclient_secret: \"mySPNp@ssw0rd!\"",
+        "\t\tagent_pool_profiles:",
+        "\t\t\t- name: default",
+        "\t\t\t\tcount: 5",
+        "\t\t\t\tdns_prefix: acsk8sagent",
+        "\t\t\t\tvm_size: Standard_D2_v2",
+        "\t\tdiagnostics_profile: false",
+        "\t\ttags:",
+        "\t\t\tEnvironment: Production"
       ]
     },
     "azure_rm_availabilityset": {
@@ -2156,10 +2156,10 @@
       "description": "",
       "body": [
         "- name: Create an availability set with default options",
-        "      azure_rm_availabilityset:",
-        "        name: myavailabilityset",
-        "        location: eastus",
-        "        resource_group: Testing"
+        "\tazure_rm_availabilityset:",
+        "\t\tname: myavailabilityset",
+        "\t\tlocation: eastus",
+        "\t\tresource_group: Testing"
       ]
     },
     "azure_rm_availabilityset_facts": {
@@ -2167,9 +2167,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one availability set",
-        "      azure_rm_availabilityset_facts:",
-        "        name: Testing",
-        "        resource_group: TestRG"
+        "\tazure_rm_availabilityset_facts:",
+        "\t\tname: Testing",
+        "\t\tresource_group: TestRG"
       ]
     },
     "azure_rm_deployment": {
@@ -2247,9 +2247,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one Function App",
-        "      azure_rm_functionapp_facts:",
-        "        resource_group: ansible-rg",
-        "        name: myfunctionapp"
+        "\tazure_rm_functionapp_facts:",
+        "\t\tresource_group: ansible-rg",
+        "\t\tname: myfunctionapp"
       ]
     },
     "azure_rm_loadbalancer": {
@@ -2257,24 +2257,24 @@
       "description": "",
       "body": [
         "- name: Create a load balancer",
-        "      azure_rm_loadbalancer:",
-        "        name: myloadbalancer",
-        "        location: eastus",
-        "        resource_group: my-rg",
-        "        public_ip: mypublicip",
-        "        probe_protocol: Tcp",
-        "        probe_port: 80",
-        "        probe_interval: 10",
-        "        probe_fail_count: 3",
-        "        protocol: Tcp",
-        "        load_distribution: Default",
-        "        frontend_port: 80",
-        "        backend_port: 8080",
-        "        idle_timeout: 4",
-        "        natpool_frontend_port_start: 1030",
-        "        natpool_frontend_port_end: 1040",
-        "        natpool_backend_port: 80",
-        "        natpool_protocol: Tcp"
+        "\tazure_rm_loadbalancer:",
+        "\t\tname: myloadbalancer",
+        "\t\tlocation: eastus",
+        "\t\tresource_group: my-rg",
+        "\t\tpublic_ip: mypublicip",
+        "\t\tprobe_protocol: Tcp",
+        "\t\tprobe_port: 80",
+        "\t\tprobe_interval: 10",
+        "\t\tprobe_fail_count: 3",
+        "\t\tprotocol: Tcp",
+        "\t\tload_distribution: Default",
+        "\t\tfrontend_port: 80",
+        "\t\tbackend_port: 8080",
+        "\t\tidle_timeout: 4",
+        "\t\tnatpool_frontend_port_start: 1030",
+        "\t\tnatpool_frontend_port_end: 1040",
+        "\t\tnatpool_backend_port: 80",
+        "\t\tnatpool_protocol: Tcp"
       ]
     },
     "azure_rm_loadbalancer_facts": {
@@ -2282,9 +2282,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one load balancer",
-        "      azure_rm_loadbalancer_facts:",
-        "        name: Testing",
-        "        resource_group: TestRG"
+        "\tazure_rm_loadbalancer_facts:",
+        "\t\tname: Testing",
+        "\t\tresource_group: TestRG"
       ]
     },
     "azure_rm_managed_disk": {
@@ -2292,11 +2292,11 @@
       "description": "",
       "body": [
         "- name: Create managed disk",
-        "      azure_rm_managed_disk:",
-        "        name: mymanageddisk",
-        "        location: eastus",
-        "        resource_group: Testing",
-        "        disk_size_gb: 4"
+        "\tazure_rm_managed_disk:",
+        "\t\tname: mymanageddisk",
+        "\t\tlocation: eastus",
+        "\t\tresource_group: Testing",
+        "\t\tdisk_size_gb: 4"
       ]
     },
     "azure_rm_managed_disk_facts": {
@@ -2304,9 +2304,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one managed disk",
-        "      azure_rm_managed_disk_facts:",
-        "        name: Testing",
-        "        resource_group: TestRG"
+        "\tazure_rm_managed_disk_facts:",
+        "\t\tname: Testing",
+        "\t\tresource_group: TestRG"
       ]
     },
     "azure_rm_networkinterface": {
@@ -2314,11 +2314,11 @@
       "description": "",
       "body": [
         "- name: Create a network interface with minimal parameters",
-        "      azure_rm_networkinterface:",
-        "            name: nic001",
-        "            resource_group: Testing",
-        "            virtual_network_name: vnet001",
-        "            subnet_name: subnet001"
+        "\tazure_rm_networkinterface:",
+        "\t\tname: nic001",
+        "\t\tresource_group: Testing",
+        "\t\tvirtual_network_name: vnet001",
+        "\t\tsubnet_name: subnet001"
       ]
     },
     "azure_rm_networkinterface_facts": {
@@ -2326,9 +2326,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one network interface",
-        "      azure_rm_networkinterface_facts:",
-        "        resource_group: Testing",
-        "        name: nic001"
+        "\tazure_rm_networkinterface_facts:",
+        "\t\tresource_group: Testing",
+        "\t\tname: nic001"
       ]
     },
     "azure_rm_publicipaddress": {
@@ -2336,11 +2336,11 @@
       "description": "",
       "body": [
         "- name: Create a public ip address",
-        "      azure_rm_publicipaddress:",
-        "        resource_group: testing",
-        "        name: my_public_ip",
-        "        allocation_method: Static",
-        "        domain_name: foobar"
+        "\tazure_rm_publicipaddress:",
+        "\t\tresource_group: testing",
+        "\t\tname: my_public_ip",
+        "\t\tallocation_method: Static",
+        "\t\tdomain_name: foobar"
       ]
     },
     "azure_rm_publicipaddress_facts": {
@@ -2348,9 +2348,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one Public IP",
-        "      azure_rm_publicip_facts:",
-        "        resource_group: Testing",
-        "        name: publicip001"
+        "\tazure_rm_publicip_facts:",
+        "\t\tresource_group: Testing",
+        "\t\tname: publicip001"
       ]
     },
     "azure_rm_resourcegroup": {
@@ -2358,12 +2358,12 @@
       "description": "",
       "body": [
         "- name: Create a resource group",
-        "      azure_rm_resourcegroup:",
-        "        name: Testing",
-        "        location: westus",
-        "        tags:",
-        "            testing: testing",
-        "            delete: never"
+        "\tazure_rm_resourcegroup:",
+        "\t\tname: Testing",
+        "\t\tlocation: westus",
+        "\t\ttags:",
+        "\t\t\ttesting: testing",
+        "\t\t\t\tdelete: never"
       ]
     },
     "azure_rm_resourcegroup_facts": {
@@ -2371,17 +2371,17 @@
       "description": "",
       "body": [
         "- name: Get facts for one resource group",
-        "      azure_rm_resourcegroup_facts:",
-        "        name: Testing"
+        "\tazure_rm_resourcegroup_facts:",
+        "\t\tname: Testing"
       ]
     },
     "azure_rm_securitygroup": {
       "prefix": "azure_rm_securitygroup-3",
       "body": [
         "- azure_rm_securitygroup:",
-        "\t\tresource_group: mygroup",
-        "\t\tname: mysecgroup",
-        "\t\tstate: absent",
+        "\tresource_group: mygroup",
+        "\tname: mysecgroup",
+        "\tstate: absent",
         ""
       ]
     },
@@ -2390,9 +2390,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one security group",
-        "      azure_rm_securitygroup_facts:",
-        "        resource_group: Testing",
-        "        name: secgroup001"
+        "\tazure_rm_securitygroup_facts:",
+        "\t\tresource_group: Testing",
+        "\t\tname: secgroup001"
       ]
     },
     "azure_rm_storageaccount": {
@@ -2400,10 +2400,10 @@
       "description": "",
       "body": [
         "- name: remove account, if it exists",
-        "      azure_rm_storageaccount:",
-        "        resource_group: Testing",
-        "        name: clh0002",
-        "        state: absent"
+        "\tazure_rm_storageaccount:",
+        "\t\tresource_group: Testing",
+        "\t\tname: clh0002",
+        "\t\tstate: absent"
       ]
     },
     "azure_rm_storageaccount_facts": {
@@ -2411,9 +2411,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one account",
-        "      azure_rm_storageaccount_facts:",
-        "        resource_group: Testing",
-        "        name: clh0002"
+        "\tazure_rm_storageaccount_facts:",
+        "\t\tresource_group: Testing",
+        "\t\tname: clh0002"
       ]
     },
     "azure_rm_storageblob": {
@@ -2435,11 +2435,11 @@
       "description": "",
       "body": [
         "- name: Create a subnet",
-        "      azure_rm_subnet:",
-        "        name: foobar",
-        "        virtual_network_name: My_Virtual_Network",
-        "        resource_group: Testing",
-        "        address_prefix_cidr: \"10.1.0.0/24\""
+        "\tazure_rm_subnet:",
+        "\t\tname: foobar",
+        "\t\tvirtual_network_name: My_Virtual_Network",
+        "\t\tresource_group: Testing",
+        "\t\taddress_prefix_cidr: \"10.1.0.0/24\""
       ]
     },
     "azure_rm_virtualmachine": {
@@ -2462,16 +2462,16 @@
       "description": "",
       "body": [
         "- name: Create VM Extension",
-        "      azure_rm_virtualmachine_extension:",
-        "        name: myvmextension",
-        "        location: eastus",
-        "        resource_group: Testing",
-        "        virtual_machine_name: myvm",
-        "        publisher: Microsoft.Azure.Extensions",
-        "        virtual_machine_extension_type: CustomScript",
-        "        type_handler_version: 2.0",
-        "        settings: '{\"commandToExecute\": \"hostname\"}'",
-        "        auto_upgrade_minor_version: true"
+        "\tazure_rm_virtualmachine_extension:",
+        "\t\tname: myvmextension",
+        "\t\tlocation: eastus",
+        "\t\tresource_group: Testing",
+        "\t\tvirtual_machine_name: myvm",
+        "\t\tpublisher: Microsoft.Azure.Extensions",
+        "\t\tvirtual_machine_extension_type: CustomScript",
+        "\t\ttype_handler_version: 2.0",
+        "\t\tsettings: '{\"commandToExecute\": \"hostname\"}'",
+        "\t\tauto_upgrade_minor_version: true"
       ]
     },
     "azure_rm_virtualmachine_scaleset": {
@@ -2510,9 +2510,9 @@
       "description": "",
       "body": [
         "- name: Get facts for a virtual machine scale set",
-        "      azure_rm_virtualmachine_scaleset_facts:",
-        "        resource_group: Testing",
-        "        name: testvmss001"
+        "\tazure_rm_virtualmachine_scaleset_facts:",
+        "\t\tresource_group: Testing",
+        "\t\tname: testvmss001"
       ]
     },
     "azure_rm_virtualmachineimage_facts": {
@@ -2520,12 +2520,12 @@
       "description": "",
       "body": [
         "- name: Get facts for a specific image",
-        "      azure_rm_virtualmachineimage_facts:",
-        "        location: eastus",
-        "        publisher: OpenLogic",
-        "        offer: CentOS",
-        "        sku: '7.1'",
-        "        version: '7.1.20160308'"
+        "\tazure_rm_virtualmachineimage_facts:",
+        "\t\tlocation: eastus",
+        "\t\tpublisher: OpenLogic",
+        "\t\toffer: CentOS",
+        "\t\tsku: '7.1'",
+        "\t\tversion: '7.1.20160308'"
       ]
     },
     "azure_rm_virtualnetwork": {
@@ -2533,18 +2533,18 @@
       "description": "",
       "body": [
         "- name: Create a virtual network",
-        "      azure_rm_virtualnetwork:",
-        "        name: foobar",
-        "        resource_group: Testing",
-        "        address_prefixes_cidr:",
-        "            - \"10.1.0.0/16\"",
-        "            - \"172.100.0.0/16\"",
-        "        dns_servers:",
-        "            - \"127.0.0.1\"",
-        "            - \"127.0.0.2\"",
-        "        tags:",
-        "            testing: testing",
-        "            delete: on-exit"
+        "\tazure_rm_virtualnetwork:",
+        "\t\tname: foobar",
+        "\t\tresource_group: Testing",
+        "\t\taddress_prefixes_cidr:",
+        "\t\t\t- \"10.1.0.0/16\"",
+        "\t\t\t- \"172.100.0.0/16\"",
+        "\t\tdns_servers:",
+        "\t\t\t- \"127.0.0.1\"",
+        "\t\t\t- \"127.0.0.2\"",
+        "\t\ttags:",
+        "\t\t\ttesting: testing",
+        "\t\t\t\tdelete: on-exit"
       ]
     },
     "azure_rm_virtualnetwork_facts": {
@@ -2552,9 +2552,9 @@
       "description": "",
       "body": [
         "- name: Get facts for one virtual network",
-        "      azure_rm_virtualnetwork_facts:",
-        "        resource_group: Testing",
-        "        name: secgroup001"
+        "\tazure_rm_virtualnetwork_facts:",
+        "\t\tresource_group: Testing",
+        "\t\tname: secgroup001"
       ]
     },
     "bcf_switch": {
@@ -2781,14 +2781,14 @@
       "description": "",
       "body": [
         "- name: Enable virtual server",
-        "    local_action: >",
-        "      bigip_gtm_virtual_server",
-        "      server=192.0.2.1",
-        "      user=admin",
-        "      password=mysecret",
-        "      virtual_server_name=myname",
-        "      virtual_server_server=myserver",
-        "      state=enabled"
+        "\t\tlocal_action: >",
+        "\t\t\tbigip_gtm_virtual_server",
+        "\t\t\tserver=192.0.2.1",
+        "\t\t\tuser=admin",
+        "\t\t\tpassword=mysecret",
+        "\t\t\tvirtual_server_name=myname",
+        "\t\t\tvirtual_server_server=myserver",
+        "\t\t\tstate=enabled"
       ]
     },
     "bigip_gtm_wide_ip": {
@@ -4732,9 +4732,9 @@
       "description": "",
       "body": [
         "- name: add or update the value associated with a key in the key/value store",
-        "    consul_kv:",
-        "      key: somekey",
-        "      value: somevalue"
+        "\t\tconsul_kv:",
+        "\t\t\tkey: somekey",
+        "\t\t\tvalue: somevalue"
       ]
     },
     "consul_session": {
@@ -5716,21 +5716,21 @@
       "description": "",
       "body": [
         "- name: create alarm",
-        "    ec2_metric_alarm:",
-        "      state: present",
-        "      region: ap-southeast-2",
-        "      name: \"cpu-low\"",
-        "      metric: \"CPUUtilization\"",
-        "      namespace: \"AWS/EC2\"",
-        "      statistic: Average",
-        "      comparison: \"<=\"",
-        "      threshold: 5.0",
-        "      period: 300",
-        "      evaluation_periods: 3",
-        "      unit: \"Percent\"",
-        "      description: \"This will alarm when a bamboo slave's cpu usage average is lower than 5% for 15 minutes \"",
-        "      dimensions: {'InstanceId':'i-XXX'}",
-        "      alarm_actions: [\"action1\",\"action2\"]"
+        "\t\tec2_metric_alarm:",
+        "\t\t\tstate: present",
+        "\t\t\tregion: ap-southeast-2",
+        "\t\t\tname: \"cpu-low\"",
+        "\t\t\tmetric: \"CPUUtilization\"",
+        "\t\t\tnamespace: \"AWS/EC2\"",
+        "\t\t\tstatistic: Average",
+        "\t\t\tcomparison: \"<=\"",
+        "\t\t\tthreshold: 5.0",
+        "\t\t\tperiod: 300",
+        "\t\t\tevaluation_periods: 3",
+        "\t\t\tunit: \"Percent\"",
+        "\t\t\tdescription: \"This will alarm when a bamboo slave's cpu usage average is lower than 5% for 15 minutes \"",
+        "\t\t\tdimensions: {'InstanceId':'i-XXX'}",
+        "\t\t\talarm_actions: [\"action1\",\"action2\"]"
       ]
     },
     "ec2_scaling_policy": {
@@ -8800,15 +8800,15 @@
       "description": "",
       "body": [
         "- name: Create SVM",
-        "      na_cdot_svm:",
-        "        state: present",
-        "        name: ansibleVServer",
-        "        root_volume: vol1",
-        "        root_volume_aggregate: aggr1",
-        "        root_volume_security_style: mixed",
-        "        hostname: \"{{ netapp_hostname }}\"",
-        "        username: \"{{ netapp_username }}\"",
-        "        password: \"{{ netapp_password }}\""
+        "\t\t\tna_cdot_svm:",
+        "\t\t\t\tstate: present",
+        "\t\t\t\tname: ansibleVServer",
+        "\t\t\t\troot_volume: vol1",
+        "\t\t\t\troot_volume_aggregate: aggr1",
+        "\t\t\t\troot_volume_security_style: mixed",
+        "\t\t\t\thostname: \"{{ netapp_hostname }}\"",
+        "\t\t\t\tusername: \"{{ netapp_username }}\"",
+        "\t\t\t\tpassword: \"{{ netapp_password }}\""
       ]
     },
     "na_cdot_user": {
@@ -8816,17 +8816,17 @@
       "description": "",
       "body": [
         "- name: Create User",
-        "      na_cdot_user:",
-        "        state: present",
-        "        name: SampleUser",
-        "        application: ssh",
-        "        authentication_method: password",
-        "        set_password: apn1242183u1298u41",
-        "        role_name: vsadmin",
-        "        vserver: ansibleVServer",
-        "        hostname: \"{{ netapp_hostname }}\"",
-        "        username: \"{{ netapp_username }}\"",
-        "        password: \"{{ netapp_password }}\""
+        "\t\t\tna_cdot_user:",
+        "\t\t\t\tstate: present",
+        "\t\t\t\tname: SampleUser",
+        "\t\t\t\tapplication: ssh",
+        "\t\t\t\tauthentication_method: password",
+        "\t\t\t\tset_password: apn1242183u1298u41",
+        "\t\t\t\trole_name: vsadmin",
+        "\t\t\t\tvserver: ansibleVServer",
+        "\t\t\t\thostname: \"{{ netapp_hostname }}\"",
+        "\t\t\t\tusername: \"{{ netapp_username }}\"",
+        "\t\t\t\tpassword: \"{{ netapp_password }}\""
       ]
     },
     "na_cdot_user_role": {
@@ -8834,15 +8834,15 @@
       "description": "",
       "body": [
         "- name: Create User Role",
-        "      na_cdot_user_role:",
-        "        state: present",
-        "        name: ansibleRole",
-        "        command_directory_name: DEFAULT",
-        "        access_level: none",
-        "        vserver: ansibleVServer",
-        "        hostname: \"{{ netapp_hostname }}\"",
-        "        username: \"{{ netapp_username }}\"",
-        "        password: \"{{ netapp_password }}\""
+        "\t\t\tna_cdot_user_role:",
+        "\t\t\t\tstate: present",
+        "\t\t\t\tname: ansibleRole",
+        "\t\t\t\tcommand_directory_name: DEFAULT",
+        "\t\t\t\taccess_level: none",
+        "\t\t\t\tvserver: ansibleVServer",
+        "\t\t\t\thostname: \"{{ netapp_hostname }}\"",
+        "\t\t\t\tusername: \"{{ netapp_username }}\"",
+        "\t\t\t\tpassword: \"{{ netapp_password }}\""
       ]
     },
     "na_cdot_volume": {
@@ -8850,17 +8850,17 @@
       "description": "",
       "body": [
         "- name: Create FlexVol",
-        "      na_cdot_volume:",
-        "        state: present",
-        "        name: ansibleVolume",
-        "        infinite: False",
-        "        aggregate_name: aggr1",
-        "        size: 20",
-        "        size_unit: mb",
-        "        vserver: ansibleVServer",
-        "        hostname: \"{{ netapp_hostname }}\"",
-        "        username: \"{{ netapp_username }}\"",
-        "        password: \"{{ netapp_password }}\""
+        "\t\t\tna_cdot_volume:",
+        "\t\t\t\tstate: present",
+        "\t\t\t\tname: ansibleVolume",
+        "\t\t\t\tinfinite: False",
+        "\t\t\t\taggregate_name: aggr1",
+        "\t\t\t\tsize: 20",
+        "\t\t\t\tsize_unit: mb",
+        "\t\t\t\tvserver: ansibleVServer",
+        "\t\t\t\thostname: \"{{ netapp_hostname }}\"",
+        "\t\t\t\tusername: \"{{ netapp_username }}\"",
+        "\t\t\t\tpassword: \"{{ netapp_password }}\""
       ]
     },
     "nagios": {
@@ -9074,16 +9074,16 @@
       "description": "",
       "body": [
         "- name: AMG removal",
-        "      na_eseries_amg:",
-        "        state: absent",
-        "        ssid: \"{{ ssid }}\"",
-        "        secondaryArrayId: \"{{amg_secondaryArrayId}}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        new_name: \"{{amg_array_name}}\"",
-        "        name: \"{{amg_name}}\"",
-        "      when: amg_create"
+        "\t\t\tna_eseries_amg:",
+        "\t\t\t\tstate: absent",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tsecondaryArrayId: \"{{amg_secondaryArrayId}}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tnew_name: \"{{amg_array_name}}\"",
+        "\t\t\t\tname: \"{{amg_name}}\"",
+        "\t\t\twhen: amg_create"
       ]
     },
     "netapp_e_amg_role": {
@@ -9091,14 +9091,14 @@
       "description": "",
       "body": [
         "- name: Update the role of a storage array",
-        "      netapp_e_amg_role:",
-        "        name: updating amg role",
-        "        role: primary",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        validate_certs: \"{{ netapp_api_validate_certs }}\""
+        "\t\t\tnetapp_e_amg_role:",
+        "\t\t\t\tname: updating amg role",
+        "\t\t\t\trole: primary",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tvalidate_certs: \"{{ netapp_api_validate_certs }}\""
       ]
     },
     "netapp_e_amg_sync": {
@@ -9106,13 +9106,13 @@
       "description": "",
       "body": [
         "- name: start AMG async",
-        "      netapp_e_amg_sync:",
-        "        name: \"{{ amg_sync_name }}\"",
-        "        state: running",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\""
+        "\t\t\tnetapp_e_amg_sync:",
+        "\t\t\t\tname: \"{{ amg_sync_name }}\"",
+        "\t\t\t\tstate: running",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\""
       ]
     },
     "netapp_e_auth": {
@@ -9150,13 +9150,13 @@
       "description": "",
       "body": [
         "- name: Flash Cache",
-        "      netapp_e_flashcache:",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        validate_certs: \"{{ netapp_api_validate_certs }}\"",
-        "        name: SSDCacheBuiltByAnsible"
+        "\t\t\tnetapp_e_flashcache:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tvalidate_certs: \"{{ netapp_api_validate_certs }}\"",
+        "\t\t\t\tname: SSDCacheBuiltByAnsible"
       ]
     },
     "netapp_e_host": {
@@ -9164,13 +9164,13 @@
       "description": "",
       "body": [
         "- name: Set Host Info",
-        "      netapp_e_host:",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        name: \"{{ host_name }}\"",
-        "        host_type_index: \"{{ host_type_index }}\""
+        "\t\t\tnetapp_e_host:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tname: \"{{ host_name }}\"",
+        "\t\t\t\thost_type_index: \"{{ host_type_index }}\""
       ]
     },
     "netapp_e_hostgroup": {
@@ -9178,13 +9178,13 @@
       "description": "",
       "body": [
         "- name: Configure Hostgroup",
-        "      netapp_e_hostgroup:",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        validate_certs: \"{{ netapp_api_validate_certs }}\"",
-        "        state: present"
+        "\t\t\tnetapp_e_hostgroup:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tvalidate_certs: \"{{ netapp_api_validate_certs }}\"",
+        "\t\t\t\tstate: present"
       ]
     },
     "netapp_e_lun_mapping": {
@@ -9210,20 +9210,20 @@
       "description": "",
       "body": [
         "- name: Configure Snapshot group",
-        "      netapp_e_snapshot_group:",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        validate_certs: \"{{ netapp_api_validate_certs }}\"",
-        "        base_volume_name: SSGroup_test",
-        "        name=: OOSS_Group",
-        "        repo_pct: 20",
-        "        warning_threshold: 85",
-        "        delete_limit: 30",
-        "        full_policy: purgepit",
-        "        storage_pool_name: Disk_Pool_1",
-        "        rollback_priority: medium"
+        "\t\t\tnetapp_e_snapshot_group:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tvalidate_certs: \"{{ netapp_api_validate_certs }}\"",
+        "\t\t\t\tbase_volume_name: SSGroup_test",
+        "\t\t\t\tname=: OOSS_Group",
+        "\t\t\t\trepo_pct: 20",
+        "\t\t\t\twarning_threshold: 85",
+        "\t\t\t\tdelete_limit: 30",
+        "\t\t\t\tfull_policy: purgepit",
+        "\t\t\t\tstorage_pool_name: Disk_Pool_1",
+        "\t\t\t\trollback_priority: medium"
       ]
     },
     "netapp_e_snapshot_images": {
@@ -9231,14 +9231,14 @@
       "description": "",
       "body": [
         "- name: Create Snapshot",
-        "      netapp_e_snapshot_images:",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        validate_certs: \"{{ validate_certs }}\"",
-        "        snapshot_group: \"3300000060080E5000299C24000005B656D9F394\"",
-        "        state: 'create'"
+        "\t\t\tnetapp_e_snapshot_images:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tvalidate_certs: \"{{ validate_certs }}\"",
+        "\t\t\t\tsnapshot_group: \"3300000060080E5000299C24000005B656D9F394\"",
+        "\t\t\t\tstate: 'create'"
       ]
     },
     "netapp_e_snapshot_volume": {
@@ -9246,15 +9246,15 @@
       "description": "",
       "body": [
         "- name: Snapshot volume",
-        "      netapp_e_snapshot_volume:",
-        "        ssid: \"{{ ssid }}\"",
-        "        api_url: \"{{ netapp_api_url }}/\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        state: present",
-        "        storage_pool_name: \"{{ snapshot_volume_storage_pool_name }}\"",
-        "        snapshot_image_id: \"{{ snapshot_volume_image_id }}\"",
-        "        name: \"{{ snapshot_volume_name }}\""
+        "\t\t\tnetapp_e_snapshot_volume:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}/\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tstate: present",
+        "\t\t\t\tstorage_pool_name: \"{{ snapshot_volume_storage_pool_name }}\"",
+        "\t\t\t\tsnapshot_image_id: \"{{ snapshot_volume_image_id }}\"",
+        "\t\t\t\tname: \"{{ snapshot_volume_name }}\""
       ]
     },
     "netapp_e_storage_system": {
@@ -9282,14 +9282,14 @@
       "description": "",
       "body": [
         "- name: No disk groups",
-        "      netapp_e_storagepool:",
-        "        ssid: \"{{ ssid }}\"",
-        "        name: \"{{ item }}\"",
-        "        state: absent",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        validate_certs: \"{{ netapp_api_validate_certs }}\""
+        "\t\t\tnetapp_e_storagepool:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tname: \"{{ item }}\"",
+        "\t\t\t\tstate: absent",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tvalidate_certs: \"{{ netapp_api_validate_certs }}\""
       ]
     },
     "netapp_e_volume": {
@@ -9297,16 +9297,16 @@
       "description": "",
       "body": [
         "- name: No thin volume",
-        "      netapp_e_volume:",
-        "        ssid: \"{{ ssid }}\"",
-        "        name: NewThinVolumeByAnsible",
-        "        state: absent",
-        "        log_path: /tmp/volume.log",
-        "        api_url: \"{{ netapp_api_url }}\"",
-        "        api_username: \"{{ netapp_api_username }}\"",
-        "        api_password: \"{{ netapp_api_password }}\"",
-        "        validate_certs: \"{{ netapp_api_validate_certs }}\"",
-        "      when: check_volume"
+        "\t\t\tnetapp_e_volume:",
+        "\t\t\t\tssid: \"{{ ssid }}\"",
+        "\t\t\t\tname: NewThinVolumeByAnsible",
+        "\t\t\t\tstate: absent",
+        "\t\t\t\tlog_path: /tmp/volume.log",
+        "\t\t\t\tapi_url: \"{{ netapp_api_url }}\"",
+        "\t\t\t\tapi_username: \"{{ netapp_api_username }}\"",
+        "\t\t\t\tapi_password: \"{{ netapp_api_password }}\"",
+        "\t\t\t\tvalidate_certs: \"{{ netapp_api_validate_certs }}\"",
+        "\t\t\twhen: check_volume"
       ]
     },
     "netapp_e_volume_copy": {
@@ -10253,11 +10253,11 @@
       "description": "# ENSURE VTP PASSWORD IS REMOVED",
       "body": [
         "- nxos_vtp_password:",
-        "    password: ntc",
-        "    state: absent",
-        "    host: \"{{ inventory_hostname }}\"",
-        "    username: \"{{ un }}\"",
-        "    password: \"{{ pwd }}\""
+        "\t\tpassword: ntc",
+        "\t\tstate: absent",
+        "\t\thost: \"{{ inventory_hostname }}\"",
+        "\t\tusername: \"{{ un }}\"",
+        "\t\tpassword: \"{{ pwd }}\""
       ]
     },
     "nxos_vtp_version": {
@@ -10551,14 +10551,14 @@
       "description": "",
       "body": [
         "- name: \"Add or update OpenDJ backend properties\"",
-        "    action: opendj_backendprop",
-        "            hostname=localhost",
-        "            port=4444",
-        "            username=\"cn=Directory Manager\"",
-        "            password=password",
-        "            backend=userRoot",
-        "            name=index-entry-limit",
-        "            value=5000"
+        "\t\taction: opendj_backendprop",
+        "\t\t\t\t\t\thostname=localhost",
+        "\t\t\t\t\t\tport=4444",
+        "\t\t\t\t\t\tusername=\"cn=Directory Manager\"",
+        "\t\t\t\t\t\tpassword=password",
+        "\t\t\t\t\t\tbackend=userRoot",
+        "\t\t\t\t\t\tname=index-entry-limit",
+        "\t\t\t\t\t\tvalue=5000"
       ]
     },
     "openssl_certificate": {
@@ -11457,17 +11457,17 @@
       "description": "",
       "body": [
         "- hosts: localhost",
-        "      connection: local",
-        "      tasks:",
-        "        - name: fetch license",
-        "          panos_lic:",
-        "            ip_address: \"192.168.1.1\"",
-        "            password: \"paloalto\"",
-        "            auth_code: \"IBADCODE\"",
-        "          register: result",
-        "    - name: Display serialnumber (if already registered)",
-        "      debug:",
-        "        var: \"{{result.serialnumber}}\""
+        "\t\t\tconnection: local",
+        "\t\t\ttasks:",
+        "\t\t\t\t- name: fetch license",
+        "\t\t\t\t\tpanos_lic:",
+        "\t\t\t\t\t\tip_address: \"192.168.1.1\"",
+        "\t\t\t\t\t\tpassword: \"paloalto\"",
+        "\t\t\t\t\t\tauth_code: \"IBADCODE\"",
+        "\t\t\t\t\tregister: result",
+        "\t\t- name: Display serialnumber (if already registered)",
+        "\t\t\tdebug:",
+        "\t\t\t\tvar: \"{{result.serialnumber}}\""
       ]
     },
     "panos_mgtconfig": {
@@ -13198,10 +13198,10 @@
       "description": "",
       "body": [
         "- name: Check connections to MVIP and SVIP",
-        "     sf_check_connections:",
-        "       hostname: \"{{ solidfire_hostname }}\"",
-        "       username: \"{{ solidfire_username }}\"",
-        "       password: \"{{ solidfire_password }}\""
+        "\t\t sf_check_connections:",
+        "\t\t\t hostname: \"{{ solidfire_hostname }}\"",
+        "\t\t\t username: \"{{ solidfire_username }}\"",
+        "\t\t\t password: \"{{ solidfire_password }}\""
       ]
     },
     "sf_snapshot_schedule_manager": {
@@ -13209,15 +13209,15 @@
       "description": "",
       "body": [
         "- name: Create Snapshot schedule",
-        "     sf_snapshot_schedule_manager:",
-        "       hostname: \"{{ solidfire_hostname }}\"",
-        "       username: \"{{ solidfire_username }}\"",
-        "       password: \"{{ solidfire_password }}\"",
-        "       state: present",
-        "       name: Schedule_A",
-        "       time_interval_days: 1",
-        "       starting_date: 2016--12--01T00:00:00Z",
-        "       volumes: 7"
+        "\t\t sf_snapshot_schedule_manager:",
+        "\t\t\t hostname: \"{{ solidfire_hostname }}\"",
+        "\t\t\t username: \"{{ solidfire_username }}\"",
+        "\t\t\t password: \"{{ solidfire_password }}\"",
+        "\t\t\t state: present",
+        "\t\t\t name: Schedule_A",
+        "\t\t\t time_interval_days: 1",
+        "\t\t\t starting_date: 2016--12--01T00:00:00Z",
+        "\t\t\t volumes: 7"
       ]
     },
     "sf_volume_access_group_manager": {
@@ -13225,13 +13225,13 @@
       "description": "",
       "body": [
         "- name: Create Volume Access Group",
-        "     sf_volume_access_group_manager:",
-        "       hostname: \"{{ solidfire_hostname }}\"",
-        "       username: \"{{ solidfire_username }}\"",
-        "       password: \"{{ solidfire_password }}\"",
-        "       state: present",
-        "       name: AnsibleVolumeAccessGroup",
-        "       volumes: [7,8]"
+        "\t\t sf_volume_access_group_manager:",
+        "\t\t\t hostname: \"{{ solidfire_hostname }}\"",
+        "\t\t\t username: \"{{ solidfire_username }}\"",
+        "\t\t\t password: \"{{ solidfire_password }}\"",
+        "\t\t\t state: present",
+        "\t\t\t name: AnsibleVolumeAccessGroup",
+        "\t\t\t volumes: [7,8]"
       ]
     },
     "sf_volume_manager": {
@@ -13239,17 +13239,17 @@
       "description": "",
       "body": [
         "- name: Create Volume",
-        "     sf_volume_manager:",
-        "       hostname: \"{{ solidfire_hostname }}\"",
-        "       username: \"{{ solidfire_username }}\"",
-        "       password: \"{{ solidfire_password }}\"",
-        "       state: present",
-        "       name: AnsibleVol",
-        "       qos: {minIOPS: 1000, maxIOPS: 20000, burstIOPS: 50000}",
-        "       account_id: 3",
-        "       enable512e: False",
-        "       size: 1",
-        "       size_unit: gb"
+        "\t\t sf_volume_manager:",
+        "\t\t\t hostname: \"{{ solidfire_hostname }}\"",
+        "\t\t\t username: \"{{ solidfire_username }}\"",
+        "\t\t\t password: \"{{ solidfire_password }}\"",
+        "\t\t\t state: present",
+        "\t\t\t name: AnsibleVol",
+        "\t\t\t qos: {minIOPS: 1000, maxIOPS: 20000, burstIOPS: 50000}",
+        "\t\t\t account_id: 3",
+        "\t\t\t enable512e: False",
+        "\t\t\t size: 1",
+        "\t\t\t size_unit: gb"
       ]
     },
     "shell": {
@@ -14197,17 +14197,17 @@
       "description": "",
       "body": [
         "- name: Create Management portgroup",
-        "     local_action:",
-        "        module: vmware_dvs_portgroup",
-        "        hostname: vcenter_ip_or_hostname",
-        "        username: vcenter_username",
-        "        password: vcenter_password",
-        "        portgroup_name: Management",
-        "        switch_name: dvSwitch",
-        "        vlan_id: 123",
-        "        num_ports: 120",
-        "        portgroup_type: earlyBinding",
-        "        state: present"
+        "\t\t local_action:",
+        "\t\t\t\tmodule: vmware_dvs_portgroup",
+        "\t\t\t\thostname: vcenter_ip_or_hostname",
+        "\t\t\t\tusername: vcenter_username",
+        "\t\t\t\tpassword: vcenter_password",
+        "\t\t\t\tportgroup_name: Management",
+        "\t\t\t\tswitch_name: dvSwitch",
+        "\t\t\t\tvlan_id: 123",
+        "\t\t\t\tnum_ports: 120",
+        "\t\t\t\tportgroup_type: earlyBinding",
+        "\t\t\t\tstate: present"
       ]
     },
     "vmware_dvswitch": {
@@ -14284,17 +14284,17 @@
       "description": "",
       "body": [
         "- name: Create snapshot",
-        "    vmware_guest_snapshot:",
-        "      hostname: 192.168.1.209",
-        "      username: administrator@vsphere.local",
-        "      password: vmware",
-        "      datacenter: datacenter_name",
-        "      folder: /myfolder",
-        "      name: dummy_vm",
-        "      state: present",
-        "      snapshot_name: snap1",
-        "      description: snap1_description",
-        "    delegate_to: localhost"
+        "\t\tvmware_guest_snapshot:",
+        "\t\t\thostname: 192.168.1.209",
+        "\t\t\tusername: administrator@vsphere.local",
+        "\t\t\tpassword: vmware",
+        "\t\t\tdatacenter: datacenter_name",
+        "\t\t\tfolder: /myfolder",
+        "\t\t\tname: dummy_vm",
+        "\t\t\tstate: present",
+        "\t\t\tsnapshot_name: snap1",
+        "\t\t\tdescription: snap1_description",
+        "\t\tdelegate_to: localhost"
       ]
     },
     "vmware_guest_tools_wait": {
@@ -14671,13 +14671,13 @@
       "description": "",
       "body": [
         "- name: Create a test app",
-        "    webfaction_app:",
-        "      name=\"my_wsgi_app1\"",
-        "      state=present",
-        "      type=mod_wsgi35-python27",
-        "      login_name={{webfaction_user}}",
-        "      login_password={{webfaction_passwd}}",
-        "      machine={{webfaction_machine}}"
+        "\t\twebfaction_app:",
+        "\t\t\tname=\"my_wsgi_app1\"",
+        "\t\t\tstate=present",
+        "\t\t\ttype=mod_wsgi35-python27",
+        "\t\t\tlogin_name={{webfaction_user}}",
+        "\t\t\tlogin_password={{webfaction_passwd}}",
+        "\t\t\tmachine={{webfaction_machine}}"
       ]
     },
     "webfaction_domain": {
@@ -14685,14 +14685,14 @@
       "description": "",
       "body": [
         "- name: Create a test domain",
-        "    webfaction_domain:",
-        "      name: mydomain.com",
-        "      state: present",
-        "      subdomains:",
-        "       - www",
-        "       - blog",
-        "      login_name: \"{{webfaction_user}}\"",
-        "      login_password: \"{{webfaction_passwd}}\""
+        "\t\twebfaction_domain:",
+        "\t\t\tname: mydomain.com",
+        "\t\t\tstate: present",
+        "\t\t\tsubdomains:",
+        "\t\t\t - www",
+        "\t\t\t - blog",
+        "\t\t\tlogin_name: \"{{webfaction_user}}\"",
+        "\t\t\tlogin_password: \"{{webfaction_passwd}}\""
       ]
     },
     "webfaction_mailbox": {
@@ -14700,12 +14700,12 @@
       "description": "",
       "body": [
         "- name: Create a mailbox",
-        "    webfaction_mailbox:",
-        "      mailbox_name=\"mybox\"",
-        "      mailbox_password=\"myboxpw\"",
-        "      state=present",
-        "      login_name={{webfaction_user}}",
-        "      login_password={{webfaction_passwd}}"
+        "\t\twebfaction_mailbox:",
+        "\t\t\tmailbox_name=\"mybox\"",
+        "\t\t\tmailbox_password=\"myboxpw\"",
+        "\t\t\tstate=present",
+        "\t\t\tlogin_name={{webfaction_user}}",
+        "\t\t\tlogin_password={{webfaction_passwd}}"
       ]
     },
     "webfaction_site": {
@@ -14713,17 +14713,17 @@
       "description": "",
       "body": [
         "- name: create website",
-        "    webfaction_site:",
-        "      name: testsite1",
-        "      state: present",
-        "      host: myhost.webfaction.com",
-        "      subdomains:",
-        "        - 'testsite1.my_domain.org'",
-        "      site_apps:",
-        "        - ['testapp1', '/']",
-        "      https: no",
-        "      login_name: \"{{webfaction_user}}\"",
-        "      login_password: \"{{webfaction_passwd}}\""
+        "\t\twebfaction_site:",
+        "\t\t\tname: testsite1",
+        "\t\t\tstate: present",
+        "\t\t\thost: myhost.webfaction.com",
+        "\t\t\tsubdomains:",
+        "\t\t\t\t- 'testsite1.my_domain.org'",
+        "\t\t\tsite_apps:",
+        "\t\t\t\t- ['testapp1', '/']",
+        "\t\t\thttps: no",
+        "\t\t\tlogin_name: \"{{webfaction_user}}\"",
+        "\t\t\tlogin_password: \"{{webfaction_passwd}}\""
       ]
     },
     "win_acl": {
