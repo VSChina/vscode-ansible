@@ -22,30 +22,30 @@ Authoring [ansible](https://www.ansible.com) playbook efficiently, run ansible p
 
 ## Usage
 - Code snippets
-  Press `ctrl+space` in playbook yml file, you'll see ansible modules code snippets.
-  ![code snippets](./images/codesnippet.png)
+   Press `ctrl+space` in playbook yml file, you'll see ansible modules code snippets.
+   ![code snippets](./images/codesnippet.png)
 
 - Run ansible playbook commands
-  Press `F1`, type `ansible` in command platte, you'll see two ansible commands: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in CloudShell*.
+   Press `F1`, type `ansible` in command platte, you'll see two ansible commands: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in CloudShell*.
   
   - Run Ansible Playbook in Terminal
-    - Input playbook file full path, or use default one.
-    - Set cloud provider credentials in credential yaml file, default path is $HOME/.vscode/ansible-credential.yml, or change credential file path by settings item `ansible.credentialsFile`.
-    - On Non-Windows platform, choose option `docker` or `local`.
+    1. Input playbook file full path, or use default one.
+    2. Set cloud provider credentials in credential yaml file, default path is $HOME/.vscode/ansible-credential.yml, or change credential file path by settings item `ansible.credentialsFile`.
+    3. On Non-Windows platform, choose option `docker` or `local`.
 
   - Run Ansible Playbook in CloudShell
-    - Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login.
-    - Input playbook file full path, or use default one.
-    - Confirm acknowledge on Azure usage fee.
-    - Azure login.
+    1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login.
+    2. Input playbook file full path, or use default one.
+    3. Confirm acknowledge on Azure usage fee.
+    4. Azure login.
 
 
 - Configuration
-  This extension provide 2 configurations in settings.json.
-  - ansible.credentialsFile
-    This is used to specify ansible credentials file path. Default is $HOME/.vscode/ansible-credential.yml.
-  - ansible.termininalInitCommand
-    This is used to specify customized terminal init command. Default is docker run commands for docker, and 'ansible-playbook' for local setup.
+   This extension provide 2 configurations in settings.json.
+   - ansible.credentialsFile
+      This configuration is used to specify ansible credentials file path. Default is $HOME/.vscode/ansible-credential.yml.
+   - ansible.termininalInitCommand
+      This configuration is used to specify customized terminal init command. Default is docker run commands for docker, and 'ansible-playbook' for local setup.
     
   
   
