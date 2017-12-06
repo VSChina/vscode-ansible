@@ -12,15 +12,11 @@ RUN apt-get install -y sshpass openssh-client
 
 RUN pip install --upgrade pip
 
-# install Azure dependencies
+# install Azure, aws, gce, Rackspace, CloudStack dependencies
 RUN pip install ansible[azure] \
-# install aws sdk
     boto \
-# install gce required package
     apache-libcloud \
-# install Rackspace required package
     pyrax \
-# install CloudStack required package
     cs
 
 # clean
