@@ -2,11 +2,13 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/kq11m16pl22k29un?svg=true)](https://ci.appveyor.com/project/yungez/vscode-ansible)
 
 # Visual Studio Code extension for Ansible
-Authoring [ansible](https://www.ansible.com) playbook efficiently, run ansible playbook.
+
+## Overview
+This extension is to help user use ansible in VSCode.
 
 ## Features
 
-- Authoring ansible playbook efficiently
+- Author ansible playbook efficiently
   - Code snippets.  Press `Ctrl + Space`, ansible playbook code snippets will show up.
   - Syntax highlighting.
 
@@ -37,14 +39,14 @@ Authoring [ansible](https://www.ansible.com) playbook efficiently, run ansible p
     3. On Non-Windows platform, choose option `docker` or `local`.
 
   - Run Ansible Playbook in [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/)
-    1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login. If you haven't install this extension, you'll see an error message prompted.
+    1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login. If you haven't installed this extension, you'll see an error message prompted.
     2. Input playbook file full path, or use default one.
-    3. Confirm acknowledge on Azure usage fee.
+    3. Confirm awareness on Azure usage fee.
     4. Azure login.
 
 
 - Configuration  
-  This extension provide 2 configurations in settings.json.
+  This extension provides 2 configurations in settings.json.
   - ansible.credentialsFile  
     This configuration is used to specify ansible credentials file path. Default is $HOME/.vscode/ansible-credential.yml.
   - ansible.termininalInitCommand  
