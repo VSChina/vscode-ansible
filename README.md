@@ -22,7 +22,7 @@ Authoring [ansible](https://www.ansible.com) playbook efficiently, run ansible p
 
 ## Usage
 - Code snippets
-   Press `ctrl+space` in playbook yml file, you'll see ansible modules code snippets.
+   Press `Ctrl + Space` in playbook yml file, you'll see ansible modules code snippets.
    ![code snippets](./images/codesnippet.png)
 
 - Run ansible playbook commands
