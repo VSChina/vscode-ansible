@@ -33,7 +33,7 @@
     "commands": [
       {
         "command": "vscode-ansible.cloudshell",
-        "title": "Run Ansible Playbook in CloudShell",
+        "title": "Run Ansible Playbook in Cloud Shell",
         "category": "ansible"
       },
       {
