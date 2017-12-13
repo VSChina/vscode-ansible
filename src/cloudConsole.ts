@@ -106,9 +106,9 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 				await delay(retry_interval);
 			} else {
 				for (let file of files) {
-					const data = fsExtra.readFileSync(file, { encoding: 'utf8' });
+					const data = fsExtra.readFileSync(file, { encoding: 'utf8' }).toString();
 					outputChannel.append(Constants.LineSeperator + '\nUpload playbook to CloudShell: ' + file + ' as ' + path.basename(file) + '\n');
-					response.send('echo -e "' + data + '" > ' + path.basename(file) + ' \n');
+					response.send('echo -e "' + escapeFile(data) + '" > ' + path.basename(file) + ' \n');
 				}
 				break;
 			}
@@ -217,4 +217,8 @@ async function exec(command: string) {
 			(error || stderr ? reject : resolve)({ error, stdout, stderr });
 		});
 	});
+}
+
+function escapeFile(data: string): string {
+    return data.replace(/"/g, '\\"');
 }
