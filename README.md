@@ -30,8 +30,8 @@ This extension is to help user use [ansible](https://www.ansible.com/) in VSCode
 - Auto completion
 - Code snippets  
     Press `Ctrl + Space` in playbook yml file, you'll see ansible modules code snippets.    
-    ![code snippets](./images/codesnippet.png)
-
+    ![auto completion and code snippets](./images/editing.gif)
+    
 - Run ansible playbook commands  
   Press `F1`, type `ansible` in command platte, you'll see two ansible commands: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in Cloud Shell*.
   
