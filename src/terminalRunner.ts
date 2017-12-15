@@ -102,7 +102,9 @@ export class TerminalRunner extends BaseRunner {
                 }
 
                 // add azure user agent
-                //cmd += ' -e ' + Constants.UserAgentName + '=' + utilities.getUserAgent() + ' ';
+                if (utilities.isTelemetryEnabled()) {
+                    cmd += ' -e ' + Constants.UserAgentName + '=' + utilities.getUserAgent() + ' ';
+                }
 
                 cmd += ' ' + Constants.DockerImageName + ' bash';
                 cmdsToTerminal.push(cmd);
