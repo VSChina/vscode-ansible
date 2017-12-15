@@ -15,12 +15,12 @@ export class TerminalExecutor {
 
     public static runInTerminal(initCommand: string, terminalName: string, waitAfterInitCmd: boolean, commands: string[], retryTime: number, cb: Function): void {
         if (this.terminals === undefined || this.terminals[terminalName] === undefined) {
-            var newterminal = vscode.window.createTerminal(terminalName);
-            newterminal.show();
+            var newterminal = vscode.window.createTerminal(terminalName);            
             this.terminals[terminalName] = newterminal;
         }
         let terminal = this.terminals[terminalName];
         terminal.sendText(initCommand);
+        terminal.show();
 
         if (waitAfterInitCmd) {
             var count = retryTime;
