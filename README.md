@@ -8,17 +8,14 @@ This extension is to help user use [ansible](https://www.ansible.com/) in VSCode
 
 ## Features
 
-- Author ansible playbook efficiently
   - Auto completion. Auto completion ansible directives, modules and plugins from ansible doc.
   - Code snippets.  Press `Ctrl + Space`, ansible playbook code snippets will show up.
   - Syntax highlighting.
-
-- Run ansible from Visual Studio Code
-  - From Terminal.
+  - Run playbook from Terminal.
     - On Windows, run ansible inside docker.
     - On Non-windows platform, provide option to run ansible from docker or from local ansible installation.
-  - From [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
-    Run ansible playbook in Cloud Shell, user will need install Azure Account extension and sign in to Azure. Please refer to Usage section for more detail.
+  - Run playbook from [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
+
 
 ## Requirements
 
