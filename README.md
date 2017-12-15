@@ -4,11 +4,12 @@
 # Visual Studio Code extension for Ansible
 
 ## Overview
-This extension is to help user use ansible in VSCode.
+This extension is to help user use [ansible](https://www.ansible.com/) in VSCode.
 
 ## Features
 
 - Author ansible playbook efficiently
+  - Auto completion. Auto completion ansible directives, modules and plugins from ansible doc.
   - Code snippets.  Press `Ctrl + Space`, ansible playbook code snippets will show up.
   - Syntax highlighting.
 
@@ -16,7 +17,7 @@ This extension is to help user use ansible in VSCode.
   - From Terminal.
     - On Windows, run ansible inside docker.
     - On Non-windows platform, provide option to run ansible from docker or from local ansible installation.
-  - From [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/).  
+  - From [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
     Run ansible playbook in Cloud Shell, user will need install Azure Account extension and sign in to Azure. Please refer to Usage section for more detail.
 
 ## Requirements
@@ -26,6 +27,7 @@ This extension is to help user use ansible in VSCode.
 |Windows|docker|
 
 ## Usage
+- Auto completion
 - Code snippets  
     Press `Ctrl + Space` in playbook yml file, you'll see ansible modules code snippets.    
     ![code snippets](./images/codesnippet.png)
@@ -35,14 +37,15 @@ This extension is to help user use ansible in VSCode.
   
   - Run Ansible Playbook in Terminal
     1. Input playbook file full path, or use default one.
-    2. This step is optinal. If you'll run ansible cloud provider modules, you'll need set cloud provider credentials in credential yaml file, default path is $HOME/.vscode/ansible-credentials.yml, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/readme1/config/credentials.yml).
-    3. On Non-Windows platform, choose option `docker` or `local`.
+    1. This step is optinal. If you'll run ansible cloud provider modules, you'll need set cloud provider credentials in credential yaml file, default path is $HOME/.vscode/ansible-credentials.yml, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/readme1/config/credentials.yml).
+    1. On Non-Windows platform, choose option `docker` or `local`.
 
-  - Run Ansible Playbook in [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/)
+  - Run Ansible Playbook in [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/) 
+    1. Please setup Cloud Shell for first usage in Azure Portal by following [this instruction](https://docs.microsoft.com/en-us/azure/cloud-shell/overview).
     1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login. If you haven't installed this extension, you'll see an error message prompted.
-    2. Input playbook file full path, or use default one.
-    3. Confirm awareness on Azure usage fee.
-    4. Azure login.
+    1. Input playbook file full path, or use default one.
+    1. Confirm awareness on Azure usage fee.
+    1. Azure login.
 
 
 - Configuration  
