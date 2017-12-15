@@ -10,7 +10,7 @@ import { Constants } from './constants';
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
-        var cp = require('child_process').spawn(cmd, args);    
+        var cp = require('child_process').spawn(cmd, args);
 
         cp.stdout.on('data', function (data) {
             if (outputChannel) {
@@ -122,4 +122,16 @@ export function generateCredentialsFile(): void {
 
 export function getUserAgent(): string {
     return Constants.ExtensionId + '-' + vscode.extensions.getExtension(Constants.ExtensionId).packageJSON.version;
+}
+
+export function isTelemetryEnabled(): boolean {
+
+    const enabled = vscode.workspace.getConfiguration('telemetry').get('enableTelemetry');
+
+    if (!enabled) {
+        return true;
+    }
+
+    return (enabled === 'true') ? true : false;
+
 }

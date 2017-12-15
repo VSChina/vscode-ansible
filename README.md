@@ -60,7 +60,10 @@ You can submit bug or feature suggestion via [issues](https://github.com/VSChina
 [MIT license](./LICENSE.md).
 
 ## Telemetry
-This extension collects telemetry data to help improve our products. Please read [Microsoft privacy statement](https://privacy.microsoft.com/en-us/privacystatement) to learn more.
+This extension collects telemetry data to help improve our products. Please read [Microsoft privacy statement](https://privacy.microsoft.com/en-us/privacystatement) to learn more. If you opt out to send telemetry data to Microsoft, please set below configuration in settings.json:
+```
+telemetry.enableTelemetry = false
+```
 
 
 
