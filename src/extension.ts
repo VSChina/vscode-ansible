@@ -8,10 +8,17 @@ import { Constants } from './constants';
 import { TerminalRunner } from './terminalRunner';
 import { CloudShellRunner } from './cloudShellRunner';
 import { TerminalExecutor } from './terminalExecutor';
+import { AnsibleCompletionItemProvider } from './ansibleCompletionItemProvider';
+import { TelemetryClient } from './telemetryClient';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
+
+    TelemetryClient.sendEvent('activate');
+
+    const triggerCharacters = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(['yaml'], new AnsibleCompletionItemProvider(), ...triggerCharacters));
 
     utilities.generateCredentialsFile();
 

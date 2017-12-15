@@ -2,7 +2,7 @@
 
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-const extensionId = 'yungez.vscode-ansible';
+const extensionId = 'vscoss.vscode-ansible';
 
 suite("Extension Tests", () => {
 

@@ -4,7 +4,7 @@
   "description": "VSCode extension for Ansible",
   "license": "SEE LICENSE IN LICENSE.md",
   "version": "0.0.1",
-  "publisher": "yungez",
+  "publisher": "vscoss",
   "icon": "images/logo.png",
   "engines": {
     "vscode": "^1.18.0"
@@ -16,7 +16,7 @@
   "keywords": [
     "ansible",
     "playbook",
-    "azure",
+    "snippets",
     "ansible module"
   ],
   "aiKey": "",
@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/VSChina/vscode-ansible/blob/master/README.md",
   "activationEvents": [
+    "onLanguage:yaml",
     "onCommand:vscode-ansible.cloudshell",
     "onCommand:vscode-ansible.playbook-in-terminal"
   ],
@@ -45,7 +46,7 @@
     "snippets": [
       {
         "language": "yaml",
-        "path": "./snippets/snippets.json"
+        "path": "./snippets/codesnippets.json"
       }
     ],
     "grammars": [
@@ -100,6 +101,7 @@
     "adal-node": "0.1.22",
     "azure-arm-resource": "^3.0.0-preview",
     "fs-extra": "^4.0.2",
+    "fuzzaldrin-plus": "^0.6.0",
     "ms-rest": "^2.2.7",
     "ms-rest-azure": "^2.4.5",
     "opn": "^5.1.0",
