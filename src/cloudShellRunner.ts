@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { AzureAccount } from './azure-account.api';
 import { Constants } from './constants';
 import * as utilities from './utilities';
-import { openCloudConsole, OSes, delayedInterval } from './cloudConsole';
+import { openCloudConsole, OSes } from './cloudConsole';
 import * as path from 'path';
 import * as opn from 'opn';
 import * as fsExtra from 'fs-extra';
