@@ -30,11 +30,11 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     ![auto completion and code snippets](./images/authoring.gif)
     
 - Run Ansible playbook commands  
-  Press `F1`, type `ansible` in command platte, you'll see two Ansible commands: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in Cloud Shell*.
+  Press `F1`, type `ansible` in command platte, there'll be two commands: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in Cloud Shell*.
   
   - Run Ansible Playbook in Terminal
     1. Input playbook file full path, or use default one.
-    1. This step is optinal. If you'll run Ansible cloud provider modules, you'll need set cloud provider credentials in credential yaml file, default path is $HOME/.vscode/ansible-credentials.yml, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).
+    1. This step is optinal. If you want to run cloud provider specific Ansible modules, you need set cloud credentials in credential yaml file, default path is `$HOME/.vscode/ansible-credentials.yml`, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).
     1. On Non-Windows platform, choose option `docker` or `local`.
 
   - Run Ansible Playbook in [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/) 
