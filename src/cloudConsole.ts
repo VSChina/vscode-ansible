@@ -15,6 +15,7 @@ import { TIMEOUT } from 'dns';
 import * as ws from 'ws';
 import * as fsExtra from 'fs-extra';
 import { Constants } from './constants';
+import { clearInterval } from 'timers';
 
 const localize = nls.loadMessageBundle();
 
@@ -201,6 +202,13 @@ export function delayed(fun: () => void, delay: number) {
 	const handle = setTimeout(fun, delay);
 	return {
 		cancel: () => clearTimeout(handle)
+	}
+}
+
+export function delayedInterval(fun: () => void, interval: number) {
+	const handle = setInterval(fun, interval);
+	return {
+		cancel: () => clearInterval(handle)
 	}
 }
 
