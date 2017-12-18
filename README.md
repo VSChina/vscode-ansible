@@ -21,8 +21,9 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
 
 |platform|prerequisite|
 |--------|-----------|
-|Windows|docker|
 |All platform| nodejs >= 6.0 |
+|Windows/Other platforms choose docker|docker|
+|All platform choose local| Ansible |
 
 ## Usage
 - Auto completion
@@ -33,12 +34,13 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
 - Run Ansible playbook commands  
   Press `F1`, type `ansible` in command platte, there'll be two commands: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in Cloud Shell*.
   
-  - Run Ansible Playbook in Terminal
+  - Run Ansible Playbook in Terminal 
     1. Input playbook file full path, or use default one.
     1. This step is optinal. If you want to run cloud provider specific Ansible modules, you need set cloud credentials in credential yaml file, default path is `$HOME/.vscode/ansible-credentials.yml`, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).
-    1. On Non-Windows platform, choose option `docker` or `local`.
+    1. On Non-Windows platforms, choose option `docker` or `local`. If chose `docker` option, please make sure docker is installed. If chose `local` option, please make sure Ansible is installed.
     1. For windows user, please share your windows driver where vscode workspace sits on with docker. This is because the extension will map your workspace containing playbook with docker.   
        ![docker share driver](./images/dockerconfig.png)
+    
 
 
   - Run Ansible Playbook in [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/) 
