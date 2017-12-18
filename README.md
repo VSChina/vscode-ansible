@@ -22,7 +22,6 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
 |platform|prerequisite|
 |--------|-----------|
 |Windows|docker|
-|---|---|
 |All platform| nodejs >= 6.0 |
 
 ## Usage
