@@ -4,7 +4,7 @@
 # Visual Studio Code extension for Ansible
 
 ## Overview
-This extension helps use [Ansible](https://www.ansible.com/) efficinently in VSCode.
+This extension helps use [Ansible](https://www.ansible.com/) efficiently in VSCode.
 
 ## Features
 
