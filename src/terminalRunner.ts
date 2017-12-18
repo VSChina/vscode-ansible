@@ -121,7 +121,9 @@ export class TerminalRunner extends BaseRunner {
             }
 
             // add azure user agent
-            //cmdsToTerminal.push('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
+            if (utilities.isTelemetryEnabled()) {
+                cmdsToTerminal.push('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
+            }
             cmdsToTerminal.push('ansible-playbook ' + playbook);
         }
         return cmdsToTerminal;
