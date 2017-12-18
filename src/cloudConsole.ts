@@ -15,6 +15,7 @@ import { TIMEOUT } from 'dns';
 import * as ws from 'ws';
 import * as fsExtra from 'fs-extra';
 import { Constants } from './constants';
+import { setInterval, clearInterval } from 'timers';
 
 const localize = nls.loadMessageBundle();
 
@@ -40,6 +41,10 @@ export const OSes: Record<string, OS> = {
 export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel, tempFile: string) {
 	return (async function retry(): Promise<any> {
 
+		outputChannel.append('Connecting to Cloud Shell.');
+		outputChannel.show();
+		const progress = delayedInterval(() => { outputChannel.append('..') }, 500);
+
 		const isWindows = process.platform === 'win32';
 		if (isWindows) {
 			// See below
@@ -47,20 +52,24 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 				const { stdout } = await exec('node.exe --version');
 				const version = stdout[0] === 'v' && stdout.substr(1).trim();
 				if (version && semver.valid(version) && !semver.gte(version, '6.0.0')) {
+					progress.cancel();
 					return requiresNode();
 				}
 			} catch (err) {
+				progress.cancel();
 				return requiresNode();
 			}
 		}
 
 		if (!(await api.waitForLogin())) {
+			progress.cancel();
 			return commands.executeCommand('azure-account.askForLogin');
 		}
 
 		const tokens = await Promise.all(api.sessions.map(session => acquireToken(session)));
 		const result = await findUserSettings(tokens);
 		if (!result) {
+			progress.cancel();
 			return requiresSetUp();
 		}
 
@@ -70,8 +79,10 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 		try {
 			consoleUri = await provisionConsole(result.token.accessToken, armEndpoint, result.userSettings, os.id);
 			inProgress.cancel();
+			progress.cancel();
 		} catch (err) {
 			inProgress.cancel();
+			progress.cancel();
 			if (err && err.message === Errors.DeploymentOsTypeConflict) {
 				return deploymentConflict(retry, os, result.token.accessToken, armEndpoint);
 			}
@@ -107,13 +118,14 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			} else {
 				for (let file of files) {
 					const data = fsExtra.readFileSync(file, { encoding: 'utf8' }).toString();
-					outputChannel.append('\nUpload playbook to CloudShell: ' + file + ' as ' + path.basename(file) + '\n');
+					outputChannel.append('\nUpload playbook to CloudShell: ' + file + ' as /$home/' + path.basename(file));
 					response.send('echo -e "' + escapeFile(data) + '" > ' + path.basename(file) + ' \n');
 				}
 				break;
 			}
 		}
 
+		progress.cancel();
 		const terminal = window.createTerminal({
 			name: localize('azure-account.cloudConsole', "{0} in Cloud Shell", os.shellName),
 			shellPath,
@@ -201,6 +213,13 @@ export function delayed(fun: () => void, delay: number) {
 	const handle = setTimeout(fun, delay);
 	return {
 		cancel: () => clearTimeout(handle)
+	}
+}
+
+function delayedInterval(func: () => void, interval: number) {
+	const handle = setInterval(func, interval);
+	return {
+		cancel: () => clearInterval(handle)
 	}
 }
 
