@@ -7,6 +7,7 @@ import * as fsExtra from 'fs-extra';
 import * as yamljs from 'yamljs';
 import * as os from 'os';
 import { Constants } from './constants';
+import * as opn from 'opn';
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
@@ -59,11 +60,18 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
         if (!code) {
             cb();
         } else {
-            outputChannel.append('Please go to below link and install Ansible first. \n');
+            outputChannel.append('\nPlease go to below link and install Ansible first. \n');
             outputChannel.append('http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
             outputChannel.show();
-        }
 
+            const open: vscode.MessageItem = { title: "View." };
+            vscode.window.showErrorMessage('Please go to below link and install Ansible first.', open)
+                .then(response => {
+                    if (response === open) {
+                        opn('http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+                    }
+                });
+        }
     })
 }
 
@@ -96,7 +104,7 @@ export function parseCredentialsFile(outputChannel): string[] {
         configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
     }
 
-    outputChannel.append('credential file: ' + configValue + '\n');
+    outputChannel.append('\ncredential file: ' + configValue + '\n');
     outputChannel.show();
     var credentials = [];
 

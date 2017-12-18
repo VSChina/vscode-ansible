@@ -61,8 +61,6 @@ export class CloudShellRunner extends BaseRunner {
 
                     openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile).then(terminal => {
                         var count = 30;
-                        this._outputChannel.append('\nConnecting.');
-                        this._outputChannel.show();
                         if (terminal) {
                             var _localthis = this;
                             var interval = setInterval(function () {
@@ -77,8 +75,6 @@ export class CloudShellRunner extends BaseRunner {
                                         terminal.show();
 
                                         count = 0;
-                                    } else {
-                                        _localthis._outputChannel.append('.');
                                     }
                                 } else {
                                     _localthis.stop(interval);
@@ -88,7 +84,6 @@ export class CloudShellRunner extends BaseRunner {
                             this._outputChannel.appendLine('\nConnecting to terminal failed, please retry.');
                         }
                     });
-
 
                 } else if (response === cancelItem) {
                     opn('https://docs.microsoft.com/en-us/azure/cloud-shell/pricing');

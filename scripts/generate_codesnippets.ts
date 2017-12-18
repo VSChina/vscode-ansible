@@ -1,5 +1,6 @@
 import * as fsextra from 'fs-extra';
 import * as path from 'path';
+import { open } from 'fs';
 
 const sourcefile = path.join(__dirname, '../snippets/ansible-data.json');
 const targetfile = path.join(__dirname, '../snippets/codesnippets.json');
@@ -10,10 +11,10 @@ let codesnippets: Snippets = {};
 if (data) {
     data.modules.map((module) => {
         let snippetBody = <SnippetBody>{
-            prefix: module.module + ':',
+            prefix: module.module,
             description: module.short_description,
             body: [
-                module.module
+                module.module + ':'
             ]
         };
 
@@ -27,7 +28,13 @@ if (data) {
                 let required = option.required ? 'required' : 'not required';
 
                 if (optionName && optionName !== '') {
-                    snippetBody.body.push('  ' + optionName + ': ' + required + ', default: ' + option.default + '. # ' + option.description);
+                    var text = '  ' + optionName + '. ' + required;
+
+                    if (option.choices) {
+                        text += ', choices: ' + option.choices.join('/');
+                    }
+                    text += ', default: ' + option.default + '. # ' + option.description;
+                    snippetBody.body.push(text);
                 }
             }
 
