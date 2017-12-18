@@ -69,11 +69,11 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
 
 
 export function validatePlaybook(playbook: string, outputChannel: vscode.OutputChannel): boolean {
-    var message = Constants.LineSeperator + '\nValidate playbook: passed.\n';
+    var message = '\nValidate playbook: passed.\n';
     var isValid = true;
 
     if (path.parse(playbook).ext != '.yml') {
-        message = Constants.LineSeperator + '\nValidate playbook: failed! file extension is not yml.\n';
+        message = '\nValidate playbook: failed! file extension is not yml.\n';
         isValid = false;
     }
 

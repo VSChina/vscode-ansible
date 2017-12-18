@@ -15,6 +15,7 @@ import { TIMEOUT } from 'dns';
 import * as ws from 'ws';
 import * as fsExtra from 'fs-extra';
 import { Constants } from './constants';
+import { clearInterval } from 'timers';
 
 const localize = nls.loadMessageBundle();
 
@@ -107,7 +108,7 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			} else {
 				for (let file of files) {
 					const data = fsExtra.readFileSync(file, { encoding: 'utf8' }).toString();
-					outputChannel.append(Constants.LineSeperator + '\nUpload playbook to CloudShell: ' + file + ' as ' + path.basename(file) + '\n');
+					outputChannel.append('\nUpload playbook to CloudShell: ' + file + ' as ' + path.basename(file) + '\n');
 					response.send('echo -e "' + escapeFile(data) + '" > ' + path.basename(file) + ' \n');
 				}
 				break;
@@ -142,9 +143,9 @@ async function findUserSettings(tokens: Token[]) {
 }
 
 async function requiresSetUp() {
-	const open: MessageItem = { title: localize('azure-account.open', "Open") };
-	const close: MessageItem = { title: localize('azure-account.close', "Close"), isCloseAffordance: true };
-	const message = localize('azure-account.setUpInPortal', "First launch of Cloud Shell requires setup in the Azure portal (https://portal.azure.com).");
+	const open: MessageItem = { title: "Open" };
+	const close: MessageItem = { title: "Close", isCloseAffordance: true };
+	const message = "First launch of Cloud Shell requires setup in the Azure portal (https://portal.azure.com).";
 	const response = await window.showInformationMessage(message, open, close);
 	if (response === open) {
 		opn('https://portal.azure.com');
@@ -153,9 +154,9 @@ async function requiresSetUp() {
 
 async function requiresNode() {
 
-	const open: MessageItem = { title: localize('azure-account.open', "Open") };
-	const close: MessageItem = { title: localize('azure-account.close', "Close"), isCloseAffordance: true };
-	const message = localize('azure-account.requiresNode', "Opening a Cloud Shell currently requires Node.js 6 or later being installed (https://nodejs.org).");
+	const open: MessageItem = { title: "Open" };
+	const close: MessageItem = { title: "Close", isCloseAffordance: true };
+	const message = "Opening a Cloud Shell currently requires Node.js 6 or later being installed (https://nodejs.org).";
 	const response = await window.showInformationMessage(message, open, close);
 	if (response === open) {
 		opn('https://nodejs.org');
@@ -163,9 +164,9 @@ async function requiresNode() {
 }
 
 async function deploymentConflict(retry: () => Promise<void>, os: OS, accessToken: string, armEndpoint: string) {
-	const ok: MessageItem = { title: localize('azure-account.ok', "OK") };
-	const cancel: MessageItem = { title: localize('azure-account.cancel', "Cancel"), isCloseAffordance: true };
-	const message = localize('azure-account.deploymentConflict', "Starting a {0} session will terminate all active {1} sessions. Any running processes in active {1} sessions will be terminated.", os.shellName, os.otherOS.shellName);
+	const ok: MessageItem = { title: "OK" };
+	const cancel: MessageItem = { title: "Cancel", isCloseAffordance: true };
+	const message = "Starting a " + os.shellName + " session will terminate all active " + os.shellName + " sessions. Any running processes in active " + os.otherOS.shellName + " sessions will be terminated.";
 	const response = await window.showWarningMessage(message, ok, cancel);
 	if (response === ok) {
 		await resetConsole(accessToken, armEndpoint);
@@ -197,10 +198,17 @@ async function acquireToken(session: AzureSession) {
 	});
 }
 
-function delayed(fun: () => void, delay: number) {
+export function delayed(fun: () => void, delay: number) {
 	const handle = setTimeout(fun, delay);
 	return {
 		cancel: () => clearTimeout(handle)
+	}
+}
+
+export function delayedInterval(fun: () => void, interval: number) {
+	const handle = setInterval(fun, interval);
+	return {
+		cancel: () => clearInterval(handle)
 	}
 }
 

@@ -5,17 +5,22 @@ import * as vscode from 'vscode';
 import { AzureAccount } from './azure-account.api';
 import { Constants } from './constants';
 import * as utilities from './utilities';
-import { openCloudConsole, OSes } from './cloudConsole';
+import { openCloudConsole, OSes, delayedInterval } from './cloudConsole';
 import * as path from 'path';
 import * as opn from 'opn';
 import * as fsExtra from 'fs-extra';
 import * as ost from 'os';
 import { setInterval, clearInterval } from 'timers';
 import { TelemetryClient } from './telemetryClient';
+import { delay } from 'bluebird';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
 export class CloudShellRunner extends BaseRunner {
+
+    constructor(outputChannel: vscode.OutputChannel) {
+        super(outputChannel);
+    }
 
     protected runPlaybookInternal(playbook: string): void {
         const installedExtension: any[] = vscode.extensions.all;
@@ -56,23 +61,32 @@ export class CloudShellRunner extends BaseRunner {
 
                     openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile).then(terminal => {
                         var count = 30;
-                        const interval = setInterval(function () {
-                            count--;
-                            if (count > 0) {
-                                if (fsExtra.existsSync(tempFile)) {
-                                    fsExtra.removeSync(tempFile);
-                                    if (utilities.isTelemetryEnabled()) {
-                                        terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
-                                    }
-                                    terminal.sendText('ansible-playbook ' + path.basename(playbook));
-                                    terminal.show();
+                        this._outputChannel.append('\nConnecting.');
+                        this._outputChannel.show();
+                        if (terminal) {
+                            var _localthis = this;
+                            var interval = setInterval(function () {
+                                count--;
+                                if (count > 0) {
+                                    if (fsExtra.existsSync(tempFile)) {
+                                        fsExtra.removeSync(tempFile);
+                                        if (utilities.isTelemetryEnabled()) {
+                                            terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
+                                        }
+                                        terminal.sendText('ansible-playbook ' + path.basename(playbook));
+                                        terminal.show();
 
-                                    count = 0;
+                                        count = 0;
+                                    } else {
+                                        _localthis._outputChannel.append('.');
+                                    }
+                                } else {
+                                    _localthis.stop(interval);
                                 }
-                            } else {
-                                this.stop(interval);
-                            }
-                        }, 500);
+                            }, 500);
+                        } else {
+                            this._outputChannel.appendLine('\nConnecting to terminal failed, please retry.');
+                        }
                     });
 
 
