@@ -38,7 +38,7 @@ export abstract class BaseRunner {
                     playbook = input;
                 }
 
-                this._outputChannel.append(Constants.LineSeperator + '\nRun playbook: ' + playbook + '\n');
+                this._outputChannel.append('\n' + Constants.LineSeperator + '\nRun playbook: ' + playbook + '\n');
                 this._outputChannel.show();
 
                 if (!utilties.validatePlaybook(playbook, this._outputChannel)) {
