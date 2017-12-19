@@ -134,6 +134,7 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 				CLOUD_CONSOLE_ACCESS_TOKEN: result.token.accessToken,
 				CLOUD_CONSOLE_URI: consoleUri,
 				CLOUDSHELL_TEMP_FILE: tempFile,
+				// to workaround tls error: https://github.com/VSChina/vscode-ansible/pull/44
 				NODE_TLS_REJECT_UNAUTHORIZED: "0"
 			}
 		});
