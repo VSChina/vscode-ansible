@@ -177,7 +177,7 @@ async function requiresNode() {
 async function deploymentConflict(retry: () => Promise<void>, os: OS, accessToken: string, armEndpoint: string) {
 	const ok: MessageItem = { title: "OK" };
 	const cancel: MessageItem = { title: "Cancel", isCloseAffordance: true };
-	const message = "Starting a " + os.shellName + " session will terminate all active " + os.shellName + " sessions. Any running processes in active " + os.otherOS.shellName + " sessions will be terminated.";
+	const message = "Starting a " + os.shellName + " session will terminate all active " + os.otherOS.shellName + " sessions. Any running processes in active " + os.otherOS.shellName + " sessions will be terminated.";
 	const response = await window.showWarningMessage(message, ok, cancel);
 	if (response === ok) {
 		await resetConsole(accessToken, armEndpoint);
@@ -209,7 +209,7 @@ async function acquireToken(session: AzureSession) {
 	});
 }
 
-export function delayed(fun: () => void, delay: number) {
+function delayed(fun: () => void, delay: number) {
 	const handle = setTimeout(fun, delay);
 	return {
 		cancel: () => clearTimeout(handle)

@@ -60,8 +60,8 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
         if (!code) {
             cb();
         } else {
-            outputChannel.append('\nPlease go to below link and install Ansible first. \n');
-            outputChannel.append('http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+            outputChannel.append('\nPlease go to below link and install Ansible first.');
+            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
             outputChannel.show();
 
             const open: vscode.MessageItem = { title: "View." };
@@ -77,11 +77,11 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
 
 
 export function validatePlaybook(playbook: string, outputChannel: vscode.OutputChannel): boolean {
-    var message = '\nValidate playbook: passed.\n';
+    var message = '\nValidate playbook: passed.';
     var isValid = true;
 
     if (path.parse(playbook).ext != '.yml') {
-        message = '\nValidate playbook: failed! file extension is not yml.\n';
+        message = '\nValidate playbook: failed! file extension is not yml.';
         isValid = false;
     }
 
