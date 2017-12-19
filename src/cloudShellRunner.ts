@@ -22,6 +22,9 @@ export class CloudShellRunner extends BaseRunner {
     }
 
     protected runPlaybookInternal(playbook: string): void {
+        // to workaround tls error: https://github.com/VSChina/vscode-ansible/pull/44
+        process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = "0";
+
         const installedExtension: any[] = vscode.extensions.all;
 
         let azureAccount: AzureAccount;

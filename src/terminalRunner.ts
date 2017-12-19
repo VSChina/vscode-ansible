@@ -9,7 +9,6 @@ import { TerminalExecutor } from './terminalExecutor';
 import { TelemetryClient } from './telemetryClient';
 import { clearInterval } from 'timers';
 
-
 export class TerminalRunner extends BaseRunner {
     constructor(outputChannel: vscode.OutputChannel) {
         super(outputChannel);
