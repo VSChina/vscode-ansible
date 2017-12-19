@@ -15,7 +15,7 @@ export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.
 
         cp.stdout.on('data', function (data) {
             if (outputChannel) {
-                outputChannel.append(String(data));
+                outputChannel.append('\n' + String(data));
                 outputChannel.show();
             }
         });
