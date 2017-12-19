@@ -32,7 +32,7 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     ![auto completion and code snippets](./images/authoring.gif)
     
 - Run Ansible playbook commands  
-  2 methonds are supported to run Ansible playbook: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in Cloud Shell*.
+  2 methods are supported to run Ansible playbook: *Run Ansible Playbook in Terminal* and *Run Ansible Playbook in Cloud Shell*.
   
   - Run Ansible Playbook in Terminal 
     1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Terminal`.
