@@ -18,10 +18,12 @@ const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '
 export class CloudShellRunner extends BaseRunner {
 
     constructor(outputChannel: vscode.OutputChannel) {
-        super(outputChannel);
+        super(outputChannel);        
     }
 
     protected runPlaybookInternal(playbook: string): void {
+        process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = "0";
+        
         const installedExtension: any[] = vscode.extensions.all;
 
         let azureAccount: AzureAccount;
