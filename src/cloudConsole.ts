@@ -140,6 +140,8 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 		terminal.show();
 		return terminal;
 	})().catch(err => {
+		outputChannel.append('\nConnecting to Cloud Shell failed with error: \n' + err);
+		outputChannel.show();
 		throw err;
 	});
 }

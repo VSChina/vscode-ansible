@@ -21,7 +21,7 @@ export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.
         });
 
         cp.stderr.on('data', function (data) {
-            if (outputChannel) outputChannel.append(String(data));
+            if (outputChannel) outputChannel.append('\n' + String(data));
         });
 
         cp.on('close', function (code) {
