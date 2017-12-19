@@ -15,6 +15,7 @@ import { TIMEOUT } from 'dns';
 import * as ws from 'ws';
 import * as fsExtra from 'fs-extra';
 import { Constants } from './constants';
+import { setInterval, clearInterval } from 'timers';
 
 const localize = nls.loadMessageBundle();
 
@@ -40,6 +41,10 @@ export const OSes: Record<string, OS> = {
 export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel, tempFile: string) {
 	return (async function retry(): Promise<any> {
 
+		outputChannel.append('\nConnecting to Cloud Shell.');
+		outputChannel.show();
+		const progress = delayedInterval(() => { outputChannel.append('..') }, 500);
+
 		const isWindows = process.platform === 'win32';
 		if (isWindows) {
 			// See below
@@ -47,20 +52,24 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 				const { stdout } = await exec('node.exe --version');
 				const version = stdout[0] === 'v' && stdout.substr(1).trim();
 				if (version && semver.valid(version) && !semver.gte(version, '6.0.0')) {
+					progress.cancel();
 					return requiresNode();
 				}
 			} catch (err) {
+				progress.cancel();
 				return requiresNode();
 			}
 		}
 
 		if (!(await api.waitForLogin())) {
+			progress.cancel();
 			return commands.executeCommand('azure-account.askForLogin');
 		}
 
 		const tokens = await Promise.all(api.sessions.map(session => acquireToken(session)));
 		const result = await findUserSettings(tokens);
 		if (!result) {
+			progress.cancel();
 			return requiresSetUp();
 		}
 
@@ -70,8 +79,10 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 		try {
 			consoleUri = await provisionConsole(result.token.accessToken, armEndpoint, result.userSettings, os.id);
 			inProgress.cancel();
+			progress.cancel();
 		} catch (err) {
 			inProgress.cancel();
+			progress.cancel();
 			if (err && err.message === Errors.DeploymentOsTypeConflict) {
 				return deploymentConflict(retry, os, result.token.accessToken, armEndpoint);
 			}
@@ -107,13 +118,14 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			} else {
 				for (let file of files) {
 					const data = fsExtra.readFileSync(file, { encoding: 'utf8' }).toString();
-					outputChannel.append(Constants.LineSeperator + '\nUpload playbook to CloudShell: ' + file + ' as ' + path.basename(file) + '\n');
+					outputChannel.append('\nUpload playbook to CloudShell: ' + file + ' as /$home/' + path.basename(file));
 					response.send('echo -e "' + escapeFile(data) + '" > ' + path.basename(file) + ' \n');
 				}
 				break;
 			}
 		}
 
+		progress.cancel();
 		const terminal = window.createTerminal({
 			name: localize('azure-account.cloudConsole', "{0} in Cloud Shell", os.shellName),
 			shellPath,
@@ -128,6 +140,8 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 		terminal.show();
 		return terminal;
 	})().catch(err => {
+		outputChannel.append('\nConnecting to Cloud Shell failed with error: \n' + err);
+		outputChannel.show();
 		throw err;
 	});
 }
@@ -142,20 +156,20 @@ async function findUserSettings(tokens: Token[]) {
 }
 
 async function requiresSetUp() {
-	const open: MessageItem = { title: localize('azure-account.open', "Open") };
-	const close: MessageItem = { title: localize('azure-account.close', "Close"), isCloseAffordance: true };
-	const message = localize('azure-account.setUpInPortal', "First launch of Cloud Shell requires setup in the Azure portal (https://portal.azure.com).");
+	const open: MessageItem = { title: "Open instruction" };
+	const close: MessageItem = { title: "Close", isCloseAffordance: true };
+	const message = "First launch of Cloud Shell requires setup in the Azure portal (https://portal.azure.com).";
 	const response = await window.showInformationMessage(message, open, close);
 	if (response === open) {
-		opn('https://portal.azure.com');
+		opn('https://docs.microsoft.com/en-us/azure/cloud-shell/overview');
 	}
 }
 
 async function requiresNode() {
 
-	const open: MessageItem = { title: localize('azure-account.open', "Open") };
-	const close: MessageItem = { title: localize('azure-account.close', "Close"), isCloseAffordance: true };
-	const message = localize('azure-account.requiresNode', "Opening a Cloud Shell currently requires Node.js 6 or later being installed (https://nodejs.org).");
+	const open: MessageItem = { title: "Open" };
+	const close: MessageItem = { title: "Close", isCloseAffordance: true };
+	const message = "Opening a Cloud Shell currently requires Node.js 6 or later being installed (https://nodejs.org).";
 	const response = await window.showInformationMessage(message, open, close);
 	if (response === open) {
 		opn('https://nodejs.org');
@@ -163,9 +177,9 @@ async function requiresNode() {
 }
 
 async function deploymentConflict(retry: () => Promise<void>, os: OS, accessToken: string, armEndpoint: string) {
-	const ok: MessageItem = { title: localize('azure-account.ok', "OK") };
-	const cancel: MessageItem = { title: localize('azure-account.cancel', "Cancel"), isCloseAffordance: true };
-	const message = localize('azure-account.deploymentConflict', "Starting a {0} session will terminate all active {1} sessions. Any running processes in active {1} sessions will be terminated.", os.shellName, os.otherOS.shellName);
+	const ok: MessageItem = { title: "OK" };
+	const cancel: MessageItem = { title: "Cancel", isCloseAffordance: true };
+	const message = "Starting a " + os.shellName + " session will terminate all active " + os.otherOS.shellName + " sessions. Any running processes in active " + os.otherOS.shellName + " sessions will be terminated.";
 	const response = await window.showWarningMessage(message, ok, cancel);
 	if (response === ok) {
 		await resetConsole(accessToken, armEndpoint);
@@ -201,6 +215,13 @@ function delayed(fun: () => void, delay: number) {
 	const handle = setTimeout(fun, delay);
 	return {
 		cancel: () => clearTimeout(handle)
+	}
+}
+
+function delayedInterval(func: () => void, interval: number) {
+	const handle = setInterval(func, interval);
+	return {
+		cancel: () => clearInterval(handle)
 	}
 }
 

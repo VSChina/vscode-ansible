@@ -7,6 +7,7 @@ import * as fsExtra from 'fs-extra';
 import * as yamljs from 'yamljs';
 import * as os from 'os';
 import { Constants } from './constants';
+import * as opn from 'opn';
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
@@ -20,7 +21,7 @@ export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.
         });
 
         cp.stderr.on('data', function (data) {
-            if (outputChannel) outputChannel.append(String(data));
+            if (outputChannel) outputChannel.append('\n' + String(data));
         });
 
         cp.on('close', function (code) {
@@ -59,21 +60,28 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
         if (!code) {
             cb();
         } else {
-            outputChannel.append('Please go to below link and install Ansible first. \n');
-            outputChannel.append('http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+            outputChannel.append('\nPlease go to below link and install Ansible first.');
+            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
             outputChannel.show();
-        }
 
+            const open: vscode.MessageItem = { title: "View." };
+            vscode.window.showErrorMessage('Please go to below link and install Ansible first.', open)
+                .then(response => {
+                    if (response === open) {
+                        opn('http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+                    }
+                });
+        }
     })
 }
 
 
 export function validatePlaybook(playbook: string, outputChannel: vscode.OutputChannel): boolean {
-    var message = Constants.LineSeperator + '\nValidate playbook: passed.\n';
+    var message = '\nValidate playbook: passed.';
     var isValid = true;
 
     if (path.parse(playbook).ext != '.yml') {
-        message = Constants.LineSeperator + '\nValidate playbook: failed! file extension is not yml.\n';
+        message = '\nValidate playbook: failed! file extension is not yml.';
         isValid = false;
     }
 
@@ -96,7 +104,7 @@ export function parseCredentialsFile(outputChannel): string[] {
         configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
     }
 
-    outputChannel.append('credential file: ' + configValue + '\n');
+    outputChannel.append('\ncredential file: ' + configValue);
     outputChannel.show();
     var credentials = [];
 
@@ -125,13 +133,5 @@ export function getUserAgent(): string {
 }
 
 export function isTelemetryEnabled(): boolean {
-
-    const enabled = vscode.workspace.getConfiguration('telemetry').get('enableTelemetry');
-
-    if (!enabled) {
-        return true;
-    }
-
-    return (enabled === 'true') ? true : false;
-
+    return vscode.workspace.getConfiguration('telemetry').get<boolean>('enableTelemetry', true);
 }
