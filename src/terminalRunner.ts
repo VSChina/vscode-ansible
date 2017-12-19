@@ -83,15 +83,21 @@ export class TerminalRunner extends BaseRunner {
             // check if terminal init cmd is configured -- if not, set default docker command
             var cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
 
-            var sourceFolder = vscode.workspace.rootPath;
-            var targetFolder = '/' + vscode.workspace.workspaceFolders[0].name;
-            var targetPlaybook = path.relative(sourceFolder, playbook);
+            var sourcePath = path.dirname(playbook);
+            var targetPath = '/playbook';
+            var targetPlaybook = targetPath + '/' + path.basename(playbook);
+            if (vscode.workspace.rootPath) {
+                sourcePath = vscode.workspace.rootPath;
+                targetPath = '/' + vscode.workspace.workspaceFolders[0].name;
+                targetPlaybook = path.relative(sourcePath, playbook);
+            }
 
             if (cmd === "default" || cmd === '') {
-                cmd = "docker run --rm -it -v $workspace:$targetFolder --workdir $targetFolder --name $containerId";
-                cmd = cmd.replace('$workspace', sourceFolder);
-                cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetFolder);
+                cmd = "docker run --rm -it -v $workspace:$targetFolder  --workdir $targetFolder --name $containerId";
+                cmd = cmd.replace('$workspace', sourcePath);
+                cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetPath);
                 cmd = cmd.replace('$containerId', containerId);
+
 
                 // add credential envs if any
                 if (envs) {

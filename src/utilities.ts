@@ -133,13 +133,5 @@ export function getUserAgent(): string {
 }
 
 export function isTelemetryEnabled(): boolean {
-
-    const enabled = vscode.workspace.getConfiguration('telemetry').get('enableTelemetry');
-
-    if (!enabled) {
-        return true;
-    }
-
-    return (enabled === 'true') ? true : false;
-
+    return vscode.workspace.getConfiguration('telemetry').get<boolean>('enableTelemetry', true);
 }

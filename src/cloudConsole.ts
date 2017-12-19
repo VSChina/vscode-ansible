@@ -154,12 +154,12 @@ async function findUserSettings(tokens: Token[]) {
 }
 
 async function requiresSetUp() {
-	const open: MessageItem = { title: "Open" };
+	const open: MessageItem = { title: "Open instruction" };
 	const close: MessageItem = { title: "Close", isCloseAffordance: true };
 	const message = "First launch of Cloud Shell requires setup in the Azure portal (https://portal.azure.com).";
 	const response = await window.showInformationMessage(message, open, close);
 	if (response === open) {
-		opn('https://portal.azure.com');
+		opn('https://docs.microsoft.com/en-us/azure/cloud-shell/overview');
 	}
 }
 
