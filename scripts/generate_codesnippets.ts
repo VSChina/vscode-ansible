@@ -10,7 +10,7 @@ let codesnippets: Snippets = {};
 if (data) {
     data.modules.map((module) => {
         let snippetBody = <SnippetBody>{
-            prefix: module.module,
+            prefix: module.module + '_snippet',
             description: module.short_description,
             body: [
                 module.module + ':'
