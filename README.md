@@ -21,9 +21,9 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
 
 |platform|prerequisite|
 |--------|-----------|
-|All platform| nodejs >= 6.0 |
+|All| nodejs >= 6.0 |
 |Windows/Other platforms choose docker|docker|
-|All platform choose local| Ansible |
+|Platforms choose local| Ansible |
 
 ## Usage
 - Auto completion
@@ -42,14 +42,14 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     1. For Windows user, please share your Windows driver where vscode workspace sits on with docker. This is because the extension will map your workspace containing playbook with docker.   
        ![docker share driver](./images/dockerconfig.png)
        
-       [!NOTE]  
+       ***NOTE*** 
        Docker on windows is not stable as other platform, please try to restart docker and retry if met docker issue.
 
     
 
   - Run Ansible Playbook in [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/) 
     1. **Important** Please setup Cloud Shell for first time usage in Azure Portal by following [this instruction](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). After setup, input cmd `az account show` to learn your current subscription setting.
-    1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login. If you haven't installed this extension, you'll see an error message prompted.
+    1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login.
     1. Press `F1`, type: `Azure: Sign In`, do Azure login.
     1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Cloud Shell`.
     1. Input playbook file full path, or use default one.
