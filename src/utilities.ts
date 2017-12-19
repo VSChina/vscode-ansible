@@ -104,7 +104,7 @@ export function parseCredentialsFile(outputChannel): string[] {
         configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
     }
 
-    outputChannel.append('\ncredential file: ' + configValue + '\n');
+    outputChannel.append('\ncredential file: ' + configValue);
     outputChannel.show();
     var credentials = [];
 

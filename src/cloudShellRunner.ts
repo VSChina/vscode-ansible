@@ -12,7 +12,6 @@ import * as fsExtra from 'fs-extra';
 import * as ost from 'os';
 import { setInterval, clearInterval } from 'timers';
 import { TelemetryClient } from './telemetryClient';
-import { delay } from 'bluebird';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 

@@ -39,7 +39,7 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     1. Input playbook file full path, or use default one.
     1. This step is optinal. If you want to run cloud provider specific Ansible modules, you need set cloud credentials in credential yaml file, default path is `$HOME/.vscode/ansible-credentials.yml`, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).
     1. On Non-Windows platforms, option `docker` and `local` are supported. The `docker` option requires docker installed and the `local` option requires Ansible installed.
-    1. For windows user, please share your windows driver where vscode workspace sits on with docker. This is because the extension will map your workspace containing playbook with docker.   
+    1. For Windows user, please share your Windows driver where vscode workspace sits on with docker. This is because the extension will map your workspace containing playbook with docker.   
        ![docker share driver](./images/dockerconfig.png)
        
        [!NOTE]  
@@ -48,7 +48,7 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     
 
   - Run Ansible Playbook in [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/) 
-    1. **Important** Please setup Cloud Shell for first usage in Azure Portal by following [this instruction](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). After setup, input cmd `az account show` to learn your current subscription setting.
+    1. **Important** Please setup Cloud Shell for first time usage in Azure Portal by following [this instruction](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). After setup, input cmd `az account show` to learn your current subscription setting.
     1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login. If you haven't installed this extension, you'll see an error message prompted.
     1. Press `F1`, type: `Azure: Sign In`, do Azure login.
     1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Cloud Shell`.

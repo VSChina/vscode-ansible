@@ -86,9 +86,9 @@ export class TerminalRunner extends BaseRunner {
             var sourcePath = path.dirname(playbook);
             var targetPath = '/playbook';
             var targetPlaybook = targetPath + '/' + path.basename(playbook);
-            if (vscode.workspace.rootPath) {
-                sourcePath = vscode.workspace.rootPath;
-                targetPath = '/' + vscode.workspace.workspaceFolders[0].name;
+            if (vscode.workspace.workspaceFolders) {
+                sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                targetPath = '/' + vscode.workspace.name;
                 targetPlaybook = path.relative(sourcePath, playbook);
             }
 
