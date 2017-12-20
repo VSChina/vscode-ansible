@@ -61,7 +61,7 @@ export function isDockerInstalled(outputChannel: vscode.OutputChannel, cb: Funct
         if (err) {
             vscode.window.showErrorMessage('Docker isn\'t installed, please install Docker firstly!');
             cb(err);
-        } else {            
+        } else {
             cb();
         }
     });
