@@ -118,7 +118,7 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			} else {
 				for (let file of files) {
 					const data = fsExtra.readFileSync(file, { encoding: 'utf8' }).toString();
-					outputChannel.append('\nUpload playbook to CloudShell: ' + file + ' as /$home/' + path.basename(file));
+					outputChannel.append('\nUpload playbook to CloudShell: ' + file + ' as $HOME/' + path.basename(file));
 					response.send('echo -e "' + escapeFile(data) + '" > ' + path.basename(file) + ' \n');
 				}
 				break;

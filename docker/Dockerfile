@@ -19,6 +19,13 @@ RUN pip install ansible[azure] \
     pyrax \
     cs
 
+# workaround for ansible issue https://github.com/ansible/ansible/issues/33657
+RUN pip uninstall -y azure-mgmt-storage \
+    azure-mgmt-network
+
+RUN pip install azure-mgmt-storage==1.4.0 \
+    azure-mgmt-network==1.5.0
+
 # clean
 RUN apt-get clean
 

@@ -35,6 +35,12 @@ export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.
                 }
             }
         });
+
+        cp.on('error', function (code) {
+            if (cb) {
+                cb(code);
+            }
+        });
     } catch (e) {
         e.stack = "ERROR: " + e;
         if (cb) cb(e);
@@ -43,16 +49,20 @@ export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.
 
 
 export function isDockerInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
-    if (process.platform === 'win32') {
-        localExecCmd('cmd.exe', ['/c', 'docker', '-v'], outputChannel, function (err) {
-            if (err) {
-                vscode.window.showErrorMessage('Docker isn\'t installed, please install Docker firstly!');
-                cb(err);
-            } else {
-                cb()
-            }
-        });
+    var cmd = 'cmd.exe';
+    var args = ['/c', 'docker', '-v'];
+
+    if (process.platform === 'linux' || process.platform === 'darwin') {
+        cmd = 'docker';
+        args = ['--version'];
     }
+
+    localExecCmd(cmd, args, outputChannel, function (err) {
+        if (err) {
+            vscode.window.showErrorMessage('Docker isn\'t installed, please install Docker first!');
+        }
+        cb(err);
+    });
 }
 
 export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
@@ -61,14 +71,14 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
             cb();
         } else {
             outputChannel.append('\nPlease go to below link and install Ansible first.');
-            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html');
             outputChannel.show();
 
             const open: vscode.MessageItem = { title: "View." };
             vscode.window.showErrorMessage('Please go to below link and install Ansible first.', open)
                 .then(response => {
                     if (response === open) {
-                        opn('http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+                        opn('http://docs.ansible.com/ansible/latest/intro_installation.html');
                     }
                 });
         }

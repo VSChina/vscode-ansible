@@ -46,9 +46,12 @@ export class TerminalRunner extends BaseRunner {
         let subCmds = cmds.splice(1);
 
         if (option === Option.docker) {
-            utilities.isDockerInstalled(this._outputChannel, () => {
+            utilities.isDockerInstalled(this._outputChannel, (err) => {
+                if (err) {
+                    return;
+                }
                 TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, true, subCmds, 180, function (terminal, interval) {
-                    require('child_process').exec('docker ps --filter name=' + containerId + ' --format {{.Status}}', (err, stdout, stderr) => {
+                    require('child_process').exec('docker ps --filter name=' + containerId, (err, stdout, stderr) => {
                         if (err || stderr) {
                             console.log('err: ' + err + ' ' + stderr);
                             return;
@@ -70,7 +73,7 @@ export class TerminalRunner extends BaseRunner {
             });
         } else if (option === Option.local) {
             utilities.isAnsibleInstalled(this._outputChannel, () => {
-                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' +  option, false, subCmds, null, null);
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, false, subCmds, null, null);
             });
         }
     }
