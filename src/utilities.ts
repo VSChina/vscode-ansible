@@ -59,11 +59,9 @@ export function isDockerInstalled(outputChannel: vscode.OutputChannel, cb: Funct
 
     localExecCmd(cmd, args, outputChannel, function (err) {
         if (err) {
-            vscode.window.showErrorMessage('Docker isn\'t installed, please install Docker firstly!');
-            cb(err);
-        } else {
-            cb();
+            vscode.window.showErrorMessage('Docker isn\'t installed, please install Docker first!');
         }
+        cb(err);
     });
 }
 
@@ -73,14 +71,14 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
             cb();
         } else {
             outputChannel.append('\nPlease go to below link and install Ansible first.');
-            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html');
             outputChannel.show();
 
             const open: vscode.MessageItem = { title: "View." };
             vscode.window.showErrorMessage('Please go to below link and install Ansible first.', open)
                 .then(response => {
                     if (response === open) {
-                        opn('http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-on-mac-osx');
+                        opn('http://docs.ansible.com/ansible/latest/intro_installation.html');
                     }
                 });
         }
