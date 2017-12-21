@@ -4,12 +4,15 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { setTimeout, clearInterval } from 'timers';
 
-var terminals = [];
+const MAX_TERMINAL_COUNT = 20;
+
+var terminalCount: { [id: string]: number } = {};
 
 export class TerminalExecutor {
     private static terminals: { [id: string]: vscode.Terminal } = {};
 
     public static onDidCloseTerminal(closedTerminal: vscode.Terminal): void {
+        terminalCount[closedTerminal.name] = terminalCount[closedTerminal.name]--;
         delete this.terminals[closedTerminal.name];
     }
 
@@ -21,9 +24,19 @@ export class TerminalExecutor {
         reuseTerminal: boolean,
         cb: Function): void {
         if (!reuseTerminal || (this.terminals === undefined || this.terminals[terminalName] === undefined)) {
+            if (!terminalCount[terminalName]) {
+                terminalCount[terminalName] = 0;
+            }
+
+            if (terminalCount[terminalName] >= MAX_TERMINAL_COUNT) {
+                vscode.window.showErrorMessage('Reached max count of terminal: ' + terminalName + ', please delete unused terminals.');
+                return cb(null, null);
+            }
             var newterminal = vscode.window.createTerminal(terminalName);
             this.terminals[terminalName] = newterminal;
+            terminalCount[terminalName]++;
         }
+
         let terminal = this.terminals[terminalName];
         terminal.sendText(initCommand);
         terminal.show();
