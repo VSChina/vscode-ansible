@@ -13,8 +13,14 @@ export class TerminalExecutor {
         delete this.terminals[closedTerminal.name];
     }
 
-    public static runInTerminal(initCommand: string, terminalName: string, waitAfterInitCmd: boolean, commands: string[], retryTime: number, cb: Function): void {
-        if (this.terminals === undefined || this.terminals[terminalName] === undefined) {
+    public static runInTerminal(initCommand: string,
+        terminalName: string,
+        waitAfterInitCmd: boolean,
+        commands: string[],
+        retryTime: number,
+        reuseTerminal: boolean,
+        cb: Function): void {
+        if (!reuseTerminal || (this.terminals === undefined || this.terminals[terminalName] === undefined)) {
             var newterminal = vscode.window.createTerminal(terminalName);
             this.terminals[terminalName] = newterminal;
         }
