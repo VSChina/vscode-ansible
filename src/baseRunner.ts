@@ -6,8 +6,8 @@ import * as utilties from "./utilities";
 import * as path from "path";
 
 export enum Option {
-    docker = "docker",
-    local = "local"
+    docker = "Docker",
+    local = "Local"
 }
 
 

@@ -50,30 +50,34 @@ export class TerminalRunner extends BaseRunner {
                 if (err) {
                     return;
                 }
-                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, true, subCmds, 180, function (terminal, interval) {
-                    require('child_process').exec('docker ps --filter name=' + containerId, (err, stdout, stderr) => {
-                        if (err || stderr) {
-                            console.log('err: ' + err + ' ' + stderr);
-                            return;
-                        }
-                        if (stdout) {
-                            // check if docker container is up
-                            if (stdout && stdout.indexOf('Up ') > -1) {
-
-                                // then send other commands to terminal
-                                for (let text of subCmds) {
-                                    terminal.sendText(text);
-                                }
-                                terminal.show();
-                                clearInterval(interval);
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, true, subCmds, 180, false, function (terminal, interval) {
+                    if (terminal) {
+                        require('child_process').exec('docker ps --filter name=' + containerId, (err, stdout, stderr) => {
+                            if (err || stderr) {
+                                console.log('err: ' + err + ' ' + stderr);
+                                return;
                             }
-                        }
-                    })
+                            if (stdout) {
+                                // check if docker container is up
+                                if (stdout && stdout.indexOf('Up ') > -1) {
+
+                                    // then send other commands to terminal
+                                    for (let text of subCmds) {
+                                        terminal.sendText(text);
+                                    }
+                                    terminal.show();
+                                    if (interval) {
+                                        clearInterval(interval);
+                                    }
+                                }
+                            }
+                        })
+                    }
                 });
             });
         } else if (option === Option.local) {
             utilities.isAnsibleInstalled(this._outputChannel, () => {
-                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, false, subCmds, null, null);
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, false, subCmds, null, true, null);
             });
         }
     }
