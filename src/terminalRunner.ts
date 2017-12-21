@@ -73,7 +73,7 @@ export class TerminalRunner extends BaseRunner {
             });
         } else if (option === Option.local) {
             utilities.isAnsibleInstalled(this._outputChannel, () => {
-                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, false, subCmds, null, false, null);
+                TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + option, false, subCmds, null, true, null);
             });
         }
     }
