@@ -12,8 +12,19 @@ export class TerminalExecutor {
     private static terminals: { [id: string]: vscode.Terminal } = {};
 
     public static onDidCloseTerminal(closedTerminal: vscode.Terminal): void {
-        terminalCount[closedTerminal.name] = terminalCount[closedTerminal.name]--;
-        delete this.terminals[closedTerminal.name];
+        if (terminalCount[closedTerminal.name]) {
+            terminalCount[closedTerminal.name] = terminalCount[closedTerminal.name]--;
+        }
+
+        if (this.terminals[closedTerminal.name]) {
+            closedTerminal.processId.then((id) => {
+                this.terminals[closedTerminal.name].processId.then((localid) => {
+                    if (id === localid) {
+                        delete this.terminals[closedTerminal.name];
+                    }
+                })
+            })
+        }
     }
 
     public static runInTerminal(initCommand: string,
