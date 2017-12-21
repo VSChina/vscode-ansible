@@ -40,7 +40,7 @@ export class TerminalExecutor {
             }
 
             if (terminalCount[terminalName] >= MAX_TERMINAL_COUNT) {
-                vscode.window.showErrorMessage('Reached max count of terminal: ' + terminalName + ', please delete unused terminals.');
+                vscode.window.showErrorMessage('Reached max limit of active terminals: ' + terminalName + ', please delete unused terminals.');
                 return cb(null, null);
             }
             var newterminal = vscode.window.createTerminal(terminalName);
