@@ -42,8 +42,9 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     1. For Windows user, please share your Windows driver where vscode workspace sits on with docker. This is because the extension will map your workspace containing playbook with docker.   
        ![docker share driver](./images/dockerconfig.png)
        
-       ***NOTE*** 
-       Docker on windows is not stable as other platform, please try to restart docker and retry if met docker issue.
+       ***NOTE***  
+       - Docker on windows is not stable as other platform, please try to restart docker and retry if met docker issue.
+       - Downloading docker image for first time usage will be time consuming depends on network.
 
     
 
