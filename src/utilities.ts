@@ -121,7 +121,9 @@ export function parseCredentialsFile(outputChannel): string[] {
 
         for (var cloudprovider in creds) {
             for (var configItem in creds[cloudprovider]) {
-                credentials[configItem] = creds[cloudprovider][configItem];
+                if (!creds[cloudprovider][configItem].startsWith('your_')) {
+                    credentials[configItem] = creds[cloudprovider][configItem];
+                }
             }
         }
     }
@@ -130,8 +132,8 @@ export function parseCredentialsFile(outputChannel): string[] {
 
 export function getCredentialsFile(): string {
     var configValue = vscode.workspace.getConfiguration('ansible').get<string>('credentialsFile');
-    
-    if (configValue === undefined || configValue === '') {        
+
+    if (configValue === undefined || configValue === '') {
         configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
     }
     return configValue;
