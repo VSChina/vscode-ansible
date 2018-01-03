@@ -27,7 +27,7 @@ if (data) {
                 let required = option.required ? 'required' : 'not required';
 
                 if (optionName && optionName !== '') {
-                    var text = '  ' + optionName + '. ' + required;
+                    var text = '  ' + optionName + ': ' + required;
 
                     if (option.choices) {
                         text += ', choices: ' + option.choices.join('/');
