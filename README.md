@@ -43,8 +43,8 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
        ![docker share driver](./images/dockerconfig.png)
        
        ***NOTE***  
-       - Docker on windows is not stable as other platform, please try to restart docker and retry if met docker issue.
-       - Downloading docker image for first time usage will be time consuming depends on network.
+       - Docker on windows is not stable as on other platform, please try to restart Docker in case of any issue.
+       - Downloading Docker image for first time usage may be time consuming in case of slow network connection.
 
     
 

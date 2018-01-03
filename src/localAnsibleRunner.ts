@@ -38,6 +38,9 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
     protected runAnsibleInTerminal(playbook, cmds, terminalId: string) {
         let initCmd = cmds[0];
         let subCmds = cmds.splice(1);
+
+        TelemetryClient.sendEvent('localansible');
+
         utilities.isAnsibleInstalled(this._outputChannel, () => {
             TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + Option.local, false, subCmds, null, true, null);
         });

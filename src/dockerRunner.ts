@@ -62,6 +62,8 @@ export class DockerRunner extends TerminalBaseRunner {
         let initCmd = cmds[0];
         let subCmds = cmds.splice(1);
 
+        TelemetryClient.sendEvent('docker');
+
         utilities.isDockerInstalled(this._outputChannel, (err) => {
             if (err) {
                 return;

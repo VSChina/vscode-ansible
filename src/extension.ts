@@ -9,7 +9,6 @@ import { CloudShellRunner } from './cloudShellRunner';
 import { TerminalExecutor } from './terminalExecutor';
 import { AnsibleCompletionItemProvider } from './ansibleCompletionItemProvider';
 import { TelemetryClient } from './telemetryClient';
-import { Option } from './baseRunner';
 import { DockerRunner } from './dockerRunner';
 import { LocalAnsibleRunner } from './localAnsibleRunner';
 
