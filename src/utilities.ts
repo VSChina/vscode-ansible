@@ -110,14 +110,9 @@ export function validatePlaybook(playbook: string, outputChannel: vscode.OutputC
 // return array of credential items
 // eg. azure_subs_id xxxxx
 export function parseCredentialsFile(outputChannel): string[] {
-    var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');
-    if (configValue === undefined || configValue === '') {
+    var configValue = getCredentialsFile();
 
-        outputChannel.show();
-        configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
-    }
-
-    outputChannel.append('\ncredential file: ' + configValue);
+    outputChannel.append('\nCredential file: ' + configValue);
     outputChannel.show();
     var credentials = [];
 
@@ -131,6 +126,15 @@ export function parseCredentialsFile(outputChannel): string[] {
         }
     }
     return credentials;
+}
+
+export function getCredentialsFile(): string {
+    var configValue = vscode.workspace.getConfiguration('ansible').get<string>('credentialsFile');
+    
+    if (configValue === undefined || configValue === '') {        
+        configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
+    }
+    return configValue;
 }
 
 export function generateCredentialsFile(): void {

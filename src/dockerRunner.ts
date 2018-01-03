@@ -68,6 +68,19 @@ export class DockerRunner extends TerminalBaseRunner {
             if (err) {
                 return;
             }
+
+            const msgOption: vscode.MessageOptions = { modal: false };
+            const msgItem: vscode.MessageItem = { title: 'Ok' };
+
+            const cancelItem: vscode.MessageItem = { title: "Open File" };
+            const promptMsg = 'Using credential file at ' + utilities.getCredentialsFile();
+            vscode.window.showInformationMessage(promptMsg, msgOption, msgItem, cancelItem).then(response => {
+                if (response === cancelItem) {
+                    vscode.workspace.openTextDocument(utilities.getCredentialsFile()).then(doc => {
+                        vscode.window.showTextDocument(doc);
+                    });
+                }
+            });
             TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + Option.docker, true, subCmds, 180, false, function (terminal, interval) {
                 if (terminal) {
                     require('child_process').exec('docker ps --filter name=' + terminalId, (err, stdout, stderr) => {

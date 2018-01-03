@@ -20,9 +20,9 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
 
 |platform|prerequisite|
 |--------|-----------|
-|Platforms choose Cloud Shell| nodejs >= 6.0 |
-|Platforms choose Docker|Docker|
-|Platforms choose local Ansible| Ansible |
+|Run Playbook in Cloud Shell| nodejs >= 6.0 |
+|Run Playbook in Docker|Docker|
+|Run Playbook in Local Ansible| Ansible |
 
 ## Usage
 - Auto completion
