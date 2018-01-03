@@ -43,8 +43,8 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     1. This step is optinal. If you want to run cloud provider specific Ansible modules, you need set cloud credentials in credential yaml file, default path is `$HOME/.vscode/ansible-credentials.yml`, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).    
            
        ***NOTE***  
-       - Docker on windows is not stable as on other platform, please try to restart Docker in case of any issue.
-       - Downloading Docker image for first time usage may be time consuming in case of slow network connection.
+       - Docker on windows is not as stable as on other platforms, please try to restart Docker in case of any issue.
+       - Downloading Docker image first time usage may be time consuming in case of slow network connection.
 
   - Run Ansible Playbook in Local Ansible
     1. Make sure Ansible is installed.
