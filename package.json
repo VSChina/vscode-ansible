@@ -27,7 +27,8 @@
   "activationEvents": [
     "onLanguage:yaml",
     "onCommand:vscode-ansible.cloudshell",
-    "onCommand:vscode-ansible.playbook-in-terminal"
+    "onCommand:vscode-ansible.playbook-in-docker",
+    "onCommand:vscode-ansible.playbook-in-localansible"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -38,11 +39,52 @@
         "category": "ansible"
       },
       {
-        "command": "vscode-ansible.playbook-in-terminal",
-        "title": "Run Ansible Playbook in Terminal",
+        "command": "vscode-ansible.playbook-in-docker",
+        "title": "Run Ansible Playbook in Docker",
+        "category": "ansible"
+      },
+      {
+        "command": "vscode-ansible.playbook-in-localansible",
+        "title": "Run Ansible Playbook in Local Ansible",
         "category": "ansible"
       }
     ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "vscode-ansible.playbook-in-docker",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@1"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-localansible",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@2"
+        },
+        {
+          "command": "vscode-ansible.cloudshell",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@3"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "vscode-ansible.playbook-in-docker",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@1"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-localansible",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@2"
+        },
+        {
+          "command": "vscode-ansible.cloudshell",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@3"
+        }
+      ]
+    },
     "snippets": [
       {
         "language": "yaml",

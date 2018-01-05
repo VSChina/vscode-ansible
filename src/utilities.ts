@@ -8,6 +8,7 @@ import * as yamljs from 'yamljs';
 import * as os from 'os';
 import { Constants } from './constants';
 import * as opn from 'opn';
+import { platform } from 'os';
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
@@ -66,7 +67,9 @@ export function isDockerInstalled(outputChannel: vscode.OutputChannel, cb: Funct
 }
 
 export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
-    child_process.exec("type ansible").on('exit', function (code) {
+    var cmd = process.platform === 'win32' ? 'ansible --version' : 'type ansible';
+
+    child_process.exec(cmd).on('exit', function (code) {
         if (!code) {
             cb();
         } else {
@@ -74,7 +77,7 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
             outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html');
             outputChannel.show();
 
-            const open: vscode.MessageItem = { title: "View." };
+            const open: vscode.MessageItem = { title: "View" };
             vscode.window.showErrorMessage('Please go to below link and install Ansible first.', open)
                 .then(response => {
                     if (response === open) {
@@ -107,14 +110,9 @@ export function validatePlaybook(playbook: string, outputChannel: vscode.OutputC
 // return array of credential items
 // eg. azure_subs_id xxxxx
 export function parseCredentialsFile(outputChannel): string[] {
-    var configValue = vscode.workspace.getConfiguration('ansible').get('credentialsFile');
-    if (configValue === undefined || configValue === '') {
+    var configValue = getCredentialsFile();
 
-        outputChannel.show();
-        configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
-    }
-
-    outputChannel.append('\ncredential file: ' + configValue);
+    outputChannel.append('\nCredential file: ' + configValue);
     outputChannel.show();
     var credentials = [];
 
@@ -123,11 +121,22 @@ export function parseCredentialsFile(outputChannel): string[] {
 
         for (var cloudprovider in creds) {
             for (var configItem in creds[cloudprovider]) {
-                credentials[configItem] = creds[cloudprovider][configItem];
+                if (!creds[cloudprovider][configItem].startsWith('your_')) {
+                    credentials[configItem] = creds[cloudprovider][configItem];
+                }
             }
         }
     }
     return credentials;
+}
+
+export function getCredentialsFile(): string {
+    var configValue = vscode.workspace.getConfiguration('ansible').get<string>('credentialsFile');
+
+    if (configValue === undefined || configValue === '') {
+        configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
+    }
+    return configValue;
 }
 
 export function generateCredentialsFile(): void {
