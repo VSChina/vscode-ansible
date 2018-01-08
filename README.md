@@ -35,6 +35,8 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
   - Docker.
   - Local Ansible installation.
   - Cloud Shell.
+
+    ![run playbook](./images/menu.png)
   
   - **Run Ansible Playbook in Docker** 
     1. Make sure Docker is installed and running. For Non-windows platform, please configure Docker run without sudo.
