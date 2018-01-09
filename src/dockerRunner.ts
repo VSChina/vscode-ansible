@@ -72,11 +72,10 @@ export class DockerRunner extends TerminalBaseRunner {
             const msgOption: vscode.MessageOptions = { modal: false };
             const msgItem: vscode.MessageItem = { title: 'Ok' };
 
-
-
             if (!utilities.isCredentialConfigured()) {
                 const cancelItem: vscode.MessageItem = { title: "Not Now" };
-                const promptMsg = 'Please configure cloud credentials at file ' + utilities.getCredentialsFile() + ' at first time';
+                const promptMsg = 'Please configure cloud credentials at ' + utilities.getCredentialsFile() + ' for first time';
+                
                 vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem).then(response => {
                     vscode.workspace.getConfiguration('ansible').update('credentialsConfigured', true);
                     if (response === msgItem) {
