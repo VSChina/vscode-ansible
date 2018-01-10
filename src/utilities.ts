@@ -9,6 +9,10 @@ import * as os from 'os';
 import { Constants } from './constants';
 import * as opn from 'opn';
 import { platform } from 'os';
+import { SSHServer } from './interfaces';
+import * as scp from 'scp2';
+
+const sshConfigFile = path.join(os.homedir(), '.ssh', 'servers.json');
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
@@ -153,4 +157,56 @@ export function getUserAgent(): string {
 
 export function isTelemetryEnabled(): boolean {
     return vscode.workspace.getConfiguration('telemetry').get<boolean>('enableTelemetry', true);
+}
+
+export function copyFileRemote(source: string, dest: string, sshServer: SSHServer, cb: Function): boolean {
+    if (!sshServer) {
+        console.log('invalid ssh server!');
+        return false;
+    }
+
+    if (!source || !fsExtra.existsSync(source)) {
+        console.log('invalid source file: ' + source);
+        return false;
+    }
+
+    scp.scp(source, {
+        host: sshServer.host,
+        port: sshServer.port,
+        username: sshServer.user,
+        password: sshServer.password,
+        privateKey: sshServer.key ? sshServer.key : '',
+        path: dest
+    }, (err) => {
+        if (err) {
+            vscode.window.showErrorMessage('Failed to copy file ' + source + ' to ' + sshServer.host + ': ' + err);
+        }
+        return cb(err);
+    });
+}
+
+export function getSSHConfig(): SSHServer[] {
+
+    if (fsExtra.existsSync(sshConfigFile)) {
+        return <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
+    }
+
+    return null;
+}
+
+export function updateSSHConfig(server: SSHServer): void {
+    var servers: SSHServer[] = [];
+
+    if (fsExtra.existsSync(sshConfigFile)) {
+        servers = <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
+    }
+
+    for (let exist of servers) {
+        if (exist.host === server.host) {
+            return;
+        }
+    }
+    servers.push(server);
+
+    fsExtra.writeJsonSync(sshConfigFile, servers);
 }
