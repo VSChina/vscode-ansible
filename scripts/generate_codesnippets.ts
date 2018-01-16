@@ -1,6 +1,5 @@
 import * as fsextra from 'fs-extra';
 import * as path from 'path';
-import * as _ from 'underscore';
 
 const sourcefile = path.join(__dirname, '../snippets/ansible-data.json');
 const targetfile = path.join(__dirname, '../snippets/codesnippets.json');
