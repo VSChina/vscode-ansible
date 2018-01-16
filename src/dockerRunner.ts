@@ -72,39 +72,58 @@ export class DockerRunner extends TerminalBaseRunner {
             const msgOption: vscode.MessageOptions = { modal: false };
             const msgItem: vscode.MessageItem = { title: 'Ok' };
 
-            const cancelItem: vscode.MessageItem = { title: "Open File" };
-            const promptMsg = 'Using credential file at ' + utilities.getCredentialsFile();
-            vscode.window.showInformationMessage(promptMsg, msgOption, msgItem, cancelItem).then(response => {
-                if (response === cancelItem) {
-                    vscode.workspace.openTextDocument(utilities.getCredentialsFile()).then(doc => {
-                        vscode.window.showTextDocument(doc);
-                    });
-                }
-            });
-            TerminalExecutor.runInTerminal(initCmd, Constants.AnsibleTerminalName + ' ' + Option.docker, true, subCmds, 180, false, function (terminal, interval) {
-                if (terminal) {
-                    require('child_process').exec('docker ps --filter name=' + terminalId, (err, stdout, stderr) => {
-                        if (err || stderr) {
-                            console.log('err: ' + err + ' ' + stderr);
-                            return;
-                        }
-                        if (stdout) {
-                            // check if docker container is up
-                            if (stdout && stdout.indexOf('Up ') > -1) {
+            if (!utilities.isCredentialConfigured()) {
+                const cancelItem: vscode.MessageItem = { title: "Not Now" };
+                const promptMsg = 'Please configure cloud credentials at ' + utilities.getCredentialsFile() + ' for first time';
+                
+                vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem).then(response => {
+                    vscode.workspace.getConfiguration('ansible').update('credentialsConfigured', true);
+                    if (response === msgItem) {
+                        vscode.workspace.openTextDocument(utilities.getCredentialsFile()).then(doc => {
+                            vscode.window.showTextDocument(doc);
+                        });
+                    } else if (response === cancelItem) {
+                        this.startTerminal(terminalId, initCmd, Constants.AnsibleTerminalName + ' ' + Option.docker, true, subCmds, 180, false);
+                    }
+                });
+            } else {
+                const openItem: vscode.MessageItem = { title: "Open File" };
+                vscode.window.showInformationMessage('Use cloud credential file ' + utilities.getCredentialsFile(), msgOption, msgItem, openItem).then(response => {
+                    if (response === openItem) {
+                        vscode.workspace.openTextDocument(utilities.getCredentialsFile()).then(doc => {
+                            vscode.window.showTextDocument(doc);
+                        });
+                    }
+                });
+                this.startTerminal(terminalId, initCmd, Constants.AnsibleTerminalName + ' ' + Option.docker, true, subCmds, 180, false);
+            }
+        });
+    }
 
-                                // then send other commands to terminal
-                                for (let text of subCmds) {
-                                    terminal.sendText(text);
-                                }
-                                terminal.show();
-                                if (interval) {
-                                    clearInterval(interval);
-                                }
+    private startTerminal(terminalId: string, initCmd: string, terminalName: string, waitAfterInit: boolean, subCmds: string[], interval: number, reuse: boolean): void {
+        TerminalExecutor.runInTerminal(initCmd, terminalName, waitAfterInit, subCmds, interval, reuse, function (terminal, interval) {
+            if (terminal) {
+                require('child_process').exec('docker ps --filter name=' + terminalId, (err, stdout, stderr) => {
+                    if (err || stderr) {
+                        console.log('err: ' + err + ' ' + stderr);
+                        return;
+                    }
+                    if (stdout) {
+                        // check if docker container is up
+                        if (stdout && stdout.indexOf('Up ') > -1) {
+
+                            // then send other commands to terminal
+                            for (let text of subCmds) {
+                                terminal.sendText(text);
+                            }
+                            terminal.show();
+                            if (interval) {
+                                clearInterval(interval);
                             }
                         }
-                    })
-                }
-            });
+                    }
+                })
+            }
         });
     }
 }

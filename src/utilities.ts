@@ -151,6 +151,15 @@ export function getUserAgent(): string {
     return Constants.ExtensionId + '-' + vscode.extensions.getExtension(Constants.ExtensionId).packageJSON.version;
 }
 
+export function isCredentialConfigured(): boolean {
+    var configValue = vscode.workspace.getConfiguration('ansible').get<boolean>('credentialsConfigured');
+
+    if (configValue === undefined || configValue === false) {
+        return false;
+    }
+    return true;
+}
+
 export function isTelemetryEnabled(): boolean {
     return vscode.workspace.getConfiguration('telemetry').get<boolean>('enableTelemetry', true);
 }

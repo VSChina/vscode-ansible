@@ -119,6 +119,10 @@
           "type": "string",
           "default": "default",
           "description": "Command to be run in terminal after it starts"
+        },
+        "ansible.credentialsConfigured": {
+          "type": "boolean",
+          "default": false
         }
       }
     }
