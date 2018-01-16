@@ -1,5 +1,6 @@
 import * as fsextra from 'fs-extra';
 import * as path from 'path';
+import * as _ from 'underscore';
 
 const sourcefile = path.join(__dirname, '../snippets/ansible-data.json');
 const targetfile = path.join(__dirname, '../snippets/codesnippets.json');
@@ -19,20 +20,32 @@ if (data) {
 
         let options;
         if (module.options) {
-            options = Object.keys(module.options);
+            var sortedOptions = sortOptions(module.options);
+            options = Object.keys(sortedOptions);
 
             for (let i = 0; i < options.length; i++) {
                 let optionName = options[i];
-                let option = module.options[optionName];
+                let option = sortedOptions[optionName];
                 let required = option.required ? 'required' : 'not required';
 
                 if (optionName && optionName !== '') {
-                    var text = '  ' + optionName + ': ' + required;
+                    var text = '  ' + optionName + ': ';
+
 
                     if (option.choices) {
-                        text += ', choices: ' + option.choices.join('/');
+                        text += '${' + (i + 1) + '|' + option.choices.join(',') + '|}';
+                    } else {
+                        text += '${' + (i + 1) + ':' + option.default + '}';
                     }
-                    text += ', default: ' + option.default + '. # ' + option.description;
+
+                    text += ' # ' + required + '.';
+
+                    if (option.choices) {
+                        text += ' choices: ' + option.choices.join(';') + '.';
+                    }
+
+                    text += ' ' + option.description;
+
                     snippetBody.body.push(text);
                 }
             }
@@ -43,6 +56,28 @@ if (data) {
 }
 
 fsextra.writeFileSync(targetfile, JSON.stringify(codesnippets, null, 2));
+
+function sortOptions(optionsDic: DirectiveOptions): DirectiveOptions {
+    var result: DirectiveOptions = {};
+
+    for (let optionName of Object.keys(optionsDic)) {
+        let option = optionsDic[optionName];
+
+        if (option.required) {
+            result[optionName] = option;
+        }
+    }
+
+    for (let optionName of Object.keys(optionsDic)) {
+        let option = optionsDic[optionName];
+
+        if (!option.required) {
+            result[optionName] = option;
+        }
+    }
+    return result;
+
+}
 
 export interface SnippetBody {
     prefix: string,
