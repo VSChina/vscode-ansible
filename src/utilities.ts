@@ -188,7 +188,12 @@ export function copyFileRemote(source: string, dest: string, sshServer: SSHServe
 export function getSSHConfig(): SSHServer[] {
 
     if (fsExtra.existsSync(sshConfigFile)) {
-        return <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
+        try {
+            return <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
+        } catch (err) {
+            return null;
+        }
+
     }
 
     return null;
@@ -198,7 +203,10 @@ export function updateSSHConfig(server: SSHServer): void {
     var servers: SSHServer[] = [];
 
     if (fsExtra.existsSync(sshConfigFile)) {
-        servers = <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
+        try {
+            servers = <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
+        } catch (err) {
+        }
     }
 
     for (let exist of servers) {
@@ -208,5 +216,5 @@ export function updateSSHConfig(server: SSHServer): void {
     }
     servers.push(server);
 
-    fsExtra.writeJsonSync(sshConfigFile, servers);
+    fsExtra.writeJsonSync(sshConfigFile, servers, { spaces: '  ' });
 }
