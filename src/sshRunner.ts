@@ -9,7 +9,7 @@ import { Constants } from './constants';
 import { TelemetryClient } from './telemetryClient';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { openSSHConcole } from './SSHConsole';
+import { openSSHConsole } from './SSHConsole';
 
 export class SSHRunner extends TerminalBaseRunner {
     constructor(outputChannel: vscode.OutputChannel) {
@@ -51,7 +51,7 @@ export class SSHRunner extends TerminalBaseRunner {
                     return;
                 } else {
                     // run playbook
-                    openSSHConcole(this._outputChannel, server).then((terminal) => {
+                    openSSHConsole(this._outputChannel, server).then((terminal) => {
                         if (terminal) {
                             setTimeout(() => {
 

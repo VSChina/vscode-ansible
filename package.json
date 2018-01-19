@@ -51,7 +51,7 @@
       },
       {
         "command": "vscode-ansible.ssh",
-        "title": "Run Ansible Playbook Remotely via SSH",
+        "title": "Run Ansible Playbook Remotely via ssh",
         "category": "ansible"
       }
     ],

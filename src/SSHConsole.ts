@@ -6,7 +6,7 @@ import { OutputChannel } from 'vscode';
 import * as path from 'path';
 import { Constants } from './constants';
 
-export function openSSHConcole(outputChannel: OutputChannel, server: SSHServer) {
+export function openSSHConsole(outputChannel: OutputChannel, server: SSHServer) {
 	return (async function retry(): Promise<any> {
 		const isWindows = process.platform === 'win32';
 

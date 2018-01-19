@@ -36,7 +36,7 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
   - Docker.
   - Local Ansible installation.
   - Cloud Shell.
-  - Remotely via SSH.
+  - Remotely via ssh.
 
     ![run playbook](./images/menu.png)
   
