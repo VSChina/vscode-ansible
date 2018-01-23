@@ -28,7 +28,8 @@
     "onLanguage:yaml",
     "onCommand:vscode-ansible.cloudshell",
     "onCommand:vscode-ansible.playbook-in-docker",
-    "onCommand:vscode-ansible.playbook-in-localansible"
+    "onCommand:vscode-ansible.playbook-in-localansible",
+    "onCommand:vscode-ansible.ssh"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -46,6 +47,11 @@
       {
         "command": "vscode-ansible.playbook-in-localansible",
         "title": "Run Ansible Playbook in Local Ansible",
+        "category": "ansible"
+      },
+      {
+        "command": "vscode-ansible.ssh",
+        "title": "Run Ansible Playbook Remotely via ssh",
         "category": "ansible"
       }
     ],
@@ -65,6 +71,11 @@
           "command": "vscode-ansible.cloudshell",
           "when": "resourceLangId == yaml",
           "group": "vscode-ansible@3"
+        },
+        {
+          "command": "vscode-ansible.ssh",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@4"
         }
       ],
       "editor/title/context": [
@@ -82,6 +93,11 @@
           "command": "vscode-ansible.cloudshell",
           "when": "resourceLangId == yaml",
           "group": "vscode-ansible@3"
+        },
+        {
+          "command": "vscode-ansible.ssh",
+          "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@4"
         }
       ]
     },
@@ -154,7 +170,10 @@
     "os": "^0.1.1",
     "path": "^0.12.7",
     "request-promise": "^4.2.2",
+    "scp2": "^0.5.0",
     "semver": "5.4.1",
+    "ssh-exec": "^2.0.0",
+    "ssh2": "^0.5.5",
     "vscode-extension-telemetry": "0.0.8",
     "vscode-nls": "^2.0.2",
     "ws": "^3.3.2",

@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { setTimeout, clearInterval } from 'timers';
+import { setInterval, clearInterval } from 'timers';
 
 const MAX_TERMINAL_COUNT = 20;
 

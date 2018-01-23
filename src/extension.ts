@@ -11,6 +11,7 @@ import { AnsibleCompletionItemProvider } from './ansibleCompletionItemProvider';
 import { TelemetryClient } from './telemetryClient';
 import { DockerRunner } from './dockerRunner';
 import { LocalAnsibleRunner } from './localAnsibleRunner';
+import { SSHRunner } from './sshRunner';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
@@ -26,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     var dockerRunner = new DockerRunner(outputChannel);
     var localansibleRunner = new LocalAnsibleRunner(outputChannel);
     var cloudShellRunner = new CloudShellRunner(outputChannel);
+    var sshRunner = new SSHRunner(outputChannel);
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.playbook-in-docker', (playbook) => {
         dockerRunner.runPlaybook(playbook ? playbook.fsPath : null);
@@ -37,6 +39,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.cloudshell', (playbook) => {
         cloudShellRunner.runPlaybook(playbook ? playbook.fsPath : null);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.ssh', (playbook) => {
+        sshRunner.runPlaybook(playbook ? playbook.fsPath : null);
     }));
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
