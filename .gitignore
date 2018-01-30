@@ -3,6 +3,8 @@
 .vsix
 out
 nodemodules
+**/.vscode
+**/nodemodules
 
 # Logs
 logs

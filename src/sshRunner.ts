@@ -97,16 +97,16 @@ export async function getSSHServer(): Promise<SSHServer> {
             if (port) {
                 var user = await vscode.window.showInputBox({ value: 'username', prompt: 'ssh username', placeHolder: 'username', password: false });
                 if (user) {
-                    var password = await vscode.window.showInputBox({ value: 'password', prompt: 'ssh password', placeHolder: 'password', password: true });
+                    var password = await vscode.window.showInputBox({ value: '', prompt: 'ssh password', placeHolder: 'password', password: true });
                     server.host = host;
                     server.port = +port;
                     server.user = user;
 
-                    if (password) {
+                    if (password && password != '') {
                         server.password = password;
                     } else {
-                        var key = await vscode.window.showInputBox({ value: 'key file', prompt: 'ssh key file', placeHolder: 'ssh private key file', password: false });
-                        if (key) {
+                        var key = await vscode.window.showInputBox({ value: '', prompt: 'ssh key file', placeHolder: 'ssh private key file', password: false });
+                        if (key && key != '') {
                             server.key = key;
                         }
                     }

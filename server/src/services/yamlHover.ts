@@ -28,7 +28,7 @@ export class YAMLHover {
             return this.promise.resolve(void 0);
         }
 
-        if (node.type === 'string' && node.isKey && node.getValue !== 'name') {
+        if (node.type === 'string' && node.isKey && node.value != 'name') {
 
             if (node.parent && node.parent.type === 'property') {
                 let parent = <Parser.PropertyASTNode>node.parent;
