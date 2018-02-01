@@ -46,16 +46,6 @@ connection.onHover((textDocumentPositionParams) => {
 
 });
 
-connection.onCompletion((textDocumentPosition) => {
-    let textDocument = documents.get(textDocumentPosition.textDocument.uri);
-    let jsonDocument = parseYAML(textDocument.getText());
-    return languageService.doComplete(textDocument, textDocumentPosition.position, jsonDocument);
-});
-
-connection.onCompletionResolve(completionItem => {
-    return languageService.doResolve(completionItem);
-})
-
 connection.listen();
 
 documents.onDidChangeContent((change) => {
