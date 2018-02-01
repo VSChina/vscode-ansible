@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
-        "outDir": "out",
+        "outDir": "../out/server",
         "lib": [
             "es6"
         ],
@@ -11,8 +11,6 @@
     },
     "exclude": [
         "node_modules",
-        ".vscode-test",
-        "scripts/*.ts",
-        "server"
+        ".vscode-test"
     ]
 }

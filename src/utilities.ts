@@ -216,6 +216,8 @@ export function updateSSHConfig(server: SSHServer): void {
             servers = <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
         } catch (err) {
         }
+    } else {
+        fsExtra.ensureDirSync(path.dirname(sshConfigFile));
     }
 
     for (let exist of servers) {
