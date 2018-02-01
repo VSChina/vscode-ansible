@@ -12,9 +12,6 @@ export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvi
         this.completionEngine = new CompletionEngine();
     }
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.CompletionItem[]> {
-        if (!this.enableAutoCompletion(document)) {
-            return null;
-        }
 
         let range = document.getWordRangeAtPosition(position);
         let prefix = range ? document.getText(range) : '';

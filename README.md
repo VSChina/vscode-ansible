@@ -8,7 +8,7 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
 
 ## Features
 
-  - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc.
+  - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc, Auto completion for variables.
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
   - Syntax highlighting.
   - Run playbook from Docker.
