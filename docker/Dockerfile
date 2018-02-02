@@ -26,6 +26,9 @@ RUN pip uninstall -y azure-mgmt-storage \
 RUN pip install azure-mgmt-storage==1.4.0 \
     azure-mgmt-network==1.5.0
 
+COPY ./azure_rm_common.py /usr/lib/python2.7/dist-packages/ansible/module_utils
+COPY ./azure_rm_securitygroup.py /usr/lib/python2.7/dist-packages/ansible/modules/cloud/azure
+
 # clean
 RUN apt-get clean
 
