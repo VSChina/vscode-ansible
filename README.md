@@ -11,7 +11,8 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
   - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc, Auto completion for variables.
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
   - Syntax highlighting.
-  - Hover over module names. 
+  - Code navigation by Symbols, press `Ctrl + Shift + O`.
+  - Hover over module names, to show module documentation. 
   - Run playbook from Docker.
   - Run playbook from local Ansible installation.
   - Run playbook from [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
