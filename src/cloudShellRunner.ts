@@ -51,11 +51,6 @@ export class CloudShellRunner extends BaseRunner {
 
 
     protected startCloudShell(playbook: string): void {
-        const msgOption: vscode.MessageOptions = { modal: false };
-        const msgItem: vscode.MessageItem = { title: 'Confirm & Not show this again' };
-
-        const cancelItem: vscode.MessageItem = { title: "View detail" };
-        const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell !';
 
         this.showPrompt().then(() => {
             const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
@@ -98,7 +93,7 @@ export class CloudShellRunner extends BaseRunner {
 
         if (!config) {
             const msgOption: vscode.MessageOptions = { modal: false };
-            const msgItem: vscode.MessageItem = { title: 'Confirm & Not show this again' };
+            const msgItem: vscode.MessageItem = { title: 'Confirm & Don\'t show this again' };
 
             const cancelItem: vscode.MessageItem = { title: "View detail" };
             const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell !';
