@@ -36,38 +36,39 @@ export class SSHRunner extends TerminalBaseRunner {
 
     protected runAnsibleInTerminal(playbook, cmds, terminalId: string) {
 
-        TelemetryClient.sendEvent('ssh');
+        utilities.IsNodeInstalled(this._outputChannel, () => {
+            TelemetryClient.sendEvent('ssh');
 
-        // get ssh config
-        getSSHServer().then((server) => {
-            // update ssh config
-            utilities.updateSSHConfig(server);
+            // get ssh config
+            getSSHServer().then((server) => {
+                // update ssh config
+                utilities.updateSSHConfig(server);
 
-            // copy playbook
-            let destPlaybookFolder = this.getTargetFolder();
+                // copy playbook
+                let destPlaybookFolder = this.getTargetFolder();
 
-            utilities.copyFileRemote(playbook, destPlaybookFolder, server, (err) => {
-                if (err) {
-                    return;
-                } else {
-                    // run playbook
-                    openSSHConsole(this._outputChannel, server).then((terminal) => {
-                        if (terminal) {
-                            setTimeout(() => {
+                utilities.copyFileRemote(playbook, destPlaybookFolder, server, (err) => {
+                    if (err) {
+                        return;
+                    } else {
+                        // run playbook
+                        openSSHConsole(this._outputChannel, server).then((terminal) => {
+                            if (terminal) {
+                                setTimeout(() => {
 
-                                for (let cmd of cmds) {
-                                    terminal.sendText(cmd + '\n');
-                                }
-                                terminal.show();
-                            }, 3000);
-                        } else {
-                            this._outputChannel.appendLine('\nSSH connection failed.');
-                            this._outputChannel.show();
-                        }
-                    })
-                }
+                                    for (let cmd of cmds) {
+                                        terminal.sendText(cmd + '\n');
+                                    }
+                                    terminal.show();
+                                }, 3000);
+                            } else {
+                                this._outputChannel.appendLine('\nSSH connection failed.');
+                                this._outputChannel.show();
+                            }
+                        })
+                    }
+                });
             });
-
         });
     }
 
