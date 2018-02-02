@@ -71,7 +71,7 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
     1. Confirm awareness on Azure usage fee. Please refer to [this document](https://docs.microsoft.com/en-us/azure/cloud-shell/pricing) to learn more about Azure Cloud Shell pricing.
     
   - **Run Playbook Remotely via ssh** 
-    1. Configure your remote server in `$HOME/.ssh/server.json` like below. Or follow wizard to fill in server information.
+    1. Configure your remote server in `$HOME/.ssh/servers.json` like below. Or follow wizard to fill in server information.
        ```
        [
             {

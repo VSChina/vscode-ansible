@@ -41,8 +41,13 @@ export class SSHRunner extends TerminalBaseRunner {
 
             // get ssh config
             getSSHServer().then((server) => {
-                // update ssh config
-                utilities.updateSSHConfig(server);
+                if (server === undefined || server === null) {
+                    this._outputChannel.append('\nInvalid SSH server.');
+                    this._outputChannel.show();
+
+                    vscode.window.showErrorMessage('Invalid SSH server.');
+                    return;
+                }
 
                 // copy playbook
                 let destPlaybookFolder = this.getTargetFolder();
@@ -105,16 +110,22 @@ export async function getSSHServer(): Promise<SSHServer> {
 
                     if (password && password != '') {
                         server.password = password;
+
+                        utilities.updateSSHConfig(server);
+                        return server;
                     } else {
                         var key = await vscode.window.showInputBox({ value: '', prompt: 'ssh key file', placeHolder: 'ssh private key file', password: false });
                         if (key && key != '') {
                             server.key = key;
+
+                            utilities.updateSSHConfig(server);
+                            return server;
                         }
                     }
-                    return server;
                 }
             }
         }
+        return null;
     }
 }
 

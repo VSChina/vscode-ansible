@@ -247,6 +247,9 @@ export function getSSHConfig(): SSHServer[] {
 export function updateSSHConfig(server: SSHServer): void {
     var servers: SSHServer[] = [];
 
+    if (server === undefined || server === null) {
+        return;
+    }
     if (fsExtra.existsSync(sshConfigFile)) {
         try {
             servers = <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));
