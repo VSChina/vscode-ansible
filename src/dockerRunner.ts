@@ -18,7 +18,7 @@ export class DockerRunner extends TerminalBaseRunner {
 
     protected getCmds(playbook: string, envs: string[], terminalId: string): string[] {
         var cmdsToTerminal = [];
-        var cmd: string = vscode.workspace.getConfiguration('ansible').get('terminalInitCommand')
+        let cmd: string = utilities.getCodeConfiguration<string>(null, Constants.Config_terminalInitCommand);
 
         var sourcePath = path.dirname(playbook);
         var targetPath = '/playbook';
@@ -75,9 +75,9 @@ export class DockerRunner extends TerminalBaseRunner {
             if (!utilities.isCredentialConfigured()) {
                 const cancelItem: vscode.MessageItem = { title: "Not Now" };
                 const promptMsg = 'Please configure cloud credentials at ' + utilities.getCredentialsFile() + ' for first time';
-                
+
                 vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem).then(response => {
-                    vscode.workspace.getConfiguration('ansible').update('credentialsConfigured', true);
+                    utilities.updateCodeConfiguration(null, Constants.Config_credentialConfigured, true);
                     if (response === msgItem) {
                         vscode.workspace.openTextDocument(utilities.getCredentialsFile()).then(doc => {
                             vscode.window.showTextDocument(doc);

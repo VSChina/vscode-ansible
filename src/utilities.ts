@@ -92,6 +92,26 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
     })
 }
 
+export function IsNodeInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
+    var cmd = 'node --version';
+
+    child_process.exec(cmd).on('exit', function (code) {
+        if (!code) {
+            cb();
+        } else {
+            outputChannel.append('\nPlease install Node.js 6 or later version\n.');
+            outputChannel.show();
+
+            const open: vscode.MessageItem = { title: "View" };
+            vscode.window.showErrorMessage('Please install Node.js 6 or later version.', open)
+                .then(response => {
+                    if (response === open) {
+                        opn('https://nodejs.org');
+                    }
+                });
+        }
+    })
+}
 
 export function validatePlaybook(playbook: string, outputChannel: vscode.OutputChannel): boolean {
     var message = '\nValidate playbook: passed.';
@@ -135,7 +155,7 @@ export function parseCredentialsFile(outputChannel): string[] {
 }
 
 export function getCredentialsFile(): string {
-    var configValue = vscode.workspace.getConfiguration('ansible').get<string>('credentialsFile');
+    var configValue = getCodeConfiguration<string>(null, Constants.Config_credentialsFile);
 
     if (configValue === undefined || configValue === '') {
         configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');
@@ -156,16 +176,32 @@ export function getUserAgent(): string {
 }
 
 export function isCredentialConfigured(): boolean {
-    var configValue = vscode.workspace.getConfiguration('ansible').get<boolean>('credentialsConfigured');
-
-    if (configValue === undefined || configValue === false) {
-        return false;
-    }
-    return true;
+    return getCodeConfiguration<boolean>(null, Constants.Config_credentialConfigured);
 }
 
 export function isTelemetryEnabled(): boolean {
-    return vscode.workspace.getConfiguration('telemetry').get<boolean>('enableTelemetry', true);
+    return getCodeConfiguration<boolean>('telemetry', 'enableTelemetry');
+}
+
+export function getCodeConfiguration<T>(section, configName): T {
+    if (section === undefined || section === null) {
+        section = 'ansible';
+    }
+    if (vscode.workspace.getConfiguration(section).has(configName)) {
+        return vscode.workspace.getConfiguration(section).get<T>(configName);
+    } else {
+        return null;
+    }
+}
+
+export function updateCodeConfiguration(section, configName, configValue) {
+    if (section === undefined || section === null) {
+        section = 'ansible';
+    }
+
+    if (vscode.workspace.getConfiguration(section).has(configName)) {
+        return vscode.workspace.getConfiguration(section).update(configName, configValue);
+    }
 }
 
 export function copyFileRemote(source: string, dest: string, sshServer: SSHServer, cb: Function): boolean {
@@ -211,6 +247,9 @@ export function getSSHConfig(): SSHServer[] {
 export function updateSSHConfig(server: SSHServer): void {
     var servers: SSHServer[] = [];
 
+    if (server === undefined || server === null) {
+        return;
+    }
     if (fsExtra.existsSync(sshConfigFile)) {
         try {
             servers = <SSHServer[]>JSON.parse(fsExtra.readFileSync(sshConfigFile));

@@ -36,38 +36,44 @@ export class SSHRunner extends TerminalBaseRunner {
 
     protected runAnsibleInTerminal(playbook, cmds, terminalId: string) {
 
-        TelemetryClient.sendEvent('ssh');
+        utilities.IsNodeInstalled(this._outputChannel, () => {
+            TelemetryClient.sendEvent('ssh');
 
-        // get ssh config
-        getSSHServer().then((server) => {
-            // update ssh config
-            utilities.updateSSHConfig(server);
+            // get ssh config
+            getSSHServer().then((server) => {
+                if (server === undefined || server === null) {
+                    this._outputChannel.append('\nInvalid SSH server.');
+                    this._outputChannel.show();
 
-            // copy playbook
-            let destPlaybookFolder = this.getTargetFolder();
-
-            utilities.copyFileRemote(playbook, destPlaybookFolder, server, (err) => {
-                if (err) {
+                    vscode.window.showErrorMessage('Invalid SSH server.');
                     return;
-                } else {
-                    // run playbook
-                    openSSHConsole(this._outputChannel, server).then((terminal) => {
-                        if (terminal) {
-                            setTimeout(() => {
-
-                                for (let cmd of cmds) {
-                                    terminal.sendText(cmd + '\n');
-                                }
-                                terminal.show();
-                            }, 3000);
-                        } else {
-                            this._outputChannel.appendLine('\nSSH connection failed.');
-                            this._outputChannel.show();
-                        }
-                    })
                 }
-            });
 
+                // copy playbook
+                let destPlaybookFolder = this.getTargetFolder();
+
+                utilities.copyFileRemote(playbook, destPlaybookFolder, server, (err) => {
+                    if (err) {
+                        return;
+                    } else {
+                        // run playbook
+                        openSSHConsole(this._outputChannel, server).then((terminal) => {
+                            if (terminal) {
+                                setTimeout(() => {
+
+                                    for (let cmd of cmds) {
+                                        terminal.sendText(cmd + '\n');
+                                    }
+                                    terminal.show();
+                                }, 3000);
+                            } else {
+                                this._outputChannel.appendLine('\nSSH connection failed.');
+                                this._outputChannel.show();
+                            }
+                        })
+                    }
+                });
+            });
         });
     }
 
@@ -104,16 +110,22 @@ export async function getSSHServer(): Promise<SSHServer> {
 
                     if (password && password != '') {
                         server.password = password;
+
+                        utilities.updateSSHConfig(server);
+                        return server;
                     } else {
                         var key = await vscode.window.showInputBox({ value: '', prompt: 'ssh key file', placeHolder: 'ssh private key file', password: false });
                         if (key && key != '') {
                             server.key = key;
+
+                            utilities.updateSSHConfig(server);
+                            return server;
                         }
                     }
-                    return server;
                 }
             }
         }
+        return null;
     }
 }
 

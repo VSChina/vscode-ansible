@@ -139,6 +139,10 @@
         "ansible.credentialsConfigured": {
           "type": "boolean",
           "default": false
+        },
+        "ansible.cloudShellConfirmed": {
+          "type": "boolean",
+          "default": false
         }
       }
     }

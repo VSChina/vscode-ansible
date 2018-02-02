@@ -51,51 +51,63 @@ export class CloudShellRunner extends BaseRunner {
 
 
     protected startCloudShell(playbook: string): void {
-        const msgOption: vscode.MessageOptions = { modal: false };
-        const msgItem: vscode.MessageItem = { title: 'Confirm' };
 
-        const cancelItem: vscode.MessageItem = { title: "View detail" };
-        const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell !';
-        vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem).then(
-            response => {
-                if (response === msgItem) {
-                    const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
+        this.showPrompt().then(() => {
+            const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
-                    openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile).then(terminal => {
-                        var count = 30;
-                        if (terminal) {
-                            var _localthis = this;
-                            var interval = setInterval(function () {
-                                count--;
-                                if (count > 0) {
-                                    if (fsExtra.existsSync(tempFile)) {
-                                        fsExtra.removeSync(tempFile);
-                                        if (utilities.isTelemetryEnabled()) {
-                                            terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
-                                        }
-                                        terminal.sendText('ansible-playbook ' + path.basename(playbook));
-                                        terminal.show();
-
-                                        count = 0;
-                                    }
-                                } else {
-                                    _localthis.stop(interval);
+            openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile).then(terminal => {
+                var count = 30;
+                if (terminal) {
+                    var _localthis = this;
+                    var interval = setInterval(function () {
+                        count--;
+                        if (count > 0) {
+                            if (fsExtra.existsSync(tempFile)) {
+                                fsExtra.removeSync(tempFile);
+                                if (utilities.isTelemetryEnabled()) {
+                                    terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
                                 }
-                            }, 500);
+                                terminal.sendText('ansible-playbook ' + path.basename(playbook));
+                                terminal.show();
+
+                                count = 0;
+                            }
                         } else {
-                            this._outputChannel.appendLine('\nConnecting to cloud shell failed, please retry.');
+                            _localthis.stop(interval);
                         }
-                    });
-
-                } else if (response === cancelItem) {
-                    opn('https://docs.microsoft.com/en-us/azure/cloud-shell/pricing');
+                    }, 500);
+                } else {
+                    this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
                 }
-            }
-        )
-
+            });
+        });
     }
 
     protected stop(interval: NodeJS.Timer): void {
         clearInterval(interval);
     }
+
+    protected async showPrompt() {        
+
+        let config = utilities.getCodeConfiguration<boolean>(null, Constants.Config_cloudShellConfirmed);
+
+        if (!config) {
+            const msgOption: vscode.MessageOptions = { modal: false };
+            const msgItem: vscode.MessageItem = { title: 'Confirm & Don\'t show this again' };
+
+            const cancelItem: vscode.MessageItem = { title: "View detail" };
+            const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell !';
+
+            let response = await vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem);
+
+            if (response === msgItem) {
+                utilities.updateCodeConfiguration(null, Constants.Config_cloudShellConfirmed, true);
+            } else if (response === cancelItem) {
+                opn('https://docs.microsoft.com/en-us/azure/cloud-shell/pricing');
+            }
+        }
+
+        return Promise.resolve(null);
+    }
+
 }

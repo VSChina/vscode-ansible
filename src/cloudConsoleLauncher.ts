@@ -146,7 +146,7 @@ async function connectTerminal(accessToken: string, consoleUri: string, tempFile
 				if (ws.readyState != ws.OPEN) {
 					await delay(retry_interval);
 				} else {
-					fsExtra.writeFileSync(tempFilePath, Date.now() + ': cloud shell web socket opened.\n');
+					fsExtra.writeFileSync(tempFilePath, Date.now() + ': Cloud Shell web socket opened.\n');
 					break;
 				}
 			}
@@ -242,6 +242,7 @@ function connectSocket(url: string) {
 		process.stdin.on('data', function (data) {
 			ws.send(data);
 		});
+		startKeepAlive();
 	});
 
 	ws.on('message', function (data) {
@@ -258,6 +259,25 @@ function connectSocket(url: string) {
 			process.exit(0);
 		}
 	});
+
+	function startKeepAlive() {
+		let isAlive = true;
+		ws.on('pong', () => {
+			isAlive = true;
+		});
+		const timer = setInterval(() => {
+			if (isAlive === false) {
+				error = true;
+				console.log('Socket timeout');
+				ws.terminate();
+				clearInterval(timer);
+			} else {
+				isAlive = false;
+				ws.ping();
+			}
+		}, 60000);
+		timer.unref();
+	}
 	return ws;
 }
 
