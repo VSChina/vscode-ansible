@@ -82,7 +82,7 @@ export class CloudShellRunner extends BaseRunner {
                         }
                     }, 500);
                 } else {
-                    this._outputChannel.appendLine('\nConnecting to cloud shell failed, please retry.');
+                    this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
                 }
             });
         });
