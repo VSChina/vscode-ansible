@@ -157,7 +157,7 @@
     "eslint": "node ./node_modules/eslint/bin/eslint.js .",
     "pkgvars": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "test": "cd server && npm install && cd .. && npm run compile && node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "tsc -p ./",
     "watch": "tsc -watch -p ./"
   },
