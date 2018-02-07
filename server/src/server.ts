@@ -47,14 +47,29 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 
 connection.onDocumentSymbol((documentSymbolParms) => {
     let document = documents.get(documentSymbolParms.textDocument.uri);
-    let jsonDocument = parseYAML(document.getText());
-    return languageService.findDocumentSymbols(document, jsonDocument);
+
+    try {
+        let jsonDocument = parseYAML(document.getText());
+
+        if (jsonDocument) {
+            return languageService.findDocumentSymbols(document, jsonDocument);
+        }
+    } catch (err) {
+        connection.console.log('Unable to parse Symbols: invalid yaml file.');
+    }
 });
 
 connection.onHover((textDocumentPositionParams) => {
     let document = documents.get(textDocumentPositionParams.textDocument.uri);
-    let jsonDocument = parseYAML(document.getText());
-    return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
+    try {
+        let jsonDocument = parseYAML(document.getText());
+
+        if (jsonDocument) {
+            return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
+        }
+    } catch (err) {
+        // connection.console.log('Unable to hover over: invalid yaml file.');
+    }
 });
 
 connection.onDidChangeConfiguration((didChangeConfigurationParams) => {
