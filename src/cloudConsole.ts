@@ -243,5 +243,5 @@ async function exec(command: string) {
 }
 
 function escapeFile(data: string): string {
-	return data.replace(/"/g, '\\"');
+	return data.replace(/"/g, '\\"').replace(/\\/g, '\\\\\\\\');
 }
