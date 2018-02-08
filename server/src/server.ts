@@ -2,20 +2,32 @@
 
 import { IConnection, createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType, TextDocument } from 'vscode-languageserver';
 import { } from './yamlLanguageService';
-import { LanguageService } from 'vscode-yaml-languageservice/lib/yamlLanguageService';
+import { LanguageService, LanguageSettings } from 'vscode-yaml-languageservice/lib/yamlLanguageService';
 import { parse as parseYAML } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
-import { getLanguageService } from './yamlLanguageService';
+import { getLanguageService, ClientSettings } from './yamlLanguageService';
+//import { Settings } from './interfaces';
 
 import { xhr, XHRResponse, configure as configureHttpRequests, getErrorStatusDescription } from 'request-light';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
 
+export interface Settings {
+    ansible: {
+        credentialsFile: string,
+        terminalInitCommand: string,
+        credentialsConfigured: boolean,
+        cloudShellConfirmed: boolean,
+        hover: boolean
+    }
+}
+
 let connection: IConnection = createConnection();
 
 let documents: TextDocuments = new TextDocuments();
 documents.listen(connection);
 
+let enableHover = true;
 connection.onInitialize((params: InitializeParams): InitializeResult => {
     let capabilities = params.capabilities;
     let workspaceFolders = params['workspaceFolders'];
@@ -35,26 +47,40 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 
 connection.onDocumentSymbol((documentSymbolParms) => {
     let document = documents.get(documentSymbolParms.textDocument.uri);
-    let jsonDocument = parseYAML(document.getText());
-    return languageService.findDocumentSymbols(document, jsonDocument);
+
+    try {
+        let jsonDocument = parseYAML(document.getText());
+
+        if (jsonDocument) {
+            return languageService.findDocumentSymbols(document, jsonDocument);
+        }
+    } catch (err) {
+        connection.console.log('Unable to parse Symbols: invalid yaml file.');
+    }
 });
 
 connection.onHover((textDocumentPositionParams) => {
     let document = documents.get(textDocumentPositionParams.textDocument.uri);
-    let jsonDocument = parseYAML(document.getText());
-    return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
+    try {
+        let jsonDocument = parseYAML(document.getText());
 
+        if (jsonDocument) {
+            return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
+        }
+    } catch (err) {
+        // connection.console.log('Unable to hover over: invalid yaml file.');
+    }
 });
+
+connection.onDidChangeConfiguration((didChangeConfigurationParams) => {
+    var clientSettings = <Settings>didChangeConfigurationParams.settings;
+
+    enableHover = clientSettings.ansible.hover;
+    updateConfiguration();
+})
 
 connection.listen();
 
-documents.onDidChangeContent((change) => {
-    // todo: validation
-});
-
-documents.onDidClose((event) => {
-    connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
-});
 
 let schemaRequestService = (uri: string): Thenable<string> => {
     if (uri.startsWith('file://')) {
@@ -93,11 +119,13 @@ let workspaceContext = {
     }
 };
 
-export let languageService = getLanguageService({
+export let languageService = getLanguageService(
     schemaRequestService,
     workspaceContext,
-    contributions: []
-});
+    {
+        hover: enableHover
+    }
+);
 
 
 function hasClientCapability(params: InitializeParams, ...keys: string[]) {
@@ -110,4 +138,16 @@ function hasClientCapability(params: InitializeParams, ...keys: string[]) {
 
 namespace VSCodeContentRequest {
     export const type: RequestType<{}, {}, {}, {}> = new RequestType('vscode/content');
+}
+
+function updateConfiguration() {
+    let clientSetting: ClientSettings = {
+        hover: enableHover
+    };
+
+    let settings: LanguageSettings = {
+        schemas: [],
+    }
+    languageService.configure(settings, clientSetting);
+
 }

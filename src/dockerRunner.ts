@@ -27,6 +27,7 @@ export class DockerRunner extends TerminalBaseRunner {
             sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
             targetPath = '/' + vscode.workspace.name;
             targetPlaybook = path.relative(sourcePath, playbook);
+            targetPlaybook = targetPlaybook.replace(new RegExp('\\', 'g'), '/');
         }
 
         if (cmd === "default" || cmd === '') {

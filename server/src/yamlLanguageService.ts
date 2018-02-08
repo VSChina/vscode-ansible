@@ -2,7 +2,7 @@
 
 import { YamlDocumentSymbols } from './services/yamlDocumentSymbol';
 
-import { LanguageServiceParams, LanguageService, YAMLDocument, LanguageSettings } from 'vscode-yaml-languageservice/lib/yamlLanguageService';
+import { LanguageServiceParams, YAMLDocument, SchemaRequestService, SchemaConfiguration, LanguageSettings } from 'vscode-yaml-languageservice/lib/yamlLanguageService';
 import { parse } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
 import { format } from 'vscode-yaml-languageservice/lib/services/yamlFormatter';
 
@@ -11,13 +11,13 @@ import { schemaContributions } from 'vscode-json-languageservice/lib/services/co
 import { JSONValidation } from 'vscode-json-languageservice/lib/services/jsonValidation';
 import { JSONSchema } from 'vscode-json-languageservice/lib/jsonSchema';
 
-import { TextDocument, Diagnostic } from 'vscode-languageserver';
+import { TextDocument, Diagnostic, CompletionItem, SymbolInformation, Position, CompletionList, Hover, TextEdit, FormattingOptions } from 'vscode-languageserver';
 import { YAMLHover } from './services/yamlHover';
 
-export function getLanguageService(params: LanguageServiceParams): LanguageService {
-    let promise = params.promiseConstructor || Promise;
+export function getLanguageService(schemaRequestService: SchemaRequestService, workspaceContext, clientSettings: ClientSettings, promiseConstructor?): LanguageService {
+    let promise = promiseConstructor || Promise;
 
-    let jsonSchemaService = new JSONSchemaService(params.schemaRequestService, params.workspaceContext, promise);
+    let jsonSchemaService = new JSONSchemaService(schemaRequestService, workspaceContext, promise);
     jsonSchemaService.setSchemaContributions(schemaContributions);
 
     let hover = new YAMLHover(promise);
@@ -33,22 +33,32 @@ export function getLanguageService(params: LanguageServiceParams): LanguageServi
     }
 
     return {
-        configure: (settings: LanguageSettings) => {
+        configure: (settings: LanguageSettings, clientSettings: ClientSettings) => {
             jsonSchemaService.clearExternalSchemas();
             if (settings.schemas) {
                 settings.schemas.forEach(settings => {
                     jsonSchemaService.registerExternalSchema(settings.uri, settings.fileMatch, settings.schema);
                 });
-            };
-            jsonValidation.configure(settings);
+            }
+            hover.configure(clientSettings.hover);
         },
-        resetSchema: (uri: string) => jsonSchemaService.onResourceChange(uri),
         doValidation: doValidation,
-        parseYAMLDocument: (document: TextDocument) => parse(document.getText()),
         doResolve: void 0,
         doComplete: void 0,
         findDocumentSymbols: documentSymbol.findDocumentSymbols.bind(documentSymbol),
-        doHover: hover.doHover.bind(hover),
-        format: format
+        doHover: hover.doHover.bind(hover)
     };
+}
+
+export interface ClientSettings {
+    hover: boolean
+};
+
+export interface LanguageService {
+    configure(settings: LanguageSettings, clientSettings: ClientSettings): void;
+    doValidation(document: TextDocument, yamlDocument: YAMLDocument): Thenable<Diagnostic[]>;
+    doResolve(item: CompletionItem): Thenable<CompletionItem>;
+    doComplete(document: TextDocument, position: Position, doc: YAMLDocument): Thenable<CompletionList>;
+    findDocumentSymbols(document: TextDocument, doc: YAMLDocument): SymbolInformation[];
+    doHover(document: TextDocument, position: Position, doc: YAMLDocument): Thenable<Hover>;
 }

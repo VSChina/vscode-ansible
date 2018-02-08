@@ -65,11 +65,13 @@ export function activate(context: vscode.ExtensionContext) {
     var clientOptions: LanguageClientOptions = {
         documentSelector: ['yaml'],
         synchronize: {
+            configurationSection: 'ansible',
+            fileEvents: vscode.workspace.createFileSystemWatcher('**/*.?(e)y?(a)ml')
         }
     }
 
-    var client = new LanguageClient('ansible', 'Ansible Playbook Language Server', serverOptions, clientOptions).start();
-    context.subscriptions.push(client);
+    var client = new LanguageClient('ansible', 'Ansible Playbook Language Server', serverOptions, clientOptions);
+    context.subscriptions.push(client.start());
 
     vscode.languages.setLanguageConfiguration('yaml', {
         wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/

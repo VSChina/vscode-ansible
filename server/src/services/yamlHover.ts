@@ -8,19 +8,28 @@ import { PromiseConstructor } from 'vscode-json-languageservice';
 
 export class YAMLHover {
     private promise: PromiseConstructor;
+    private enable: boolean;
 
     constructor(promiseConstructor: PromiseConstructor) {
         this.promise = promiseConstructor || Promise;
+        this.enable = true;
+    }
+
+    public configure(enable: boolean) {
+        this.enable = enable;
     }
 
     public doHover(document: TextDocument, position: Position, jsonDoc: Parser.JSONDocument): Thenable<Hover> {
+        if (!this.enable) {
+            return this.promise.resolve(void 0);
+        }
 
         let offset = document.offsetAt(position);
         let currentDoc = matchOffsetToDocument(offset, jsonDoc);
 
 
         if (currentDoc === null || currentDoc === undefined) {
-            return null;
+            return this.promise.resolve(void 0);
         }
 
         let node = currentDoc.getNodeFromOffset(offset);
@@ -48,6 +57,7 @@ export class YAMLHover {
                 }
             }
         }
+        return this.promise.resolve(void 0);
 
     }
 
