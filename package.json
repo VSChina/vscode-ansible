@@ -29,7 +29,8 @@
     "onCommand:vscode-ansible.cloudshell",
     "onCommand:vscode-ansible.playbook-in-docker",
     "onCommand:vscode-ansible.playbook-in-localansible",
-    "onCommand:vscode-ansible.ssh"
+    "onCommand:vscode-ansible.ssh",
+    "onCommand:vscode-ansible.deployment-templates"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -52,6 +53,11 @@
       {
         "command": "vscode-ansible.ssh",
         "title": "Run Ansible Playbook Remotely via ssh",
+        "category": "ansible"
+      },
+      {
+        "command": "vscode-ansible.deployment-templates",
+        "title": "Use Azure Deployment Template",
         "category": "ansible"
       }
     ],
