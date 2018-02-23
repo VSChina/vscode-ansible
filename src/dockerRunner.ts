@@ -27,11 +27,11 @@ export class DockerRunner extends TerminalBaseRunner {
             sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
             targetPath = '/' + vscode.workspace.name;
             targetPlaybook = path.relative(sourcePath, playbook);
-            targetPlaybook = targetPlaybook.replace(new RegExp('\\', 'g'), '/');
+            targetPlaybook = targetPlaybook.replace(/\\/g, '/');
         }
 
         if (cmd === "default" || cmd === '') {
-            cmd = "docker run --rm -it -v $workspace:$targetFolder  --workdir $targetFolder --name $containerId";
+            cmd = "docker run --rm -it -v \"$workspace:$targetFolder\"  --workdir \"$targetFolder\" --name $containerId";
             cmd = cmd.replace('$workspace', sourcePath);
             cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetPath);
             cmd = cmd.replace('$containerId', terminalId);
