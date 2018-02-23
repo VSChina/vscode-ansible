@@ -2,10 +2,9 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/kq11m16pl22k29un?svg=true)](https://ci.appveyor.com/project/yungez/vscode-ansible)
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/vscoss.vscode-ansible.svg "Current Release")](https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible)
 
-# Visual Studio Code extension for Ansible
+# Visual Studio Code extension for [Ansible](https://www.ansible.com/)
 
-#### Table of Content
-- [Overview](#overview)
+## Table of Content
 - [Features](#features)
 - [Prerequisites](#prerequisites)
 - [Usage](#usage) 
@@ -21,9 +20,6 @@
 - [License](#license)
 - [Telemetry](#telemetry)
 
-
-## Overview
-This extension helps to use [Ansible](https://www.ansible.com/) efficiently in VSCode.
 
 ## Features
 
@@ -49,15 +45,15 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
 ## Usage
 ### Auto completion
 ### Code snippets  
-Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snippets.    
+Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snippets. Then press `tab` to move inside snippet parameters. 
 ![auto completion and code snippets](./images/authoring.gif)
 
 ### Run Ansible playbook   
   4 methods are supported to run Ansible playbook: 
-  - Docker.
-  - Local Ansible installation.
-  - Cloud Shell.
-  - Remotely via ssh.
+  - [Docker](#run-playbook-in-docker).
+  - [Local Ansible installation](#run-playbook-in-local-ansible).
+  - [Cloud Shell](#run-playbook-in-cloud-shell).
+  - [Remotely via ssh](#run-playbook-remotely-via-ssh).
 
     ![run playbook](./images/menu.png)
   
@@ -104,7 +100,9 @@ Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snipp
    ```
 
 ## Configuration  
-This extension provides below configurations in settings.json. 
+This extension provides below configurations in settings.json.
+
+
 |config name| description|
 |--|--|
 |`ansible.hover`| Enable/Disable hover over module name functionality. Default is true.|
