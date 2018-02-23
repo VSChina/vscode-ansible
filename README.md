@@ -31,7 +31,7 @@ This extension helps to use [Ansible](https://www.ansible.com/) efficiently in V
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
   - Syntax highlighting.
   - Code navigation by Symbols, press `Ctrl + Shift + O`.
-  - Hover over module names, to show module documentation. 
+  - Hover over module names, to show module documentation. Disable hover over by setting `ansible.hover` to `false`.
   - Run playbook from Docker.
   - Run playbook from local Ansible installation.
   - Run playbook from [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
@@ -104,11 +104,12 @@ Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snipp
    ```
 
 ## Configuration  
-This extension provides 2 configurations in settings.json.
-  - `ansible.credentialsFile`  
-    This configuration is used to specify ansible credentials file path. Default is `$HOME/.vscode/ansible-credentials.yml`.
-  - `ansible.termininalInitCommand`  
-    This configuration is used to specify customized terminal init command. Default is docker run commands for docker, and 'ansible-playbook' for local setup.
+This extension provides below configurations in settings.json. 
+|config name| description|
+|--|--|
+|`ansible.hover`| Enable/Disable hover over module name functionality. Default is true.|
+|`ansible.credentialsFile` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. Default is `$HOME/.vscode/ansible-credentials.yml`.|
+|`ansible.termininalInitCommand`| Specify customized terminal init command when run playbook in Docker/Local Ansible. Default is docker run commands for Docker, and 'ansible-playbook' for local ansible.|
 
 
 ## Feedback and Questions

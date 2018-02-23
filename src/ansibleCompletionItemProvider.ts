@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { CompletionEngine } from './completionEngine';
 import { Range } from 'vscode-languageclient/lib/main';
 
-const pattern_variable = new RegExp('\\S+: \".*{{\\s*(}}.)*\"*$');
+const pattern_variable = new RegExp('\\S+: \".*{{\\s*(}}.)*\"*\\s*#*.*$');
 const pattern_firstLine = new RegExp('^#\\s*ansible-configured$', 'gm');
 
 export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvider {
