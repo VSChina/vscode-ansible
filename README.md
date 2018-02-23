@@ -27,7 +27,7 @@
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
   - Syntax highlighting.
   - Code navigation by Symbols, press `Ctrl + Shift + O`.
-  - Hover over module names, to show module documentation. Disable hover over by setting `ansible.hover` to `false`.
+  - Hover over module names, to show module documentation. Disable hovering over by setting `ansible.hover` to `false`.
   - Run playbook from Docker.
   - Run playbook from local Ansible installation.
   - Run playbook from [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
