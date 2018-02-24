@@ -107,7 +107,7 @@ This extension provides below configurations in settings.json.
 |--|--|
 |`ansible.hover`| Enable/Disable hover over module name functionality. Default is true.|
 |`ansible.credentialsFile` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. Default is `$HOME/.vscode/ansible-credentials.yml`.|
-|`ansible.termininalInitCommand`| Specify customized terminal init command when run playbook in Docker/Local Ansible. Default is docker run commands for Docker, and 'ansible-playbook' for local ansible.|
+|`ansible.termininalInitCommand`| Specify customized terminal init command when run playbook in Docker/Local Ansible. Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.|
 
 
 ## Feedback and Questions
