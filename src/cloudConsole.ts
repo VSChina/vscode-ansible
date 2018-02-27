@@ -14,8 +14,9 @@ import * as semver from 'semver';
 import { TIMEOUT } from 'dns';
 import * as ws from 'ws';
 import * as fsExtra from 'fs-extra';
-import { Constants } from './constants';
+import { Constants, CloudShellErrors, CloudShellStatus } from './constants';
 import { setInterval, clearInterval } from 'timers';
+import { TelemetryClient } from './telemetryClient';
 
 const localize = nls.loadMessageBundle();
 
@@ -53,22 +54,26 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 				const version = stdout[0] === 'v' && stdout.substr(1).trim();
 				if (version && semver.valid(version) && !semver.gte(version, '6.0.0')) {
 					progress.cancel();
+					TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.NodeJSNotInstalled });
 					return requiresNode();
 				}
 			} catch (err) {
 				progress.cancel();
+				TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.NodeJSNotInstalled });
 				return requiresNode();
 			}
 		}
 
 		if (!(await api.waitForLogin())) {
 			progress.cancel();
+			TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.AzureNotSignedIn });
 			return commands.executeCommand('azure-account.askForLogin');
 		}
 
 		const tokens = await Promise.all(api.sessions.map(session => acquireToken(session)));
 		const result = await findUserSettings(tokens);
 		if (!result) {
+			TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.NotSetupFirstLaunch });
 			progress.cancel();
 			return requiresSetUp();
 		}
@@ -142,6 +147,8 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 		terminal.show();
 		return terminal;
 	})().catch(err => {
+		TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.ProvisionFailed, 'detailerror': err });
+
 		outputChannel.append('\nConnecting to Cloud Shell failed with error: \n' + err);
 		outputChannel.show();
 		throw err;
