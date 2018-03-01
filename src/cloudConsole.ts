@@ -66,8 +66,12 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 
 		if (!(await api.waitForLogin())) {
 			progress.cancel();
-			TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.AzureNotSignedIn });
-			return commands.executeCommand('azure-account.askForLogin');
+
+			await commands.executeCommand('azure-account.askForLogin');
+			if (!(await api.waitForLogin())) {
+				TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.AzureNotSignedIn });
+				return;
+			}
 		}
 
 		const tokens = await Promise.all(api.sessions.map(session => acquireToken(session)));
