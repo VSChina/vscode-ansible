@@ -66,10 +66,11 @@ export class DeploymentTemplate {
     public retrieveTemplate(templateName: string) {
         var http = require('https');
         let __this = this;
+        let repo: string = utilities.getCodeConfiguration<string>(null, Constants.Config_deploymentTemplatesGitHubRepo);
 
             http.get({
                 host: 'raw.githubusercontent.com',
-                path: '/Azure/azure-quickstart-templates/master/' + templateName + '/azuredeploy.json',
+                path: '/' + repo + '/master/' + templateName + '/azuredeploy.json',
                 headers: { 'User-Agent': 'VSC Ansible Extension'}
             }, function(response) {
                 // Continuously update stream with data
@@ -86,7 +87,7 @@ export class DeploymentTemplate {
                     // XXX - create url
 
                     // XXX - create playbook
-                    __this.createPlaybookFromTemplate("https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/" + templateName + '/azuredeploy.json',
+                    __this.createPlaybookFromTemplate("https://raw.githubusercontent.com/' + repo + '/master/" + templateName + '/azuredeploy.json',
                                                       parsed);
                 });
             });
