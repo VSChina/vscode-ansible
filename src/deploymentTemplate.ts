@@ -83,10 +83,6 @@ export class DeploymentTemplate {
                     // Data reception is done, do whatever with it!
                     var parsed = JSON.parse(body);
 
-                    // XXX - get parameters
-                    // XXX - create url
-
-                    // XXX - create playbook
                     __this.createPlaybookFromTemplate("https://raw.githubusercontent.com/' + repo + '/master/" + templateName + '/azuredeploy.json',
                                                       parsed);
                 });
