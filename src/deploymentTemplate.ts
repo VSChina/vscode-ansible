@@ -122,7 +122,7 @@ export class DeploymentTemplate {
                 });
             });
         } else {
-            var playbook: string = "- name: Create resource using deployment template\r" +
+            var playbook: string = "- name: Create resource using Azure deployment template\r" +
                                 "  azure_rm_deployment:\r" +
                                 "    resource_group_name: ${1}\r" +
                                 "    location: ${2}\r" +
