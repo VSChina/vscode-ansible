@@ -9,4 +9,5 @@ export class Constants {
     public static Config_credentialConfigured = 'credentialsConfigured';
     public static Config_credentialsFile = 'credentialsFile';
     public static Config_terminalInitCommand = 'terminalInitCommand';
+    public static Config_deploymentTemplatesGitHubRepo = 'deploymentTemplatesGitHubRepo';
 }

@@ -1,6 +1,9 @@
 'use strict';
 
 import * as vscode from 'vscode';
+import * as utilities from './utilities';
+import { Constants } from './constants';
+
 var request = require('request');
 
 
@@ -9,48 +12,22 @@ export class DeploymentTemplate {
 
     public displayDeploymentTemplateMenu() {
 
-        let items: vscode.QuickPickItem[] = [];
-
-        items.push({ 
-            label: "Use Azure Quickstart Template", 
-            description: "Select template from Azure Quickstart Templates gallery"});
-        
-        items.push({ 
-            label: "Use custom template (URL)", 
-            description: "Select template using custom URL"});
-
-        items.push({ 
-            label: "Use custom template (local)", 
-            description: "Using template from current editor"});
-
-        vscode.window.showQuickPick(items).then(selection => {
-            // the user canceled the selection
-            if (!selection) {
-              return;
-            }
-
-            if (selection == items[0]) {
-                this.selectQuickstartTemplate();
-            } else if (selection == items[1]) {
-                // XXX - to be implemented
-            } else if (selection == items[2]) {
-                // XXX - to be implemented
-            }
-            
-        });
+        // currently only one option is available, so first menu won't be displayed yet
+        this.selectQuickstartTemplate();
     }
 
     public selectQuickstartTemplate() {
 
         // get list of directories from here:
-        // https://api.github.com/repos/Azure/azure-quickstart-templates/contents/
+        // https://api.github.com/[repo_user/repo_name]/contents/
+        let repo: string = utilities.getCodeConfiguration<string>(null, Constants.Config_deploymentTemplatesGitHubRepo);
 
         var http = require('https');
         let __this = this;
 
             http.get({
                 host: 'api.github.com',
-                path: '/repos/Azure/azure-quickstart-templates/contents/',
+                path: '/repos/' + repo + '/contents/',
                 headers: { 'User-Agent': 'VSC Ansible Extension'}
             }, function(response) {
                 // Continuously update stream with data
@@ -66,10 +43,9 @@ export class DeploymentTemplate {
             
                     for (var i in parsed)
                     {
-                        if (parsed[i].type == "dir") {
-                            items.push({ 
-                                label: parsed[i].name, 
-                                description: parsed[i].name });
+                        // list only directories and skip known directories that don't contain templates
+                        if (parsed[i].type == "dir" && parsed[i].name != "1-CONTRIBUTION-GUIDE" && parsed[i].name != ".github") {
+                            items.push({ label: parsed[i].name, description: null });
                         }
 
                     }
@@ -116,25 +92,43 @@ export class DeploymentTemplate {
     }
 
     public createPlaybookFromTemplate(location: string, template: object) {
+        let __this = this;
 
-        var playbook: string = "- hosts: localhost\r" +
-                               "  tasks:\r" +
-                               "    - name: Try to create ACI\r" +
-                               "      azure_rm_deployment:\r" +
-                               "        resource_group_name: myresourcegroup\r" +
-                               "        state: present\r" +
-                               "        parameters:\r";
-        for (var p in template['parameters']) {
-            playbook +=        "          #" + p + ":\r";
-            playbook +=        "          #  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
+        // create yaml document if not current document
+        if (vscode.window.activeTextEditor == undefined || vscode.window.activeTextEditor.document.languageId != "yaml") {
+            vscode.workspace.openTextDocument({language: "yaml", content: playbook} ).then((a: vscode.TextDocument) => {
+                vscode.window.showTextDocument(a, 1, false).then(e => {
+                    e.edit(edit => {
+                        let header: string = "- hosts: localhost\r" +
+                                             "  tasks:\r";
+                        edit.insert(new vscode.Position(0, 0), header);
+                        __this.createPlaybookFromTemplate(location, template);
+                    });
+                });
+            });
+        } else {
+            var playbook: string = "- name: Create resource using deployment template\r" +
+                                "  azure_rm_deployment:\r" +
+                                "    resource_group_name: ${1}\r" +
+                                "    location: ${2}\r" +
+                                "    state: present\r" +
+                                "    parameters:\r";
+            let tabstop: number = 3;
+            for (var p in template['parameters']) {
+                if (template['parameters'][p]['defaultValue']) {
+                    playbook += "      #" + p + ":\r";
+                    playbook += "      #  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
+                } else {
+                    playbook += "      " + p + ":\r";
+                    playbook += "        value: ${" +  tabstop++ + "}\r"; 
+                }
+            }
+
+            playbook +=            "        template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";
+            playbook += "$end";
+
+            let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 4);
+            vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(playbook), insertionPoint);
         }
-
-        playbook +=            "        template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"";
-
-        vscode.workspace.openTextDocument({language: "yaml", content: playbook} ).then((a: vscode.TextDocument) => {
-            vscode.window.showTextDocument(a, 1, false);//.then(e => {
-             // e.edit(edit => {
-             //   edit.insert(new vscode.Position(0, 0), "Your advertisement here");    }
-        });
     }
 }
