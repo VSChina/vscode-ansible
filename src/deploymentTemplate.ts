@@ -3,15 +3,16 @@
 import * as vscode from 'vscode';
 import * as utilities from './utilities';
 import { Constants } from './constants';
+import { TelemetryClient } from './telemetryClient';
 
 var request = require('request');
-
 
 export class DeploymentTemplate {
     constructor() {}
 
     public displayDeploymentTemplateMenu() {
 
+        TelemetryClient.sendEvent('deployment');
         // currently only one option is available, so first menu won't be displayed yet
         this.selectQuickstartTemplate();
     }
