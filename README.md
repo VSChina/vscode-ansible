@@ -129,3 +129,7 @@ This project welcomes contributions and suggestions.  Most contributions require
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+Please see below documents to learn how to contribute:
+- [How to build, run and debug from source](https://github.com/VSChina/vscode-ansible/wiki/How-to-Contribute)
+- [Coding Guidelines](https://github.com/VSChina/vscode-ansible/wiki/Coding-Guidelines)
