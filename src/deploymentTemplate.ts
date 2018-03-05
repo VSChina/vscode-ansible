@@ -27,7 +27,7 @@ export class DeploymentTemplate {
         let __this = this;
 
             http.get({
-                host: 'api.github.com',
+                host: Constants.GitHubApiHost,
                 path: '/repos/' + repo + '/contents/',
                 headers: { 'User-Agent': 'VSC Ansible Extension'}
             }, function(response) {
@@ -69,7 +69,7 @@ export class DeploymentTemplate {
         let repo: string = utilities.getCodeConfiguration<string>(null, Constants.Config_deploymentTemplatesGitHubRepo);
 
             http.get({
-                host: 'raw.githubusercontent.com',
+                host: Constants.GitHubRawContentHost,
                 path: '/' + repo + '/master/' + templateName + '/azuredeploy.json',
                 headers: { 'User-Agent': 'VSC Ansible Extension'}
             }, function(response) {
@@ -83,7 +83,7 @@ export class DeploymentTemplate {
                     // Data reception is done, do whatever with it!
                     var parsed = JSON.parse(body);
 
-                    __this.createPlaybookFromTemplate("https://raw.githubusercontent.com/' + repo + '/master/" + templateName + '/azuredeploy.json',
+                    __this.createPlaybookFromTemplate("https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json",
                                                       parsed);
                 });
             });
@@ -122,7 +122,7 @@ export class DeploymentTemplate {
                 }
             }
 
-            playbook +=            "        template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";
+            playbook +=            "    template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";
             playbook += "$end";
 
             let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 4);
