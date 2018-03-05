@@ -3,7 +3,7 @@
 import { BaseRunner } from './baseRunner';
 import * as vscode from 'vscode';
 import { AzureAccount } from './azure-account.api';
-import { Constants } from './constants';
+import { Constants, CloudShellStatus, CloudShellErrors } from './constants';
 import * as utilities from './utilities';
 import { openCloudConsole, OSes } from './cloudConsole';
 import * as path from 'path';
@@ -27,6 +27,8 @@ export class CloudShellRunner extends BaseRunner {
 
         const installedExtension: any[] = vscode.extensions.all;
 
+        TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Init });
+
         let azureAccount: AzureAccount;
         for (var i = 0; i < installedExtension.length; i++) {
             const ext = installedExtension[i];
@@ -34,12 +36,13 @@ export class CloudShellRunner extends BaseRunner {
                 azureAccount = ext.activate().then((azureAccount) => {
                     if (azureAccount) {
                         this.startCloudShell(playbook);
-                        TelemetryClient.sendEvent('cloudshell');
                     }
                 });
                 return;
             }
         }
+        TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.AzureAccountNotInstalled });
+
         const open: vscode.MessageItem = { title: "View in MarketPlace" };
         vscode.window.showErrorMessage('Please install the Azure Account extension before run CloudShell!', open)
             .then(response => {
@@ -71,6 +74,8 @@ export class CloudShellRunner extends BaseRunner {
                                 terminal.show();
 
                                 count = 0;
+
+                                TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Succeeded });
                             }
                         } else {
                             _localthis.stop(interval);
@@ -87,7 +92,7 @@ export class CloudShellRunner extends BaseRunner {
         clearInterval(interval);
     }
 
-    protected async showPrompt() {        
+    protected async showPrompt() {
 
         let config = utilities.getCodeConfiguration<boolean>(null, Constants.Config_cloudShellConfirmed);
 

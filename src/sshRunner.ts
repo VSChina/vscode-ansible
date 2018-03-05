@@ -30,7 +30,7 @@ export class SSHRunner extends TerminalBaseRunner {
             cmdsToTerminal.push('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
         }
 
-        cmdsToTerminal.push('ansible-playbook ' + this.getTargetFolder() + path.basename(playbook));
+        cmdsToTerminal.push('ansible-playbook ~/' + path.basename(playbook));
         return cmdsToTerminal;
     }
 
