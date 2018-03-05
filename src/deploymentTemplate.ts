@@ -12,7 +12,7 @@ export class DeploymentTemplate {
 
     public displayDeploymentTemplateMenu() {
 
-        TelemetryClient.sendEvent('deployment');
+        TelemetryClient.sendEvent('deploymenttemplate');
         // currently only one option is available, so first menu won't be displayed yet
         this.selectQuickstartTemplate();
     }
@@ -21,7 +21,8 @@ export class DeploymentTemplate {
 
         // get list of directories from here:
         // https://api.github.com/[repo_user/repo_name]/contents/
-        let repo: string = utilities.getCodeConfiguration<string>(null, Constants.Config_deploymentTemplatesGitHubRepo);
+        // we will use fixed repo in our first release
+        let repo: string = "Azure/azure-quickstart-templates";
 
         var http = require('https');
         let __this = this;
@@ -32,33 +33,38 @@ export class DeploymentTemplate {
                 headers: { 'User-Agent': 'VSC Ansible Extension'}
             }, function(response) {
                 // Continuously update stream with data
-                var body = '';
-                response.on('data', function(d) {
-                    body += d;
-                });
-                response.on('end', function() {
-        
-                    // Data reception is done, do whatever with it!
-                    var parsed = JSON.parse(body);
-                    let items: vscode.QuickPickItem[] = [];
-            
-                    for (var i in parsed)
-                    {
-                        // list only directories and skip known directories that don't contain templates
-                        if (parsed[i].type == "dir" && parsed[i].name != "1-CONTRIBUTION-GUIDE" && parsed[i].name != ".github") {
-                            items.push({ label: parsed[i].name, description: null });
-                        }
 
-                    }
-                    vscode.window.showQuickPick(items).then(selection => {
-                        // the user canceled the selection
-                        if (!selection) {
-                          return;
-                        }        
-                        
-                        __this.retrieveTemplate(selection.label);
+                if (response.statusMessage == "OK") {
+                    var body = '';
+                    response.on('data', function(d) {
+                        body += d;
                     });
-                });
+                    response.on('end', function() {
+                        var parsed = JSON.parse(body);
+                        let items: vscode.QuickPickItem[] = [];
+                
+                        for (var i in parsed)
+                        {
+                            // list only directories and skip known directories that don't contain templates
+                            if (parsed[i].type == "dir" && !parsed[i].name.startsWith('.')) {
+                                items.push({ label: parsed[i].name, description: null });
+                            }
+                        }
+                        vscode.window.showQuickPick(items).then(selection => {
+                            // the user canceled the selection
+                            if (!selection) {
+                                return;
+                            }        
+                            
+                            __this.retrieveTemplate(selection.label);
+                        });
+                    });
+                } else {
+                    vscode.window.showErrorMessage("Error: " + response.statusCode + " " + response.statusMessage);
+                }
+
+            }).on('error', function(e) {
+                vscode.window.showErrorMessage("Error: " + e);
             });
         
     }
@@ -72,26 +78,37 @@ export class DeploymentTemplate {
                 host: Constants.GitHubRawContentHost,
                 path: '/' + repo + '/master/' + templateName + '/azuredeploy.json',
                 headers: { 'User-Agent': 'VSC Ansible Extension'}
-            }, function(response) {
-                // Continuously update stream with data
-                var body = '';
-                response.on('data', function(d) {
-                    body += d;
-                });
-                response.on('end', function() {
-        
-                    // Data reception is done, do whatever with it!
-                    var parsed = JSON.parse(body);
+                }, function(response) {
+                    if (response.statusMessage == "OK") {
+                        var body = '';
+                        response.on('data', function(d) {
+                            body += d;
+                        });
+                        response.on('end', function() {
+                            try {
+                                var parsed = JSON.parse(body);
 
-                    __this.createPlaybookFromTemplate("https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json",
-                                                      parsed);
+                                __this.createPlaybookFromTemplate("https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json",
+                                                                parsed);
+                            } catch (e) {
+                                vscode.window.showErrorMessage("Failed to parse 'azuredeploy.json'");
+                            }
+                        });
+                    } else if (response.statusCode == 404) {
+                        vscode.window.showErrorMessage("Template file 'azuredeploy.json' not found.");
+                    } else {
+                        vscode.window.showErrorMessage("Error: " + response.statusCode + " " + response.statusMessage);
+                    }
+                }).on('error', function(e) {
+                    vscode.window.showErrorMessage("Error: " + e);
                 });
-            });
     }
 
     public createPlaybookFromTemplate(location: string, template: object) {
         let __this = this;
 
+        TelemetryClient.sendEvent('deploymenttemplateinserted', { 'template': location });
+        
         // create yaml document if not current document
         if (vscode.window.activeTextEditor == undefined || vscode.window.activeTextEditor.document.languageId != "yaml") {
             vscode.workspace.openTextDocument({language: "yaml", content: playbook} ).then((a: vscode.TextDocument) => {

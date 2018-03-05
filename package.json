@@ -154,11 +154,6 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/Disable hover over on module name"
-        },
-        "ansible.deploymentTemplatesGitHubRepo": {
-          "type": "string",
-          "default": "Azure/azure-quickstart-templates",
-          "description": "GitHub repository containing deployment templates"
         }
       }
     }
