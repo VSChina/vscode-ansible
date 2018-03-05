@@ -11,6 +11,7 @@ export class Constants {
     public static Config_terminalInitCommand = 'terminalInitCommand';
     public static GitHubApiHost = 'api.github.com';
     public static GitHubRawContentHost = 'raw.githubusercontent.com';
+    public static AzureQuickStartTemplates = 'Azure/azure-quickstart-templates';
 }
 
 export enum CloudShellErrors {

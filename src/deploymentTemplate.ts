@@ -22,7 +22,7 @@ export class DeploymentTemplate {
         // get list of directories from here:
         // https://api.github.com/[repo_user/repo_name]/contents/
         // we will use fixed repo in our first release
-        let repo: string = "Azure/azure-quickstart-templates";
+        let repo: string = Constants.AzureQuickStartTemplates;
 
         var http = require('https');
         let __this = this;
@@ -72,7 +72,7 @@ export class DeploymentTemplate {
     public retrieveTemplate(templateName: string) {
         var http = require('https');
         let __this = this;
-        let repo: string = utilities.getCodeConfiguration<string>(null, Constants.Config_deploymentTemplatesGitHubRepo);
+        let repo: string = Constants.AzureQuickStartTemplates;
 
             http.get({
                 host: Constants.GitHubRawContentHost,
