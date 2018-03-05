@@ -11,3 +11,17 @@ export class Constants {
     public static Config_terminalInitCommand = 'terminalInitCommand';
     public static Config_deploymentTemplatesGitHubRepo = 'deploymentTemplatesGitHubRepo';
 }
+
+export enum CloudShellErrors {
+    AzureAccountNotInstalled = 'azure account not installed',
+    NodeJSNotInstalled = 'nodeJS not installed',
+    AzureNotSignedIn = 'azure not signed in',
+    NotSetupFirstLaunch = 'cloud shell not setup for first launch',
+    ProvisionFailed = 'cloud shell provision failed'
+}
+
+export enum CloudShellStatus {
+    Init = 'init',
+    Succeeded = 'succeeded',
+    Failed = 'failed'
+}
