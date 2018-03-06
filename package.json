@@ -185,7 +185,7 @@
     "ssh2": "^0.5.5",
     "vscode-extension-telemetry": "0.0.8",
     "vscode-languageclient": "^3.5.0",
-    "vscode-languageserver-protocol": "^3.5.0",
+    "vscode-languageserver-protocol": "3.5.0",
     "vscode-nls": "^2.0.2",
     "ws": "^3.3.2",
     "yamljs": "^0.3.0"
