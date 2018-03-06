@@ -88,8 +88,7 @@ export class DeploymentTemplate {
                             try {
                                 var parsed = JSON.parse(body);
 
-                                __this.createPlaybookFromTemplate("https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json",
-                                                                parsed);
+                                __this.createPlaybookFromTemplate(null, "https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json", parsed);
                             } catch (e) {
                                 vscode.window.showErrorMessage("Failed to parse 'azuredeploy.json'");
                             }
@@ -104,45 +103,49 @@ export class DeploymentTemplate {
                 });
     }
 
-    public createPlaybookFromTemplate(location: string, template: object) {
+    public createPlaybookFromTemplate(prefixPlaybook: string[], location: string, template: object) {
         let __this = this;
-
-        TelemetryClient.sendEvent('deploymenttemplate', { 'action': 'inserted', 'template': location });
         
-        // create yaml document if not current document
+        // create new yaml document if not current document
         if (vscode.window.activeTextEditor == undefined || vscode.window.activeTextEditor.document.languageId != "yaml") {
-            vscode.workspace.openTextDocument({language: "yaml", content: playbook} ).then((a: vscode.TextDocument) => {
+            vscode.workspace.openTextDocument({language: "yaml", content: ""} ).then((a: vscode.TextDocument) => {
                 vscode.window.showTextDocument(a, 1, false).then(e => {
-                    e.edit(edit => {
-                        let header: string = "- hosts: localhost\r" +
-                                             "  tasks:\r";
-                        edit.insert(new vscode.Position(0, 0), header);
-                        __this.createPlaybookFromTemplate(location, template);
-                    });
+                    let prefix: string[] = ["- hosts: localhost",
+                                            "  tasks:"];
+                    __this.createPlaybookFromTemplate(prefix, location, template);
                 });
             });
         } else {
-            var playbook: string = "- name: Create resource using Azure deployment template\r" +
-                                "  azure_rm_deployment:\r" +
-                                "    resource_group_name: ${1}\r" +
-                                "    location: ${2}\r" +
-                                "    state: present\r" +
-                                "    parameters:\r";
+            TelemetryClient.sendEvent('deploymenttemplate', { 'action': 'inserted', 'template': location });
+
+            let playbook = "";
+
+            if (prefixPlaybook != null) {
+                for (var l in prefixPlaybook) playbook += prefixPlaybook[l] + "\r";
+            }
+
+            let prefix = "    ";
+            playbook += prefix + "- name: Create resource using Azure deployment template\r" +
+                        prefix + "  azure_rm_deployment:\r" +
+                        prefix + "    resource_group_name: ${1:your-resource-group}\r" +
+                        prefix + "    location: ${2:eastus}\r" +
+                        prefix + "    state: present\r" +
+                        prefix + "    parameters:\r";
             let tabstop: number = 3;
             for (var p in template['parameters']) {
                 if (template['parameters'][p]['defaultValue']) {
-                    playbook += "      #" + p + ":\r";
-                    playbook += "      #  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
+                    playbook += prefix + "      #" + p + ":\r";
+                    playbook += prefix + "      #  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
                 } else {
-                    playbook += "      " + p + ":\r";
-                    playbook += "        value: ${" +  tabstop++ + "}\r"; 
+                    playbook += prefix + "      " + p + ":\r";
+                    playbook += prefix + "        value: ${" +  tabstop++ + "}\r"; 
                 }
             }
 
-            playbook +=            "    template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";
+            playbook +=  prefix + "    template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";
             playbook += "$end";
 
-            let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 4);
+            let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 0);
             vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(playbook), insertionPoint);
         }
     }
