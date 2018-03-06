@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as utilities from './utilities';
 import { Constants } from './constants';
 import { TelemetryClient } from './telemetryClient';
+import * as yamljs from 'yamljs';
 
 var request = require('request');
 
@@ -87,8 +88,18 @@ export class DeploymentTemplate {
                         response.on('end', function() {
                             try {
                                 var parsed = JSON.parse(body);
+                                
+                                let items : vscode.QuickPickItem[] = [];
 
-                                __this.createPlaybookFromTemplate(null, "https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json", parsed);
+                                items.push({label: "Link", description: "Create link to template using lookup"});
+                                items.push({label: "Expand", description: "Expand template inline"});
+
+                                vscode.window.showQuickPick(items).then(selection => {
+                                    // the user canceled the selection
+                                    if (!selection) return;
+                                        
+                                    __this.createPlaybookFromTemplate(null, "https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json", parsed, (selection.label == 'Expand'));                                    
+                                });
                             } catch (e) {
                                 vscode.window.showErrorMessage("Failed to parse 'azuredeploy.json'");
                             }
@@ -103,7 +114,7 @@ export class DeploymentTemplate {
                 });
     }
 
-    public createPlaybookFromTemplate(prefixPlaybook: string[], location: string, template: object) {
+    public createPlaybookFromTemplate(prefixPlaybook: string[], location: string, template: object, expand: boolean) {
         let __this = this;
         
         // create new yaml document if not current document
@@ -112,7 +123,7 @@ export class DeploymentTemplate {
                 vscode.window.showTextDocument(a, 1, false).then(e => {
                     let prefix: string[] = ["- hosts: localhost",
                                             "  tasks:"];
-                    __this.createPlaybookFromTemplate(prefix, location, template);
+                    __this.createPlaybookFromTemplate(prefix, location, template, expand);
                 });
             });
         } else {
@@ -142,7 +153,19 @@ export class DeploymentTemplate {
                 }
             }
 
-            playbook +=  prefix + "    template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";
+            playbook += prefix + "    template:\r"
+
+            if (expand) {
+                let templateYaml: string[] = yamljs.stringify(template, 10, 2).replace(/[$]/g, "\\$").split(/\r?\n/);
+
+                for (var i = 0; i < templateYaml.length; i++) {
+                    playbook += prefix + "      " + templateYaml[i] + "\r";
+            }
+            } else {
+                playbook +=  prefix + "    template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";            
+            }
+            
+
             playbook += "$end";
 
             let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 0);
