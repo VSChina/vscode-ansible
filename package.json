@@ -153,11 +153,11 @@
     }
   },
   "scripts": {
-    "compile": "cd server && npm install && tsc -p ../ && tsc -p ./",
+    "compile": "cd server && npm install && cd .. && tsc -p ./ && tsc -p server/",
     "eslint": "node ./node_modules/eslint/bin/eslint.js .",
     "pkgvars": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "cd server && npm install && cd .. && npm run compile && node ./node_modules/vscode/bin/test",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "tsc -p ./",
     "watch": "tsc -watch -p ./"
   },
@@ -185,6 +185,7 @@
     "ssh2": "^0.5.5",
     "vscode-extension-telemetry": "0.0.8",
     "vscode-languageclient": "^3.5.0",
+    "vscode-languageserver-protocol": "^3.5.0",
     "vscode-nls": "^2.0.2",
     "ws": "^3.3.2",
     "yamljs": "^0.3.0"
