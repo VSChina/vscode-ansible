@@ -88,12 +88,19 @@ export class DeploymentTemplate {
     }
 
     public createFromResourceGroup() {
+        let __this = this;
+
         Azure.queryResourceGroups(function(groups) {
             if (groups != null) {
                 vscode.window.showQuickPick(groups).then(selection => {
                     // the user canceled the selection
                     if (!selection) return;
         
+                    Azure.getArmTemplateFromResourceGroup(selection, function(template) {
+                        if (template != null) {
+                            __this.createPlaybookFromTemplate(null, "", template, true);                                    
+                        }
+                    })
                 });
             }
         })

@@ -58,13 +58,11 @@ export class AzureHelpers {
             }
         })
         
-        request.write(postData);
-        request.end();
+        request.end(postData);
         request.on('error', function(e) {
             vscode.window.showErrorMessage("Failed to get token: " + e);
             cb(false);
         });
-
     }
 
     public queryResourceGroups(cb) {
@@ -113,7 +111,56 @@ export class AzureHelpers {
 
     }
 
-    public getArmTemplateFromResourceGroup(resourceGroup: string): any {
-        return null;
+    public getArmTemplateFromResourceGroup(resourceGroup: string, cb): any {
+        var http = require('https');
+        let __this = this;
+
+        this.obtainAuthorizationToken(function(result) {
+
+            if (result) {
+                // POST https://management.azure.com/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/exportTemplate?api-version=2017-05-10
+
+                let postData: string =  JSON.stringify({ resources: ["*"]});
+                let path = '/subscriptions/' + __this.credentials['AZURE_SUBSCRIPTION_ID'] + '/resourcegroups/' + resourceGroup + '/exportTemplate?api-version=2017-05-10';
+
+                let request = http.request({
+                    host: "management.azure.com",
+                    path: path,
+                    //host: "zims.requestcatcher.com",
+                    //path: "/test",
+                    headers: {
+                        'Authorization': 'Bearer ' + __this.token,
+                        'Content-Type': 'application/json',
+                        "Accept": "*/*",
+                        "User-Agent": "VSCode Ansible Extension"},
+                    method: 'POST'
+
+                }, function(response) {
+                    response.on('data', function(d) {
+                        body += d;
+                    });
+                    if (response.statusMessage == "OK") {
+                        var body = '';
+                        response.on('end', function() {
+                            let parsed = JSON.parse(body);
+                            cb(parsed);
+                        });
+                    } else {
+                        vscode.window.showErrorMessage("Failed to fetch list of templates: " + response.statusCode + " " + response.statusMessage);
+                        cb(null);
+                    }
+
+                })
+
+                //request.write(postData);
+                request.end(postData);
+                request.on('error', function(e) {
+                    vscode.window.showErrorMessage("Failed to get token: " + e);
+                    cb(null);
+                });
+            } else {
+                cb(null);
+            }
+        })
     }
 }
