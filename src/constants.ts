@@ -9,6 +9,9 @@ export class Constants {
     public static Config_credentialConfigured = 'credentialsConfigured';
     public static Config_credentialsFile = 'credentialsFile';
     public static Config_terminalInitCommand = 'terminalInitCommand';
+    public static GitHubApiHost = 'api.github.com';
+    public static GitHubRawContentHost = 'raw.githubusercontent.com';
+    public static AzureQuickStartTemplates = 'Azure/azure-quickstart-templates';
 }
 
 export enum CloudShellErrors {
