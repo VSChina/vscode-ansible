@@ -23,6 +23,7 @@
         "typescript": "^2.7.1",
         "vscode-json-languageservice": "^3.0.4",
         "vscode-languageserver": "^3.5.0",
+        "vscode-languageserver-protocol": "3.5.0",
         "vscode-yaml-languageservice": "^0.2.0"
     }
 }
