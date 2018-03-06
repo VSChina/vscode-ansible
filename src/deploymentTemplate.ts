@@ -98,7 +98,7 @@ export class DeploymentTemplate {
         
                     Azure.getArmTemplateFromResourceGroup(selection, function(template) {
                         if (template != null) {
-                            __this.createPlaybookFromTemplate(null, "", template, true);                                    
+                            __this.createPlaybookFromTemplate(null, "", template['template'], true);                                    
                         }
                     })
                 });
