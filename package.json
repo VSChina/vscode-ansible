@@ -153,7 +153,7 @@
     }
   },
   "scripts": {
-    "compile": "tsc -p ./ && tsc -p server/",
+    "compile": "cd server && npm install && tsc -p ../ && tsc -p ./",
     "eslint": "node ./node_modules/eslint/bin/eslint.js .",
     "pkgvars": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
