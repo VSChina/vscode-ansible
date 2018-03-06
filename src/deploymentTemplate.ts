@@ -12,7 +12,7 @@ export class DeploymentTemplate {
 
     public displayDeploymentTemplateMenu() {
 
-        TelemetryClient.sendEvent('deploymenttemplate');
+        TelemetryClient.sendEvent('deploymenttemplate', { 'action': 'menu' });
         // currently only one option is available, so first menu won't be displayed yet
         this.selectQuickstartTemplate();
     }
@@ -60,11 +60,11 @@ export class DeploymentTemplate {
                         });
                     });
                 } else {
-                    vscode.window.showErrorMessage("Error: " + response.statusCode + " " + response.statusMessage);
+                    vscode.window.showErrorMessage("Failed to fetch list of templates: " + response.statusCode + " " + response.statusMessage);
                 }
 
             }).on('error', function(e) {
-                vscode.window.showErrorMessage("Error: " + e);
+                vscode.window.showErrorMessage("Failed to fetch list of templates: " + e);
             });
         
     }
@@ -97,17 +97,17 @@ export class DeploymentTemplate {
                     } else if (response.statusCode == 404) {
                         vscode.window.showErrorMessage("Template file 'azuredeploy.json' not found.");
                     } else {
-                        vscode.window.showErrorMessage("Error: " + response.statusCode + " " + response.statusMessage);
+                        vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + response.statusCode + " " + response.statusMessage);
                     }
                 }).on('error', function(e) {
-                    vscode.window.showErrorMessage("Error: " + e);
+                    vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + e);
                 });
     }
 
     public createPlaybookFromTemplate(location: string, template: object) {
         let __this = this;
 
-        TelemetryClient.sendEvent('deploymenttemplateinserted', { 'template': location });
+        TelemetryClient.sendEvent('deploymenttemplate', { 'action': 'inserted', 'template': location });
         
         // create yaml document if not current document
         if (vscode.window.activeTextEditor == undefined || vscode.window.activeTextEditor.document.languageId != "yaml") {
