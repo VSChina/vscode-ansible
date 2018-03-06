@@ -4,9 +4,10 @@ import * as vscode from 'vscode';
 import * as utilities from './utilities';
 import { Constants } from './constants';
 import { TelemetryClient } from './telemetryClient';
+import { AzureHelpers } from './azureHelpers';
 import * as yamljs from 'yamljs';
 
-var request = require('request');
+var Azure = new AzureHelpers();
 
 export class DeploymentTemplate {
     constructor() {}
@@ -15,7 +16,23 @@ export class DeploymentTemplate {
 
         TelemetryClient.sendEvent('deploymenttemplate', { 'action': 'menu' });
         // currently only one option is available, so first menu won't be displayed yet
-        this.selectQuickstartTemplate();
+
+                                
+        let items : vscode.QuickPickItem[] = [];
+
+        items.push({label: "Quickstart Template", description: "Select Azure quickstart template"});
+        items.push({label: "Resource Group", description: "Create template from existing resource group"});
+
+        vscode.window.showQuickPick(items).then(selection => {
+            // the user canceled the selection
+            if (!selection) return;
+
+            if (selection.label == "Quickstart Template") {
+                this.selectQuickstartTemplate();
+            } else {
+                this.createFromResourceGroup();
+            }
+        });
     }
 
     public selectQuickstartTemplate() {
@@ -70,6 +87,18 @@ export class DeploymentTemplate {
         
     }
 
+    public createFromResourceGroup() {
+        Azure.queryResourceGroups(function(groups) {
+            if (groups != null) {
+                vscode.window.showQuickPick(groups).then(selection => {
+                    // the user canceled the selection
+                    if (!selection) return;
+        
+                });
+            }
+        })
+    }
+    
     public retrieveTemplate(templateName: string) {
         var http = require('https');
         let __this = this;
