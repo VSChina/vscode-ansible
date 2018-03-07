@@ -24,12 +24,6 @@ export class AzureHelpers {
 
         // XXX - check if credentials are valid
 
-        //url: https://login.windows.net/{{ lookup('env','AZURE_TENANT') }}/oauth2/token
-        //method: POST
-        //body: resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id={{ lookup('env','AZURE_CLIENT_ID') }}&grant_type=client_credentials&client_secret={{ lookup('env','AZURE_SECRET') }}
-        //return_content: yes
-        //headers:
-        //  Content-Type: application/x-www-form-urlencoded        
         var https = require('https');
         let __this = this;
 
@@ -97,7 +91,7 @@ export class AzureHelpers {
                             cb(resourceGroups);
                         });
                     } else {
-                        vscode.window.showErrorMessage("Failed to fetch list of templates: " + response.statusCode + " " + response.statusMessage);
+                        vscode.window.showErrorMessage("Failed to fetch available resource groups: " + response.statusCode + " " + response.statusMessage);
                     }
 
                 }).on('error', function(e) {
@@ -108,7 +102,6 @@ export class AzureHelpers {
                 cb(null);
             }
         })
-
     }
 
     public getArmTemplateFromResourceGroup(resourceGroup: string, cb): any {
