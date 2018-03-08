@@ -5,9 +5,11 @@ import * as utilities from './utilities';
 import { Constants } from './constants';
 import { TelemetryClient } from './telemetryClient';
 import { AzureHelpers } from './azureHelpers';
+import { AzureRestApi } from './azureRestApi';
 import * as yamljs from 'yamljs';
 
 var Azure = new AzureHelpers();
+var AzureRest = new AzureRestApi();
 
 export class DeploymentTemplate {
     constructor() {}
@@ -22,6 +24,7 @@ export class DeploymentTemplate {
 
         items.push({label: "Quickstart Template", description: "Select Azure quickstart template"});
         items.push({label: "Resource Group", description: "Create template from existing resource group"});
+        items.push({label: "REST API", description: "Create REST API Call"});
 
         vscode.window.showQuickPick(items).then(selection => {
             // the user canceled the selection
@@ -29,8 +32,10 @@ export class DeploymentTemplate {
 
             if (selection.label == "Quickstart Template") {
                 this.selectQuickstartTemplate();
-            } else {
+            } else if (selection.label == "Resource Group") {
                 this.createFromResourceGroup();
+            } else {
+                this.createRestApiCall();
             }
         });
     }
@@ -207,5 +212,56 @@ export class DeploymentTemplate {
             let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 0);
             vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(playbook), insertionPoint);
         }
+    }
+
+    public createRestApiCall() {
+        let __this = this;
+
+        let specLocation = 'c:/dev-ansible/azure-rest-api-specs';
+        //let specLocation = 'https://api.github.com/Azure/azure-rest-api-specs/contents';
+
+        AzureRest.queryApiGroups(specLocation, function (groups) {
+            if (groups != null) {
+                vscode.window.showQuickPick(groups).then(selection => {
+                    // the user canceled the selection
+                    if (!selection) return;
+
+                    __this.selectRestApi(specLocation + "/specification/" + selection);
+                });
+            } 
+        })
+    }
+
+    // that will be resource-manager / data-plane etc...
+    public selectRestApi(path: string) {
+        let __this = this;
+        AzureRest.queryApiGroup(path, function (dirs) {
+            if (dirs != null) {
+                // cut these items a bit
+
+                let items : vscode.QuickPickItem[] = [];
+
+                for (var i = 0; i < dirs.length; i++)
+                {
+                    items.push({label: dirs[i].split(path)[1], description: path });
+                }
+        
+                vscode.window.showQuickPick(items).then(selection => {
+                    // the user canceled the selection
+                    if (!selection) return;
+        
+                    __this.generateCodeFromRestApi(path + '/' + selection.label);
+                });
+            } 
+        })
+    }
+
+    public generateCodeFromRestApi(path: string) {
+        let __this = this;
+        //AzureRest.queryApiDescription(group, type, object, stable_preview + '/' + version, function (spec) {
+        //    if (spec != null) {
+        //        vscode.window.showInformationMessage("API RETRIEVED SUCCESSFULLY");
+        //    } 
+        //})
     }
 }
