@@ -182,4 +182,16 @@ export class AzureRestApi {
             }
         })
     }
+
+    public GetListOfOperations(swagger: any) : string[] {
+
+        let operations: string[] = [];
+        for (var path in swagger.paths) {
+            for (var method in swagger.paths[path]) {
+                operations.push(swagger.paths[path][method].operationId);
+            }
+        }
+
+        return operations;
+    }
 }
