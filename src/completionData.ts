@@ -17,6 +17,7 @@ export function parseAnsibleCompletionFile(sourcefile: string): Promise<AnsibleC
     let directives: AnsibleCompletionItemList = [];
     let loopDirectives: AnsibleCompletionItemList = [];
     let codeSnippetItems: AnsibleCompletionItemList = [];
+
     if (data) {
         modules = data.modules.map((module) => {
             let item = new AnsibleCompletionItem(module.module, CompletionItemKind.Function);
