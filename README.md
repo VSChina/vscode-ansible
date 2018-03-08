@@ -107,6 +107,7 @@ This extension provides below configurations in settings.json.
 |config name| description|
 |--|--|
 |`ansible.hover`| Enable/Disable hover over module name functionality. Default is true.|
+|`ansible.autocompletion` | Enable/Disable ansible autocompletion(including code snippets) functionality. Default is true. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
 |`ansible.credentialsFile` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. Default is `$HOME/.vscode/ansible-credentials.yml`.|
 |`ansible.termininalInitCommand`| Specify customized terminal init command when run playbook in Docker/Local Ansible. Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.|
 

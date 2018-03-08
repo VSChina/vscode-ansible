@@ -140,6 +140,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/Disable hover over on module name"
+        },
+        "ansible.autocompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable ansible autocompletion"
         }
       }
     }
