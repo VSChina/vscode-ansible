@@ -7,12 +7,15 @@ import { TelemetryClient } from './telemetryClient';
 import { AzureHelpers } from './azureHelpers';
 import { AzureRestApi } from './azureRestApi';
 import * as yamljs from 'yamljs';
+import { SourceTreeHelpers } from './sourceTreeHelpers';
 
 var Azure = new AzureHelpers();
 var AzureRest = new AzureRestApi();
 
-export class DeploymentTemplate {
-    constructor() {}
+export class DeploymentTemplate extends SourceTreeHelpers {
+    constructor() {
+        super();
+    }
 
     public displayDeploymentTemplateMenu() {
 
@@ -41,55 +44,27 @@ export class DeploymentTemplate {
     }
 
     public selectQuickstartTemplate() {
-
-        // get list of directories from here:
-        // https://api.github.com/[repo_user/repo_name]/contents/
-        // we will use fixed repo in our first release
-        let repo: string = Constants.AzureQuickStartTemplates;
-
-        var http = require('https');
         let __this = this;
-
-            http.get({
-                host: Constants.GitHubApiHost,
-                path: '/repos/' + repo + '/contents/',
-                headers: { 'User-Agent': 'VSC Ansible Extension'}
-            }, function(response) {
-                // Continuously update stream with data
-
-                if (response.statusMessage == "OK") {
-                    var body = '';
-                    response.on('data', function(d) {
-                        body += d;
-                    });
-                    response.on('end', function() {
-                        var parsed = JSON.parse(body);
-                        let items: vscode.QuickPickItem[] = [];
+        let repo: string = Constants.AzureQuickStartTemplates;
+        this.queryDirectory('https://' + Constants.GitHubApiHost + '/repos/' + repo + '/contents/', false, function(dirs) {
+            let items: vscode.QuickPickItem[] = [];
                 
-                        for (var i in parsed)
-                        {
-                            // list only directories and skip known directories that don't contain templates
-                            if (parsed[i].type == "dir" && !parsed[i].name.startsWith('.')) {
-                                items.push({ label: parsed[i].name, description: null });
-                            }
-                        }
-                        vscode.window.showQuickPick(items).then(selection => {
-                            // the user canceled the selection
-                            if (!selection) {
-                                return;
-                            }        
-                            
-                            __this.retrieveTemplate(selection.label);
-                        });
-                    });
-                } else {
-                    vscode.window.showErrorMessage("Failed to fetch list of templates: " + response.statusCode + " " + response.statusMessage);
+            for (var i in dirs)
+            {
+                // list only directories and skip known directories that don't contain templates
+                if (!dirs[i].startsWith('.')) {
+                    items.push({ label: dirs[i], description: null });
                 }
-
-            }).on('error', function(e) {
-                vscode.window.showErrorMessage("Failed to fetch list of templates: " + e);
+            }
+            
+            vscode.window.showQuickPick(items).then(selection => {
+                // the user canceled the selection
+                if (!selection) {
+                    return;
+                }        
+                __this.retrieveTemplate(selection.label);
             });
-        
+        })        
     }
 
     public createFromResourceGroup() {
@@ -107,52 +82,34 @@ export class DeploymentTemplate {
                         }
                     })
                 });
+            } else {
+                vscode.window.showErrorMessage("Failed to retrieve list of templates");
             }
         })
     }
     
     public retrieveTemplate(templateName: string) {
-        var http = require('https');
         let __this = this;
         let repo: string = Constants.AzureQuickStartTemplates;
 
-            http.get({
-                host: Constants.GitHubRawContentHost,
-                path: '/' + repo + '/master/' + templateName + '/azuredeploy.json',
-                headers: { 'User-Agent': 'VSC Ansible Extension'}
-                }, function(response) {
-                    if (response.statusMessage == "OK") {
-                        var body = '';
-                        response.on('data', function(d) {
-                            body += d;
-                        });
-                        response.on('end', function() {
-                            try {
-                                var parsed = JSON.parse(body);
-                                
-                                let items : vscode.QuickPickItem[] = [];
+        this.getJson('https://' + Constants.GitHubRawContentHost + '/' + repo + '/master/' + templateName + '/azuredeploy.json', function(template) {
+           
+            if (template != null) {
+                let items : vscode.QuickPickItem[] = [];
 
-                                items.push({label: "Link", description: "Create link to template using lookup"});
-                                items.push({label: "Expand", description: "Expand template inline"});
+                items.push({label: "Link", description: "Create link to template using lookup"});
+                items.push({label: "Expand", description: "Expand template inline"});
 
-                                vscode.window.showQuickPick(items).then(selection => {
-                                    // the user canceled the selection
-                                    if (!selection) return;
-                                        
-                                    __this.createPlaybookFromTemplate(null, "https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json", parsed, (selection.label == 'Expand'));                                    
-                                });
-                            } catch (e) {
-                                vscode.window.showErrorMessage("Failed to parse 'azuredeploy.json'");
-                            }
-                        });
-                    } else if (response.statusCode == 404) {
-                        vscode.window.showErrorMessage("Template file 'azuredeploy.json' not found.");
-                    } else {
-                        vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + response.statusCode + " " + response.statusMessage);
-                    }
-                }).on('error', function(e) {
-                    vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + e);
+                vscode.window.showQuickPick(items).then(selection => {
+                    // the user canceled the selection
+                    if (!selection) return;
+                        
+                    __this.createPlaybookFromTemplate(null, "https://" + Constants.GitHubRawContentHost + "/" + repo + "/master/" + templateName + "/azuredeploy.json", template, (selection.label == 'Expand'));                                    
                 });
+            } else {
+                vscode.window.showErrorMessage("Failed to retrieve template");
+            }
+        });
     }
 
     public createPlaybookFromTemplate(prefixPlaybook: string[], location: string, template: object, expand: boolean) {
