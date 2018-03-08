@@ -13,7 +13,7 @@ export class AzureRestApi {
     constructor() {}
 
     public queryApiGroups(specLocation: string, cb) {
-        this.queryDirectory(specLocation + '/specification', cb);
+        this.queryDirectory(specLocation + '/specification', false, cb);
     }
 
     public queryApiGroup(path, cb) {
@@ -32,7 +32,7 @@ export class AzureRestApi {
         // get first dir to query
         let nextDir: string = dirsToQuery.pop();
 
-        this.queryDirectory(nextDir, function(dir) {
+        this.queryDirectory(nextDir, false, function(dir) {
             if (dir == null) {
                 cb(null);
                 vscode.window.showErrorMessage("Failed to query: " + nextDir);
@@ -52,18 +52,18 @@ export class AzureRestApi {
     }
 
     public queryApiType(specLocation: string, group: string, cb) {
-        this.queryDirectory(specLocation + '/specification/' + group, cb);
+        this.queryDirectory(specLocation + '/specification/' + group, false, cb);
     }
 
     public queryApiObject(specLocation: string, group: string, type: string, cb) {
-        this.queryDirectory(specLocation + '/specification/' + group + '/' + type, cb);
+        this.queryDirectory(specLocation + '/specification/' + group + '/' + type, false, cb);
     }
 
     public queryApiVersion(specLocation: string, group: string, type: string, object: string, stable_preview: string, cb) {
-        this.queryDirectory(specLocation + '/specification/' + group + '/' + type + '/' + object + '/' + stable_preview, cb);
+        this.queryDirectory(specLocation + '/specification/' + group + '/' + type + '/' + object + '/' + stable_preview, false, cb);
     }
 
-    public queryDirectory(path: string, cb) {
+    public queryDirectory(path: string, files: boolean,  cb) {
         if (path.startsWith('https://api.github.com/')) {
             // get list of directories from here:
             // https://api.github.com/Azure/azure-rest-api-specs/contents/
@@ -115,8 +115,14 @@ export class AzureRestApi {
                 let directories = [];
 
                 for (var d in dirEntries) {
-                    if (fs.lstatSync(path + '/' + dirEntries[d]).isDirectory()) {
-                        directories.push(dirEntries[d]);
+                    if (!files) {
+                        if (fs.lstatSync(path + '/' + dirEntries[d]).isDirectory()) {
+                            directories.push(dirEntries[d]);
+                        }
+                    } else {
+                        if (!fs.lstatSync(path + '/' + dirEntries[d]).isDirectory()) {
+                            directories.push(dirEntries[d]);
+                        }
                     }
                 }
                 cb(directories);
@@ -126,41 +132,54 @@ export class AzureRestApi {
         }
     }
 
-    public queryApiDescription(group: string, type: string, object: string, version: string, cb): any {
+    public queryApiDescription(path: string, cb): any {
         var http = require('https');
         let __this = this;
-        let repo: string = "Azure/azure-rest-api-specs";
 
-            http.get({
-                host: Constants.GitHubRawContentHost,
-                path: '/' + repo + '/master/specification/' + group + '/' + type + '/' + object + '/' + version + '/' + object.split('.').slice(-1)[0].toLowerCase() + '.json',
-                headers: { 'User-Agent': 'VSC Ansible Extension'}
-                }, function(response) {
-                    if (response.statusMessage == "OK") {
-                        var body = '';
-                        response.on('data', function(d) {
-                            body += d;
-                        });
-                        response.on('end', function() {
-                            try {
-                                var parsed = JSON.parse(body);
-                                cb(parsed);
-                            } catch (e) {
-                                vscode.window.showErrorMessage("Failed to parse 'azuredeploy.json'");
+        this.queryDirectory(path, true, function(files) {
+            if (path.startsWith('https://raw.githubusercontent.com')) {
+            
+                let repo: string = "Azure/azure-rest-api-specs";
+    
+                    http.get({
+                        // XXX fix it for github
+                        host: Constants.GitHubRawContentHost,
+                        path: 'xxx',//'/' + repo + '/master/specification/' + group + '/' + type + '/' + object + '/' + version + '/' + object.split('.').slice(-1)[0].toLowerCase() + '.json',
+                        headers: { 'User-Agent': 'VSC Ansible Extension'}
+                        }, function(response) {
+                            if (response.statusMessage == "OK") {
+                                var body = '';
+                                response.on('data', function(d) {
+                                    body += d;
+                                });
+                                response.on('end', function() {
+                                    try {
+                                        var parsed = JSON.parse(body);
+                                        cb(parsed);
+                                    } catch (e) {
+                                        vscode.window.showErrorMessage("Failed to parse 'azuredeploy.json'");
+                                        cb(null);
+                                    }
+                                });
+                            } else if (response.statusCode == 404) {
+                                vscode.window.showErrorMessage("Template file 'azuredeploy.json' not found.");
+                                cb(null);
+                            } else {
+                                vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + response.statusCode + " " + response.statusMessage);
                                 cb(null);
                             }
+                        }).on('error', function(e) {
+                            vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + e);
+                            cb(null);
                         });
-                    } else if (response.statusCode == 404) {
-                        vscode.window.showErrorMessage("Template file 'azuredeploy.json' not found.");
-                        cb(null);
-                    } else {
-                        vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + response.statusCode + " " + response.statusMessage);
-                        cb(null);
-                    }
-                }).on('error', function(e) {
-                    vscode.window.showErrorMessage("Failed to fetch 'azuredeploy.json': " + e);
+            } else {
+                try {
+                    let content = require(path + '/' + files[0]);
+                    cb(content);
+                } catch (e) {
                     cb(null);
-                });
+                }
+            }
+        })
     }
-
 }

@@ -258,10 +258,10 @@ export class DeploymentTemplate {
 
     public generateCodeFromRestApi(path: string) {
         let __this = this;
-        //AzureRest.queryApiDescription(group, type, object, stable_preview + '/' + version, function (spec) {
-        //    if (spec != null) {
-        //        vscode.window.showInformationMessage("API RETRIEVED SUCCESSFULLY");
-        //    } 
-        //})
+        AzureRest.queryApiDescription(path, function (spec) {
+            if (spec != null) {
+                vscode.window.showInformationMessage("API RETRIEVED SUCCESSFULLY");
+            } 
+        })
     }
 }
