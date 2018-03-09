@@ -8,6 +8,7 @@ import { AzureHelpers } from './azureHelpers';
 import { AzureRestApi } from './azureRestApi';
 import * as yamljs from 'yamljs';
 import { SourceTreeHelpers } from './sourceTreeHelpers';
+import { Swagger } from './swagger';
 
 var Azure = new AzureHelpers();
 var AzureRest = new AzureRestApi();
@@ -218,11 +219,9 @@ export class DeploymentTemplate extends SourceTreeHelpers {
         AzureRest.queryApiDescription(path, function (swagger) {
             if (swagger != null) {
 
-                let items : vscode.QuickPickItem[] = [];
+                let swaggerHandler = new Swagger(swagger);
 
-                //for (var i = 0; i < dirs.length; i++) {
-                //    items.push({label: dirs[i].split(path)[1], description: path });
-                //}
+                let items : vscode.QuickPickItem[] = [];
 
                 let operations: string[] = [];
                 for (var path in swagger.paths) {
@@ -239,56 +238,13 @@ export class DeploymentTemplate extends SourceTreeHelpers {
 
                     let path = selection.description.split(" ")[1];
                     let method = selection.description.split(" ")[0];
-                    let playbook: string = ""
-                    let prefix = "    ";
-                    playbook += prefix + "- name: Call REST API\r" +
-                                prefix + "  uri:\r" +
-                                prefix + "    url: " + swagger['schemes'][0] + '://' + swagger['host'] + '/' + path + "\r" +
-                                prefix + "    method: " + method + "\r" +
-                                prefix + "    headers:\r" +
-                                prefix + "      Authorization: Bearer {{ authresp.json.access_token }}\r";
-                    let parameters = swagger.paths[path][method]['parameters'];
-                    if (swagger.paths[path][method]['parameters'] != undefined) {
-                        playbook += prefix + "    body_format: json\r" +
-                                    prefix + "    body:\r";
-                        for (var i in parameters) {
-                            let p = parameters[i];
-                            if (p['$ref'] != undefined) {
-                                p = swagger.parameters[p['$ref'].split('#/parameters/')[1]];
-                            }
-                            if (p['in'] == "body") {
-                                playbook += prefix + "      " + p['name'] + ":\r";
 
-                                let schema = p['schema'];
-                                if (p['schema'] != undefined) {
-                                    playbook += __this.playbookFromSwaggerSchema(swagger, schema, prefix + "        ");
-                                }
-                                
-                            }
-                        }
-                    }
+                    let playbook = swaggerHandler.generateRestApiCallPlaybook(path, method);
+
                     let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 0);
                     vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(playbook), insertionPoint);
                 });
             } 
         })
     }
-
-    private playbookFromSwaggerSchema(swagger: any, schema: any, prefix: string) {
-        let playbook = "";
-        if (schema['$ref'] != undefined) {
-            schema = swagger.definitions[schema['$ref'].split('#/definitions/')[1]];
-        }
-
-        for (var propName in schema['properties']) {
-            let property = schema['properties'][propName];
-            playbook += prefix + propName + ":\r";
-
-            if (property['$ref'] != undefined) {
-                playbook += this.playbookFromSwaggerSchema(swagger, swagger.definitions[property['$ref'].split('#/definitions/')[1]], prefix + '  ' );
-            }
-        }
-
-        return playbook;
-    } 
 }
