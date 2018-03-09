@@ -134,34 +134,34 @@ export class DeploymentTemplate extends SourceTreeHelpers {
                 for (var l in prefixPlaybook) playbook += prefixPlaybook[l] + "\r";
             }
 
-            let prefix = "    ";
+            let prefix = "\t\t";
             playbook += prefix + "- name: Create resource using Azure deployment template\r" +
-                        prefix + "  azure_rm_deployment:\r" +
-                        prefix + "    resource_group_name: ${1:your-resource-group}\r" +
-                        prefix + "    location: ${2:eastus}\r" +
-                        prefix + "    state: present\r" +
-                        prefix + "    parameters:\r";
+                        prefix + "\tazure_rm_deployment:\r" +
+                        prefix + "\t\tresource_group_name: ${1:your-resource-group}\r" +
+                        prefix + "\t\tlocation: ${2:eastus}\r" +
+                        prefix + "\t\tstate: present\r" +
+                        prefix + "\t\tparameters:\r";
             let tabstop: number = 3;
             for (var p in template['parameters']) {
                 if (template['parameters'][p]['defaultValue']) {
-                    playbook += prefix + "      #" + p + ":\r";
-                    playbook += prefix + "      #  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
+                    playbook += prefix + "\t\t\t#" + p + ":\r";
+                    playbook += prefix + "\t\t\t#  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
                 } else {
-                    playbook += prefix + "      " + p + ":\r";
-                    playbook += prefix + "        value: ${" +  tabstop++ + "}\r"; 
+                    playbook += prefix + "\t\t\t" + p + ":\r";
+                    playbook += prefix + "\t\t\t\tvalue: ${" +  tabstop++ + "}\r"; 
                 }
             }
 
-            playbook += prefix + "    template:\r"
+            playbook += prefix + "\t\ttemplate:\r"
 
             if (expand) {
                 let templateYaml: string[] = yamljs.stringify(template, 10, 2).replace(/[$]/g, "\\$").split(/\r?\n/);
 
                 for (var i = 0; i < templateYaml.length; i++) {
-                    playbook += prefix + "      " + templateYaml[i] + "\r";
+                    playbook += prefix + "\t\t\t" + templateYaml[i] + "\r";
             }
             } else {
-                playbook +=  prefix + "    template: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";            
+                playbook +=  prefix + "\t\ttemplate: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";            
             }
             
 
@@ -239,7 +239,7 @@ export class DeploymentTemplate extends SourceTreeHelpers {
                     let path = selection.description.split(" ")[1];
                     let method = selection.description.split(" ")[0];
 
-                    let playbook = swaggerHandler.generateRestApiCallPlaybook(path, method);
+                    let playbook = swaggerHandler.generateRestApiTasks(path, method, true);
 
                     let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 0);
                     vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(playbook), insertionPoint);
