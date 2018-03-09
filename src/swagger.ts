@@ -25,7 +25,7 @@ export class Swagger {
         let prefix = "\t\t";
 
         if (addAuthorisation) {
-            playbook += prefix + "- name: Authorization\r" +
+            playbook += prefix + "- name: Azure authorization\r" +
                         prefix + "\turi:\r" +
                         prefix + "\t\turl: https://login.windows.net/{{ lookup('env','AZURE_TENANT') }}/oauth2/token\r" +
                         prefix + "\t\tmethod: POST\r" +

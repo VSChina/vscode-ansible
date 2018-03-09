@@ -9,9 +9,11 @@ import { AzureRestApi } from './azureRestApi';
 import * as yamljs from 'yamljs';
 import { SourceTreeHelpers } from './sourceTreeHelpers';
 import { Swagger } from './swagger';
+import { PlaybookManager } from './playbookManager';
 
 var Azure = new AzureHelpers();
 var AzureRest = new AzureRestApi();
+var pm = new PlaybookManager();
 
 export class DeploymentTemplate extends SourceTreeHelpers {
     constructor() {
@@ -239,10 +241,8 @@ export class DeploymentTemplate extends SourceTreeHelpers {
                     let path = selection.description.split(" ")[1];
                     let method = selection.description.split(" ")[0];
 
-                    let playbook = swaggerHandler.generateRestApiTasks(path, method, true);
-
-                    let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 0);
-                    vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(playbook), insertionPoint);
+                    let playbook = swaggerHandler.generateRestApiTasks(path, method, !pm.doesTaskExistByName('Azure authorization', true));
+                    pm.insertTask(playbook);
                 });
             } 
         })
