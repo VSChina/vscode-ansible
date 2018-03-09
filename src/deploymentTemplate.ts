@@ -118,60 +118,46 @@ export class DeploymentTemplate extends SourceTreeHelpers {
     public createPlaybookFromTemplate(prefixPlaybook: string[], location: string, template: object, expand: boolean) {
         let __this = this;
         
-        // create new yaml document if not current document
-        if (vscode.window.activeTextEditor == undefined || vscode.window.activeTextEditor.document.languageId != "yaml") {
-            vscode.workspace.openTextDocument({language: "yaml", content: ""} ).then((a: vscode.TextDocument) => {
-                vscode.window.showTextDocument(a, 1, false).then(e => {
-                    let prefix: string[] = ["- hosts: localhost",
-                                            "  tasks:"];
-                    __this.createPlaybookFromTemplate(prefix, location, template, expand);
-                });
-            });
-        } else {
-            TelemetryClient.sendEvent('deploymenttemplate', { 'action': 'inserted', 'template': location });
+        TelemetryClient.sendEvent('deploymenttemplate', { 'action': 'inserted', 'template': location });
 
-            let playbook = "";
+        let playbook = "";
 
-            if (prefixPlaybook != null) {
-                for (var l in prefixPlaybook) playbook += prefixPlaybook[l] + "\r";
-            }
-
-            let prefix = "\t\t";
-            playbook += prefix + "- name: Create resource using Azure deployment template\r" +
-                        prefix + "\tazure_rm_deployment:\r" +
-                        prefix + "\t\tresource_group_name: ${1:your-resource-group}\r" +
-                        prefix + "\t\tlocation: ${2:eastus}\r" +
-                        prefix + "\t\tstate: present\r" +
-                        prefix + "\t\tparameters:\r";
-            let tabstop: number = 3;
-            for (var p in template['parameters']) {
-                if (template['parameters'][p]['defaultValue']) {
-                    playbook += prefix + "\t\t\t#" + p + ":\r";
-                    playbook += prefix + "\t\t\t#  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
-                } else {
-                    playbook += prefix + "\t\t\t" + p + ":\r";
-                    playbook += prefix + "\t\t\t\tvalue: ${" +  tabstop++ + "}\r"; 
-                }
-            }
-
-            playbook += prefix + "\t\ttemplate:\r"
-
-            if (expand) {
-                let templateYaml: string[] = yamljs.stringify(template, 10, 2).replace(/[$]/g, "\\$").split(/\r?\n/);
-
-                for (var i = 0; i < templateYaml.length; i++) {
-                    playbook += prefix + "\t\t\t" + templateYaml[i] + "\r";
-            }
-            } else {
-                playbook +=  prefix + "\t\ttemplate: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";            
-            }
-            
-
-            playbook += "$end";
-
-            let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount, 0);
-            vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(playbook), insertionPoint);
+        if (prefixPlaybook != null) {
+            for (var l in prefixPlaybook) playbook += prefixPlaybook[l] + "\r";
         }
+
+        playbook += "- name: Create resource using Azure deployment template\r" +
+                    "\tazure_rm_deployment:\r" +
+                    "\t\tresource_group_name: ${1:your-resource-group}\r" +
+                    "\t\tlocation: ${2:eastus}\r" +
+                    "\t\tstate: present\r" +
+                    "\t\tparameters:\r";
+        let tabstop: number = 3;
+        for (var p in template['parameters']) {
+            if (template['parameters'][p]['defaultValue']) {
+                playbook += "\t\t\t#" + p + ":\r";
+                playbook += "\t\t\t#  value: " + template['parameters'][p]['defaultValue'] + "\r"; 
+            } else {
+                playbook += "\t\t\t" + p + ":\r";
+                playbook += "\t\t\t\tvalue: ${" +  tabstop++ + "}\r"; 
+            }
+        }
+
+        playbook += "\t\ttemplate:\r"
+
+        if (expand) {
+            let templateYaml: string[] = yamljs.stringify(template, 10, 2).replace(/[$]/g, "\\$").split(/\r?\n/);
+
+            for (var i = 0; i < templateYaml.length; i++) {
+                playbook += "\t\t\t" + templateYaml[i] + "\r";
+        }
+        } else {
+            playbook += "\t\ttemplate: \"{{ lookup('url', '" + location + "', split_lines=False) }}\"\r";            
+        }
+        
+
+        playbook += "$end";
+        pm.insertTask(playbook);
     }
 
     public createRestApiCall() {

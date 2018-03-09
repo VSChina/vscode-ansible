@@ -22,44 +22,61 @@ export class Swagger {
     public generateRestApiTasks(path: string, method: string, addAuthorisation: boolean): string {
                         
         let playbook: string = ""
-        let prefix = "\t\t";
 
         if (addAuthorisation) {
-            playbook += prefix + "- name: Azure authorization\r" +
-                        prefix + "\turi:\r" +
-                        prefix + "\t\turl: https://login.windows.net/{{ lookup('env','AZURE_TENANT') }}/oauth2/token\r" +
-                        prefix + "\t\tmethod: POST\r" +
-                        prefix + "\t\tbody: resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id={{ lookup('env','AZURE_CLIENT_ID') }}&grant_type=client_credentials&client_secret={{ lookup('env','AZURE_SECRET') }}\r" +
-                        prefix + "\t\treturn_content: yes\r" +
-                        prefix + "\t\theaders:\r" +
-                        prefix + "\t\t\tContent-Type: application/x-www-form-urlencoded\r" +
-                        prefix + "\tregister: authresp\r" +
-                        prefix + "\r";
+            playbook += "- name: Azure authorization\r" +
+                        "\turi:\r" +
+                        "\t\turl: https://login.windows.net/{{ lookup('env','AZURE_TENANT') }}/oauth2/token\r" +
+                        "\t\tmethod: POST\r" +
+                        "\t\tbody: resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id={{ lookup('env','AZURE_CLIENT_ID') }}&grant_type=client_credentials&client_secret={{ lookup('env','AZURE_SECRET') }}\r" +
+                        "\t\treturn_content: yes\r" +
+                        "\t\theaders:\r" +
+                        "\t\t\tContent-Type: application/x-www-form-urlencoded\r" +
+                        "\tregister: authresp\r" +
+                        "\r";
         }
 
-        playbook += prefix + "- name: Call REST API\r" +
-                    prefix + "\turi:\r" +
-                    prefix + "\t\turl: " + this.swagger['schemes'][0] + '://' + this.swagger['host'] + '/' + path + "\r" +
-                    prefix + "\t\tmethod: " + method + "\r" +
-                    prefix + "\t\theaders:\r" +
-                    prefix + "\t\t\tAuthorization: Bearer {{ authresp.json.access_token }}\r";
+        let url: string = this.swagger['schemes'][0] + '://' + this.swagger['host'] + '/' + path + "?api-version=" + this.swagger['info']['version'];
+        url = url.replace("{subscriptionId}", "{{ lookup('env','AZURE_SUBSCRIPTION_ID') }}");
+
+        let responses = "";
+        for (var code in this.swagger.paths[path][method]['responses']) {
+            responses += ((responses != "") ? "," : "") + code;
+        }
+
+        playbook += "- name: Call REST API - " + this.swagger.paths[path][method]['operationId'] + "\r" +
+                    "\turi:\r" +
+                    "\t\turl: " + url + "\r" +
+                    "\t\tmethod: " + method.toUpperCase() + "\r" +
+                    "\t\theaders:\r" +
+                    "\t\t\tAuthorization: Bearer {{ authresp.json.access_token }}\r" +
+                    "\t\tstatus_code: " + responses + "\r";
+
         let parameters = this.swagger.paths[path][method]['parameters'];
         if (this.swagger.paths[path][method]['parameters'] != undefined) {
-            playbook += prefix + "\t\tbody_format: json\r" +
-                        prefix + "\t\tbody:\r";
+
+            let body: string = "";
             for (var i in parameters) {
                 let p = parameters[i];
                 if (p['$ref'] != undefined) {
                     p = this.swagger.parameters[p['$ref'].split('#/parameters/')[1]];
                 }
                 if (p['in'] == "body") {
-                    playbook += prefix + "\t\t\t" + p['name'] + ":\r";
 
                     let schema = p['schema'];
                     if (p['schema'] != undefined) {
-                        playbook += this.playbookFromSwaggerSchema(schema, prefix + "\t\t\t\t");
+                        body += this.playbookFromSwaggerSchema(schema, "\t\t\t");
+                    } else {
+                        // does this ever happen?
+                        body += "\t\t\t" + p['name'] + ":\r";
                     }
                 }
+            }
+
+            if (body != "") {
+                playbook += "\t\tbody_format: json\r" +
+                            "\t\tbody:\r" + 
+                            body;
             }
         }
 
@@ -74,10 +91,13 @@ export class Swagger {
 
         for (var propName in schema['properties']) {
             let property = schema['properties'][propName];
-            playbook += prefix + propName + ":\r";
 
-            if (property['$ref'] != undefined) {
-                playbook += this.playbookFromSwaggerSchema(this.swagger.definitions[property['$ref'].split('#/definitions/')[1]], prefix + '  ' );
+            if (!property['readOnly']) {
+                playbook += prefix + propName + ":\r";
+
+                if (property['$ref'] != undefined) {
+                    playbook += this.playbookFromSwaggerSchema(this.swagger.definitions[property['$ref'].split('#/definitions/')[1]], prefix + '  ' );
+                }
             }
         }
 
