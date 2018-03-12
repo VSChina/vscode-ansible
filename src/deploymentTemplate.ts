@@ -27,7 +27,6 @@ export class DeploymentTemplate extends SourceTreeHelpers {
 
         items.push({label: "Quickstart Template", description: "Select Azure quickstart template"});
         items.push({label: "Resource Group", description: "Create template from existing resource group"});
-        items.push({label: "REST API", description: "Create REST API Call"});
 
         vscode.window.showQuickPick(items).then(selection => {
             // the user canceled the selection
