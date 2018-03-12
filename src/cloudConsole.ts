@@ -39,12 +39,11 @@ export const OSes: Record<string, OS> = {
 	}
 };
 
-export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel, tempFile: string) {
+export async function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel, tempFile: string) {
+	const progress = delayedInterval(() => { outputChannel.append('..') }, 500);
 	return (async function retry(): Promise<any> {
-
 		outputChannel.append('\nConnecting to Cloud Shell.');
 		outputChannel.show();
-		const progress = delayedInterval(() => { outputChannel.append('..') }, 500);
 
 		const isWindows = process.platform === 'win32';
 		if (isWindows) {
@@ -134,7 +133,6 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			}
 		}
 
-		progress.cancel();
 		const terminal = window.createTerminal({
 			name: localize('azure-account.cloudConsole', "{0} in Cloud Shell", os.shellName),
 			shellPath,
@@ -148,9 +146,11 @@ export function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel
 			}
 		});
 
+		progress.cancel();
 		terminal.show();
 		return terminal;
 	})().catch(err => {
+		progress.cancel();
 		TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.ProvisionFailed, 'detailerror': err });
 
 		outputChannel.append('\nConnecting to Cloud Shell failed with error: \n' + err);

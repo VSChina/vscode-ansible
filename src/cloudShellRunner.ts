@@ -12,12 +12,17 @@ import * as fsExtra from 'fs-extra';
 import * as ost from 'os';
 import { setInterval, clearInterval } from 'timers';
 import { TelemetryClient } from './telemetryClient';
+import { delay } from './cloudConsoleLauncher';
+import { Terminal } from 'vscode';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
 export class CloudShellRunner extends BaseRunner {
 
+    private terminal: vscode.Terminal;
+
     constructor(outputChannel: vscode.OutputChannel) {
+
         super(outputChannel);
     }
 
@@ -35,8 +40,18 @@ export class CloudShellRunner extends BaseRunner {
             if (ext.id === Constants.AzureAccountExtensionId) {
                 azureAccount = ext.activate().then((azureAccount) => {
                     if (azureAccount) {
-                        this.startCloudShell(playbook);
-                    }
+                        this.startCloudShell(playbook).then((terminal) => {
+
+                            if (!terminal) {
+                                return;
+                            }
+
+                            terminal.sendText('ansible-playbook ' + path.basename(playbook));
+                            terminal.show();
+                            TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Succeeded });
+                        });
+                    };
+                    return;
                 });
                 return;
             }
@@ -53,39 +68,38 @@ export class CloudShellRunner extends BaseRunner {
     }
 
 
-    protected startCloudShell(playbook: string): void {
+    protected async startCloudShell(playbook: string): Promise<Terminal> {
+        const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
-        this.showPrompt().then(() => {
-            const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
+        if (this.terminal === null || this.terminal === undefined) {
+            var terminal = await openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile);
 
-            openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile).then(terminal => {
-                var count = 30;
-                if (terminal) {
-                    var _localthis = this;
-                    var interval = setInterval(function () {
-                        count--;
-                        if (count > 0) {
-                            if (fsExtra.existsSync(tempFile)) {
-                                fsExtra.removeSync(tempFile);
-                                if (utilities.isTelemetryEnabled()) {
-                                    terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
-                                }
-                                terminal.sendText('ansible-playbook ' + path.basename(playbook));
-                                terminal.show();
+            if (terminal) {
 
-                                count = 0;
+                let count: number = 30;
+                while (count--) {
+                    if (await fsExtra.exists(tempFile)) {
+                        count = 0;
+                        this.terminal = terminal;
 
-                                TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Succeeded });
-                            }
-                        } else {
-                            _localthis.stop(interval);
+                        if (utilities.isTelemetryEnabled()) {
+                            terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
                         }
-                    }, 500);
-                } else {
-                    this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
+
+                        fsExtra.remove(tempFile);
+
+                    }
+                    await delay(500);
                 }
-            });
-        });
+            }
+        } else {
+            this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
+        }
+        return this.terminal;
+    }
+
+    private sendCommandsToTerminal(playbook: string) {
+
     }
 
     protected stop(interval: NodeJS.Timer): void {
