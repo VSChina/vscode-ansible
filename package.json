@@ -107,25 +107,11 @@
         }
       ]
     },
-    "snippets": [
-      {
-        "language": "yaml",
-        "path": "./snippets/codesnippets.json"
-      }
-    ],
     "grammars": [
       {
         "language": "yaml",
         "scopeName": "source.ansible",
         "path": "./syntaxes/Ansible.tmLanguage"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "vscode-ansible.playbook-in-terminal",
-        "key": "ctrl+f5",
-        "mac": "cmd+f5",
-        "when": "editorTextFocus"
       }
     ],
     "configuration": {
@@ -154,6 +140,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/Disable hover over on module name"
+        },
+        "ansible.autocompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable ansible autocompletion"
         }
       }
     }

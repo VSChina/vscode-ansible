@@ -13,7 +13,7 @@ export class CompletionEngine {
         parseAnsibleCompletionFile('').then((data) => {
             this.data = data;
         }).catch((err) => {
-            console.log('error msg');
+            console.log('failed to parse ansible data');
         })
     }
 
@@ -25,6 +25,7 @@ export class CompletionEngine {
         }
         Array.prototype.push.apply(result, getFuzzySuggestions(this.data.directives, prefix));
         Array.prototype.push.apply(result, getFuzzySuggestions(this.data.modules, prefix));
+        Array.prototype.push.apply(result, getFuzzySuggestions(this.data.codeSnippetsItem, prefix));
         return Promise.resolve(result);
     }
 
