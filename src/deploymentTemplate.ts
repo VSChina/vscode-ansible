@@ -5,14 +5,11 @@ import * as utilities from './utilities';
 import { Constants } from './constants';
 import { TelemetryClient } from './telemetryClient';
 import { AzureHelpers } from './azureHelpers';
-import { AzureRestApi } from './azureRestApi';
 import * as yamljs from 'yamljs';
 import { SourceTreeHelpers } from './sourceTreeHelpers';
-import { Swagger } from './swagger';
 import { PlaybookManager } from './playbookManager';
 
 var Azure = new AzureHelpers();
-var AzureRest = new AzureRestApi();
 var pm = new PlaybookManager();
 
 export class DeploymentTemplate extends SourceTreeHelpers {
@@ -40,8 +37,6 @@ export class DeploymentTemplate extends SourceTreeHelpers {
                 this.selectQuickstartTemplate();
             } else if (selection.label == "Resource Group") {
                 this.createFromResourceGroup();
-            } else {
-                this.createRestApiCall();
             }
         });
     }
@@ -158,79 +153,5 @@ export class DeploymentTemplate extends SourceTreeHelpers {
 
         playbook += "$end";
         pm.insertTask(playbook);
-    }
-
-    public createRestApiCall() {
-        let __this = this;
-
-        let specLocation = 'c:/dev-ansible/azure-rest-api-specs';
-        //let specLocation = 'https://api.github.com/Azure/azure-rest-api-specs/contents';
-
-        AzureRest.queryApiGroups(specLocation, function (groups) {
-            if (groups != null) {
-                vscode.window.showQuickPick(groups).then(selection => {
-                    // the user canceled the selection
-                    if (!selection) return;
-
-                    __this.selectRestApi(specLocation + "/specification/" + selection);
-                });
-            } 
-        })
-    }
-
-    // that will be resource-manager / data-plane etc...
-    public selectRestApi(path: string) {
-        let __this = this;
-        AzureRest.queryApiGroup(path, function (dirs) {
-            if (dirs != null) {
-                // cut these items a bit
-
-                let items : vscode.QuickPickItem[] = [];
-
-                for (var i = 0; i < dirs.length; i++)
-                {
-                    items.push({label: dirs[i].split(path)[1], description: path });
-                }
-        
-                vscode.window.showQuickPick(items).then(selection => {
-                    // the user canceled the selection
-                    if (!selection) return;
-        
-                    __this.generateCodeFromRestApi(path + '/' + selection.label);
-                });
-            } 
-        })
-    }
-
-    public generateCodeFromRestApi(path: string) {
-        let __this = this;
-        AzureRest.queryApiDescription(path, function (swagger) {
-            if (swagger != null) {
-
-                let swaggerHandler = new Swagger(swagger);
-
-                let items : vscode.QuickPickItem[] = [];
-
-                let operations: string[] = [];
-                for (var path in swagger.paths) {
-                    for (var method in swagger.paths[path]) {
-                        operations.push(swagger.paths[path][method].operationId);
-                        items.push({label: swagger.paths[path][method].operationId,
-                                    description: method + " " + path});
-                    }
-                }
-                        
-                vscode.window.showQuickPick(items).then(selection => {
-                    // the user canceled the selection
-                    if (!selection) return;
-
-                    let path = selection.description.split(" ")[1];
-                    let method = selection.description.split(" ")[0];
-
-                    let playbook = swaggerHandler.generateRestApiTasks(path, method, !pm.doesTaskExistByName('Azure authorization', true));
-                    pm.insertTask(playbook);
-                });
-            } 
-        })
     }
 }
