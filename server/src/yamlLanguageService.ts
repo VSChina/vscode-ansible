@@ -6,10 +6,10 @@ import { LanguageServiceParams, YAMLDocument, SchemaRequestService, SchemaConfig
 import { parse } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
 import { format } from 'vscode-yaml-languageservice/lib/services/yamlFormatter';
 
-import { JSONSchemaService } from 'vscode-json-languageservice/lib/services/jsonSchemaService';
-import { schemaContributions } from 'vscode-json-languageservice/lib/services/configuration';
-import { JSONValidation } from 'vscode-json-languageservice/lib/services/jsonValidation';
-import { JSONSchema } from 'vscode-json-languageservice/lib/jsonSchema';
+import { JSONSchemaService } from 'vscode-json-languageservice/lib/umd/services/jsonSchemaService';
+import { schemaContributions } from 'vscode-json-languageservice/lib/umd/services/configuration';
+import { JSONValidation } from 'vscode-json-languageservice/lib/umd/services/jsonValidation';
+import { JSONSchema } from 'vscode-json-languageservice/lib/umd/jsonSchema';
 
 import { TextDocument, Diagnostic, CompletionItem, SymbolInformation, Position, CompletionList, Hover, TextEdit, FormattingOptions } from 'vscode-languageserver';
 import { YAMLHover } from './services/yamlHover';

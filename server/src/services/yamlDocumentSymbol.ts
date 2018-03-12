@@ -1,7 +1,7 @@
 'use strict';
 
 import { TextDocument, SymbolInformation, SymbolKind, Location, Range, Position } from "vscode-languageserver/lib/main";
-import * as jsonParser from 'vscode-json-languageservice/lib/parser/jsonParser';
+import * as jsonParser from 'vscode-json-languageservice/lib/umd/parser/jsonParser';
 import { parse } from "path";
 
 

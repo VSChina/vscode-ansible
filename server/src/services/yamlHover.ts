@@ -1,7 +1,7 @@
 'use strict';
 
 import { TextDocument, Position, Hover, Range } from "vscode-languageserver/lib/main";
-import * as Parser from 'vscode-json-languageservice/lib/parser/jsonParser';
+import * as Parser from 'vscode-json-languageservice/lib/umd/parser/jsonParser';
 import { SingleYAMLDocument } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
 import { PromiseConstructor } from 'vscode-json-languageservice';
 import * as path from 'path';
