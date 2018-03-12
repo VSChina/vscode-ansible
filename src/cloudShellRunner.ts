@@ -71,6 +71,8 @@ export class CloudShellRunner extends BaseRunner {
     protected async startCloudShell(playbook: string): Promise<Terminal> {
         const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
+        await this.showPrompt();
+
         if (this.terminal === null || this.terminal === undefined) {
             var terminal = await openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile);
 
