@@ -15,8 +15,8 @@ export class PlaybookManager {
                 text = vscode.window.activeTextEditor.document.getText();
             }
 
-            let authorisationTaskPosition: number = text.indexOf("- name: " + name);
-            return authorisationTaskPosition >= 0;
+            let authorizationTaskPosition: number = text.indexOf("- name: " + name);
+            return authorizationTaskPosition >= 0;
         }
 
         // just a simple approach for now
@@ -25,11 +25,11 @@ export class PlaybookManager {
 
     public insertTask(task: string) {
         let __this = this;
-        
+
         // create new yaml document if not current document
         if (vscode.window.activeTextEditor == undefined || vscode.window.activeTextEditor.document.languageId != "yaml") {
-            vscode.workspace.openTextDocument({language: "yaml", content: ""} ).then((a: vscode.TextDocument) => {
-                vscode.window.showTextDocument(a, 1, false).then(e => {                                            
+            vscode.workspace.openTextDocument({ language: "yaml", content: "" }).then((a: vscode.TextDocument) => {
+                vscode.window.showTextDocument(a, 1, false).then(e => {
                     __this.insertTask(task);
                 });
             });
@@ -41,10 +41,10 @@ export class PlaybookManager {
             }
 
             if (vscode.window.activeTextEditor.document.getText() == "") {
-               
+
                 vscode.window.activeTextEditor.edit(function (edit) {
                     let prefix: string = "- hosts: localhost\r" +
-                                         " ".repeat(tabSize) + "tasks:\r";
+                        " ".repeat(tabSize) + "tasks:\r";
                     edit.insert(new vscode.Position(0, 0), prefix);
                 });
             }
