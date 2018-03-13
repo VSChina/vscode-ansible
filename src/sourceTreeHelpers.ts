@@ -9,11 +9,15 @@ var fs = require('fs');
 
 var request = require('request');
 
+const GithubApiUri = 'https://' + Constants.GitHubApiHost;
+const GithubRawContentUri = 'https://' + Constants.GitHubRawContentHost;
+
 export class SourceTreeHelpers {
     constructor() { }
 
     public queryDirectory(path: string, files: boolean, cb) {
-        if (path.startsWith(Constants.GitHubApiHost)) {
+
+        if (path.startsWith(GithubApiUri)) {
             // get list of directories from here:
             // https://api.github.com/Azure/azure-rest-api-specs/contents/
             // we will use fixed repo in our first release
@@ -23,7 +27,7 @@ export class SourceTreeHelpers {
 
             http.get({
                 host: Constants.GitHubApiHost,
-                    path: path.substr(Constants.GitHubApiHost.length),
+                path: path.substr(GithubApiUri.length),
                 headers: { 'User-Agent': 'VSC Ansible Extension' }
             }, function (response) {
                 // Continuously update stream with data
@@ -83,7 +87,7 @@ export class SourceTreeHelpers {
         var http = require('https');
         let __this = this;
 
-        if (path.startsWith(Constants.GitHubRawContentHost)) {
+        if (path.startsWith('https://raw.githubusercontent.com')) {
 
             http.get({
                 // XXX fix it for github
