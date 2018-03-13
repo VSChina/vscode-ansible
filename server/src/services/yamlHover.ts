@@ -1,18 +1,24 @@
 'use strict';
 
 import { TextDocument, Position, Hover, Range } from "vscode-languageserver/lib/main";
-import * as Parser from 'vscode-json-languageservice/lib/parser/jsonParser';
+import * as Parser from 'vscode-json-languageservice/lib/umd/parser/jsonParser';
 import { SingleYAMLDocument } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
 import { PromiseConstructor } from 'vscode-json-languageservice';
+import * as path from 'path';
+import * as fsextra from 'fs-extra';
 
+const ansibleDataFile = path.join(__dirname, '../../../snippets/ansible-data.json');
 
 export class YAMLHover {
     private promise: PromiseConstructor;
     private enable: boolean;
+    private moduleNames: string[];
 
     constructor(promiseConstructor: PromiseConstructor) {
         this.promise = promiseConstructor || Promise;
         this.enable = true;
+
+        this.moduleNames = this.getModuleList();
     }
 
     public configure(enable: boolean) {
@@ -45,10 +51,11 @@ export class YAMLHover {
                 if (parent.parent && parent.parent.type === 'object') {
                     let grandparent = <Parser.ObjectASTNode>parent.parent;
 
-                    if (grandparent.parent && grandparent.parent.type === 'array') {
+                    if ((grandparent.parent && grandparent.parent.type === 'array') ||
+                        (grandparent.type === 'object' && grandparent.parent.type === 'array' && grandparent.parent.parent === null)) {
                         let taskNode = <Parser.ArrayASTNode>grandparent.parent;
 
-                        if (taskNode.location === 'tasks') {
+                        if (taskNode.location === 'tasks' || (taskNode.type === 'array' && this.moduleNames.indexOf(node.value) > -1)) {
                             let hoverRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
 
                             return Promise.resolve(this.createHover(node.getValue(), hoverRange)).then();
@@ -68,6 +75,19 @@ export class YAMLHover {
         }
         return result;
     }
+
+    private getModuleList(): string[] {
+
+        const data = <JSONData>JSON.parse(fsextra.readFileSync(ansibleDataFile, 'utf8'));
+
+        let moduleNames: string[] = [];
+
+        data.modules.forEach((module) => {
+            moduleNames.push(module.module);
+        });
+
+        return moduleNames;
+    }
 }
 
 
@@ -79,4 +99,33 @@ export function matchOffsetToDocument(offset: number, jsonDocuments: Parser.JSON
             return doc;
         }
     }
+}
+
+
+interface Directive {
+    module: string;
+    deprecated?: string;
+    short_description: string;
+    options: DirectiveOptions;
+}
+
+interface DirectiveOption {
+    default: string;
+    required: boolean;
+    description: string[];
+    choices?: string[];
+    suboptions: DirectiveOptions;
+}
+
+type DirectiveOptions = { [key: string]: DirectiveOption };
+
+type Directives = { [key: string]: string[] };
+
+type Modules = Directive[];
+type LookupPlugins = string[];
+
+interface JSONData {
+    modules: Modules;
+    directives: Directives;
+    lookup_plugins: LookupPlugins;
 }

@@ -104,11 +104,12 @@ Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snipp
 This extension provides below configurations in settings.json.
 
 
-|config name| description|
-|--|--|
-|`ansible.hover`| Enable/Disable hover over module name functionality. Default is true.|
-|`ansible.credentialsFile` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. Default is `$HOME/.vscode/ansible-credentials.yml`.|
-|`ansible.termininalInitCommand`| Specify customized terminal init command when run playbook in Docker/Local Ansible. Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.|
+|Cnfig Name| Default Value| Description|
+|--|--|--|
+|`ansible.hover`| `true`| Enable/Disable hover over module name functionality. |
+|`ansible.autocompletion` | `true` | Enable/Disable ansible autocompletion(including code snippets) functionality. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
+|`ansible.credentialsFile` |`$HOME/.vscode/ansible-credentials.yml` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. |
+|`ansible.termininalInitCommand`|Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.| Specify customized terminal init command when run playbook in Docker/Local Ansible. |
 
 
 ## Feedback and Questions

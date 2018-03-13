@@ -55,7 +55,7 @@ connection.onDocumentSymbol((documentSymbolParms) => {
             return languageService.findDocumentSymbols(document, jsonDocument);
         }
     } catch (err) {
-        connection.console.log('Unable to parse Symbols: invalid yaml file.');
+        //connection.console.log('Unable to parse Symbols: invalid yaml file.');
     }
 });
 
