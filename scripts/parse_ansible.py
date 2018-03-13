@@ -10,6 +10,7 @@ from ansible.playbook.block import Block
 from ansible.playbook.role import Role
 from ansible.playbook.task import Task
 from ansible.utils.display import Display
+from ansible.plugins.loader import fragment_loader
 
 try:
     from ansible.plugins.loader import lookup_loader, module_loader
@@ -52,9 +53,9 @@ def main():
         if os.path.isdir(filename):
             continue
         try:
-            doc = plugin_docs.get_docstring(filename)[0]
+            doc = plugin_docs.get_docstring(filename, fragment_loader)[0]
             filtered_doc = {key: doc.get(key, None) for key in module_keys}
-            result['modules'].append(filtered_doc)
+            result['modules'].append(filtered_doc)            
         except:
             pass
 
@@ -77,7 +78,7 @@ def main():
         name = os.path.splitext(os.path.basename(lookup._original_path))[0]
         result['lookup_plugins'].append(name)
 
-    fn = os.path.join(__path__, '../data/ansible-data.json')
+    fn = os.path.join(__path__, '../snippets/ansible-data.json')
     with codecs.open(fn, 'wb', encoding='utf-8') as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
