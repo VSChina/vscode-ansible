@@ -136,8 +136,10 @@ export function validatePlaybook(playbook: string, outputChannel: vscode.OutputC
 export function parseCredentialsFile(outputChannel): string[] {
     var configValue = getCredentialsFile();
 
-    outputChannel.append('\nCredential file: ' + configValue);
-    outputChannel.show();
+    if (outputChannel != null) {
+        outputChannel.append('\nCredential file: ' + configValue);
+        outputChannel.show();
+    }
     var credentials = [];
 
     if (fsExtra.pathExistsSync(configValue)) {
