@@ -100,6 +100,15 @@ Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snipp
    ]
    ```
 
+## Azure Deployment Templates
+
+The extension provides an easy way of creating **azure_rm_deployment** task from Azure Quickstart Templates or existing resource group.
+
+To use Azure quickstart template press **F1** and then select **Use Azure Deployment Template** and select **Quickstart Template**. List of available templates will be displayed, search and select the right one. Templates are fetched from https://github.com/Azure/azure-quickstart-templates. New task will be created in current **yaml** editor or new **yaml** editor will be created.
+
+To create **azure_rm_deployment** task from existing resource group, select **Use Azure Deployment Template** and select **Resource Group**. List of available resource groups will be fetched, select one of them, andtask will be created in current **yaml** editor or new **yaml** editor will be created.
+Please note that in order to be able to access your resource group extension needs your credentials as described in **Configuration** below.
+
 ## Configuration  
 This extension provides below configurations in settings.json.
 
