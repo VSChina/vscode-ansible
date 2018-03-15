@@ -3,7 +3,7 @@
   "displayName": "Ansible",
   "description": "VSCode extension for Ansible",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "vscoss",
   "icon": "images/logo.png",
   "engines": {
