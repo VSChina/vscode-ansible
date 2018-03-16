@@ -11,6 +11,8 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { openSSHConsole } from './SSHConsole';
 
+const addNewHost = 'Add New Host';
+
 export class SSHRunner extends TerminalBaseRunner {
     constructor(outputChannel: vscode.OutputChannel) {
         super(outputChannel);
@@ -42,10 +44,6 @@ export class SSHRunner extends TerminalBaseRunner {
             // get ssh config
             getSSHServer().then((server) => {
                 if (server === undefined || server === null) {
-                    this._outputChannel.append('\nInvalid SSH server.');
-                    this._outputChannel.show();
-
-                    vscode.window.showErrorMessage('Invalid SSH server.');
                     return;
                 }
 
@@ -85,6 +83,37 @@ export class SSHRunner extends TerminalBaseRunner {
 
 export type Hosts = { [key: string]: SSHServer };
 
+export async function addSSHServer(): Promise<SSHServer> {
+    let server = <SSHServer>{};
+    var host = await vscode.window.showInputBox({ value: 'host', prompt: 'ssh host', placeHolder: 'host', password: false });
+    if (host) {
+        var port = await vscode.window.showInputBox({ value: '22', prompt: 'ssh port', placeHolder: 'port', password: false });
+        if (port) {
+            var user = await vscode.window.showInputBox({ value: 'username', prompt: 'ssh username', placeHolder: 'username', password: false });
+            if (user) {
+                var password = await vscode.window.showInputBox({ value: '', prompt: 'ssh password', placeHolder: 'password', password: true });
+                server.host = host;
+                server.port = +port;
+                server.user = user;
+
+                if (password && password != '') {
+                    server.password = password;
+                    utilities.updateSSHConfig(server);
+                    return server;
+                } else {
+                    var key = await vscode.window.showInputBox({ value: '', prompt: 'ssh key file', placeHolder: 'ssh private key file', password: false });
+                    if (key && key != '') {
+                        server.key = key;
+                        utilities.updateSSHConfig(server);
+                        return server;
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
 export async function getSSHServer(): Promise<SSHServer> {
     let servers = utilities.getSSHConfig();
     let server = <SSHServer>{};
@@ -94,39 +123,20 @@ export async function getSSHServer(): Promise<SSHServer> {
         for (let host of servers) {
             hosts[host.host] = host;
         }
-        let host = await vscode.window.showQuickPick(Object.keys(hosts));
-        return server = hosts[host];
-    } else {
-        var host = await vscode.window.showInputBox({ value: 'host', prompt: 'ssh host', placeHolder: 'host', password: false });
-        if (host) {
-            var port = await vscode.window.showInputBox({ value: '22', prompt: 'ssh port', placeHolder: 'port', password: false });
-            if (port) {
-                var user = await vscode.window.showInputBox({ value: 'username', prompt: 'ssh username', placeHolder: 'username', password: false });
-                if (user) {
-                    var password = await vscode.window.showInputBox({ value: '', prompt: 'ssh password', placeHolder: 'password', password: true });
-                    server.host = host;
-                    server.port = +port;
-                    server.user = user;
 
-                    if (password && password != '') {
-                        server.password = password;
+        var quickPickList = Object.keys(hosts);
+        quickPickList.push(addNewHost);
 
-                        utilities.updateSSHConfig(server);
-                        return server;
-                    } else {
-                        var key = await vscode.window.showInputBox({ value: '', prompt: 'ssh key file', placeHolder: 'ssh private key file', password: false });
-                        if (key && key != '') {
-                            server.key = key;
+        let choice = await vscode.window.showQuickPick(quickPickList);
 
-                            utilities.updateSSHConfig(server);
-                            return server;
-                        }
-                    }
-                }
-            }
+        if (choice === addNewHost) {
+            let server = await addSSHServer();
+            return server;
+        } else {
+            return hosts[choice];
         }
-        return null;
+    } else {
+        return await addSSHServer();
     }
 }
-
 
