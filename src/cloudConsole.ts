@@ -64,10 +64,10 @@ export async function openCloudConsole(api: AzureAccount, os: OS, files, outputC
 		}
 
 		if (!(await api.waitForLogin())) {
-			progress.cancel();
 
 			await commands.executeCommand('azure-account.askForLogin');
 			if (!(await api.waitForLogin())) {
+				progress.cancel();
 				TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.AzureNotSignedIn });
 				return;
 			}
