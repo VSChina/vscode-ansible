@@ -90,6 +90,24 @@ async function createTerminal(accessToken: string, armEndpoint: string, userSett
 	});
 }
 
+export async function getStorageAccountKey(
+	resourceGroup: string,
+	subscriptionId: string,
+	accessToken: string,
+	storageAccountName: string) {
+	return request({
+		uri: `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}/listKeys?api-version=2017-06-01`,
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${accessToken}`,
+		},
+		simple: false,
+		resolveWithFullResponse: true,
+		json: true,
+	});
+}
+
 export async function resetConsole(accessToken: string, armEndpoint: string) {
 	const response = await request({
 		uri: getConsoleUri(armEndpoint),

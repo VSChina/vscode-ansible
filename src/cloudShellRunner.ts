@@ -14,12 +14,14 @@ import { setInterval, clearInterval } from 'timers';
 import { TelemetryClient } from './telemetryClient';
 import { delay } from './cloudConsoleLauncher';
 import { Terminal } from 'vscode';
+import { uploadFilesToAzureStorage, getCloudShellPlaybookPath } from './azureStorageHelper';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
 export class CloudShellRunner extends BaseRunner {
 
     private terminal: vscode.Terminal;
+    private cloudShellFileShare: CloudShellAzureFileShare;
 
     constructor(outputChannel: vscode.OutputChannel) {
 
@@ -28,6 +30,7 @@ export class CloudShellRunner extends BaseRunner {
         vscode.window.onDidCloseTerminal((terminal) => {
             if (terminal === this.terminal) {
                 this.terminal = null;
+                this.cloudShellFileShare = null;
             }
         })
     }
@@ -46,13 +49,16 @@ export class CloudShellRunner extends BaseRunner {
             if (ext.id === Constants.AzureAccountExtensionId) {
                 azureAccount = ext.activate().then((azureAccount) => {
                     if (azureAccount) {
-                        this.startCloudShell(playbook).then((terminal) => {
+                        this.startCloudShell(playbook).then((response) => {
+
+                            var terminal = response[0];
+                            var remotePlaybookPath = response[1];
 
                             if (!terminal) {
                                 return;
                             }
 
-                            terminal.sendText('ansible-playbook ' + path.basename(playbook));
+                            terminal.sendText('ansible-playbook ' + remotePlaybookPath);
                             terminal.show();
                             TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Succeeded });
                         });
@@ -74,13 +80,20 @@ export class CloudShellRunner extends BaseRunner {
     }
 
 
-    protected async startCloudShell(playbook: string): Promise<Terminal> {
+    protected async startCloudShell(playbook: string): Promise<any> {
         const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
         await this.showPrompt();
 
         if (this.terminal === null || this.terminal === undefined) {
-            var terminal = await openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile);
+            var result = await openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile);
+            var terminal = result[0];
+            var storageAccount: CloudShellAzureFileShare = {
+                name: result[1],
+                key: result[2],
+                fileShareName: result[3],
+                resourceGroup: result[4]
+            }
 
             if (terminal) {
                 let count: number = 30;
@@ -94,7 +107,6 @@ export class CloudShellRunner extends BaseRunner {
                         }
 
                         fsExtra.remove(tempFile);
-
                     }
                     await delay(500);
                 }
@@ -102,7 +114,8 @@ export class CloudShellRunner extends BaseRunner {
         } else {
             this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
         }
-        return this.terminal;
+        await uploadFilesToAzureStorage(playbook, storageAccount.name, storageAccount.key, storageAccount.fileShareName);
+        return [this.terminal, getCloudShellPlaybookPath(storageAccount.fileShareName, playbook)];
     }
 
     private sendCommandsToTerminal(playbook: string) {
@@ -139,4 +152,11 @@ export class CloudShellRunner extends BaseRunner {
     protected onDidCloseTerminal(terminal) {
 
     }
+}
+
+export type CloudShellAzureFileShare = {
+    name: string,
+    key: string,
+    fileShareName: string,
+    resourceGroup: string
 }

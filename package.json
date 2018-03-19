@@ -168,6 +168,7 @@
   "dependencies": {
     "adal-node": "0.1.22",
     "azure-arm-resource": "^3.0.0-preview",
+    "azure-storage": "^2.8.1",
     "fs-extra": "^4.0.2",
     "fuzzaldrin-plus": "^0.6.0",
     "ms-rest": "^2.3.1",

@@ -5,7 +5,7 @@
 
 import { window, commands, MessageItem, OutputChannel, Terminal, env } from 'vscode';
 import { AzureAccount, AzureSession } from './azure-account.api';
-import { getUserSettings, provisionConsole, Errors, resetConsole, delay, runInTerminal } from './cloudConsoleLauncher';
+import { getUserSettings, provisionConsole, Errors, resetConsole, delay, runInTerminal, getStorageAccountKey } from './cloudConsoleLauncher';
 import * as nls from 'vscode-nls';
 import * as path from 'path';
 import * as opn from 'opn';
@@ -81,6 +81,30 @@ export async function openCloudConsole(api: AzureAccount, os: OS, files, outputC
 			return requiresSetUp();
 		}
 
+		// get storage account from user settings
+		const storageProfile = result.userSettings.storageProfile;
+		const storageAccountSettings =
+			storageProfile.storageAccountResourceId.substr(1,
+				storageProfile.storageAccountResourceId.length).split("/");
+		const storageAccount = {
+			subscriptionId: storageAccountSettings[1],
+			resourceGroup: storageAccountSettings[3],
+			provider: storageAccountSettings[5],
+			storageAccountName: storageAccountSettings[7],
+		};
+
+		const fileShareName = result.userSettings.storageProfile.fileShareName;
+
+		// Getting the storage account key
+		let storageAccountKey: string;
+		await getStorageAccountKey(
+			storageAccount.resourceGroup,
+			storageAccount.subscriptionId,
+			result.token.accessToken,
+			storageAccount.storageAccountName).then((keys) => {
+				storageAccountKey = keys.body.keys[0].value;
+			});
+
 		let consoleUri: string;
 		const armEndpoint = result.token.session.environment.resourceManagerEndpointUrl;
 		const inProgress = delayed(() => window.showInformationMessage(localize('azure-account.provisioningInProgress', "Provisioning {0} in Cloud Shell may take a few seconds.", os.shellName)), 2000);
@@ -148,7 +172,7 @@ export async function openCloudConsole(api: AzureAccount, os: OS, files, outputC
 
 		progress.cancel();
 		terminal.show();
-		return terminal;
+		return [terminal, storageAccount.storageAccountName, storageAccountKey, fileShareName, storageAccount.resourceGroup];
 	})().catch(err => {
 		progress.cancel();
 		TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Failed, 'error': CloudShellErrors.ProvisionFailed, 'detailerror': err });
