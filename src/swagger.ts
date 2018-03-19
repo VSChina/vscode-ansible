@@ -24,33 +24,67 @@ export class Swagger {
         let playbook: string = ""
 
         if (addAuthorisation) {
-            playbook += "- name: Azure authorization\r" +
-                        "\turi:\r" +
-                        "\t\turl: https://login.windows.net/{{ lookup('env','AZURE_TENANT') }}/oauth2/token\r" +
-                        "\t\tmethod: POST\r" +
-                        "\t\tbody: resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id={{ lookup('env','AZURE_CLIENT_ID') }}&grant_type=client_credentials&client_secret={{ lookup('env','AZURE_SECRET') }}\r" +
-                        "\t\treturn_content: yes\r" +
-                        "\t\theaders:\r" +
-                        "\t\t\tContent-Type: application/x-www-form-urlencoded\r" +
-                        "\tregister: authresp\r" +
-                        "\r";
+            //playbook += "- name: Azure authorization\r" +
+            //            "\turi:\r" +
+            //            "\t\turl: https://login.windows.net/{{ lookup('env','AZURE_TENANT') }}/oauth2/token\r" +
+            //            "\t\tmethod: POST\r" +
+            //            "\t\tbody: resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id={{ lookup('env','AZURE_CLIENT_ID') }}&grant_type=client_credentials&client_secret={{ lookup('env','AZURE_SECRET') }}\r" +
+            //            "\t\treturn_content: yes\r" +
+            //            "\t\theaders:\r" +
+            //            "\t\t\tContent-Type: application/x-www-form-urlencoded\r" +
+            //            "\tregister: authresp\r" +
+            //            "\r";
         }
 
-        let url: string = this.swagger['schemes'][0] + '://' + this.swagger['host'] + '/' + path + "?api-version=" + this.swagger['info']['version'];
+        let url: string = /*this.swagger['schemes'][0] + '://' + this.swagger['host'] + '/' +*/ path;
         url = url.replace("{subscriptionId}", "{{ lookup('env','AZURE_SUBSCRIPTION_ID') }}");
 
-        let responses = "";
-        for (var code in this.swagger.paths[path][method]['responses']) {
-            responses += ((responses != "") ? "," : "") + code;
+        //let responses = "";
+        //for (var code in this.swagger.paths[path][method]['responses']) {
+        //    responses += ((responses != "") ? "," : "") + code;
+        //}
+
+        playbook += "# " + url + "\r";
+        playbook += "- name: Call REST API - " + this.swagger.paths[path][method]['operationId'] + "\r" +
+                    "\tazure_rm_rest:\r" +
+                    //"\t\turl: " + url + "\r" +
+                    "\t\tapi_version: '" + this.swagger['info']['version'] + "'\r";
+                    //"\t\theaders:\r" +
+                    //"\t\t\tAuthorization: Bearer {{ authresp.json.access_token }}\r" +
+                    //"\t\tstatus_code: " + responses + "\r";
+
+        let splittedPath: string[] = url.split('/');
+        let pathIdx = 1; // 1 as url starts with /
+        let resourcePrefix: string = '';
+
+        while (pathIdx < splittedPath.length) {
+            switch (splittedPath[pathIdx].toLowerCase()) {
+                case 'subscriptions':
+                    pathIdx += 2;
+                    break;
+                case 'resourcegroups':
+                    playbook += "\t\tresource_group: \r";
+                    pathIdx += 2;
+                    break;
+                case 'providers':
+                    playbook += "\t\tprovider: " + splittedPath[pathIdx + 1].split('.')[1].toLowerCase() + "\r";
+                    pathIdx += 2;
+                    break;
+                default:
+                    playbook += "\t\t" + resourcePrefix + "resource_type: " + splittedPath[pathIdx++].toLowerCase() + "\r";
+
+                    if (pathIdx < splittedPath.length) {
+                        playbook += "\t\t" + resourcePrefix + "resource_name: " + splittedPath[pathIdx++].toLowerCase() + "\r";
+                    }
+
+                    resourcePrefix = "sub";                
+            }
         }
 
-        playbook += "- name: Call REST API - " + this.swagger.paths[path][method]['operationId'] + "\r" +
-                    "\turi:\r" +
-                    "\t\turl: " + url + "\r" +
-                    "\t\tmethod: " + method.toUpperCase() + "\r" +
-                    "\t\theaders:\r" +
-                    "\t\t\tAuthorization: Bearer {{ authresp.json.access_token }}\r" +
-                    "\t\tstatus_code: " + responses + "\r";
+        // get method is default so don't add it
+        if (method.toUpperCase() != 'GET') {
+            "\t\tmethod: " + method.toUpperCase() + "\r";
+        }
 
         let parameters = this.swagger.paths[path][method]['parameters'];
         if (this.swagger.paths[path][method]['parameters'] != undefined) {
@@ -74,7 +108,7 @@ export class Swagger {
             }
 
             if (body != "") {
-                playbook += "\t\tbody_format: json\r" +
+                playbook += //"\t\tbody_format: json\r" +
                             "\t\tbody:\r" + 
                             body;
             }
@@ -89,14 +123,20 @@ export class Swagger {
             schema = this.swagger.definitions[schema['$ref'].split('#/definitions/')[1]];
         }
 
-        for (var propName in schema['properties']) {
-            let property = schema['properties'][propName];
+        if (schema['allOf'] != undefined) {
+            for (var i in schema['allOf']) {
+                playbook += this.playbookFromSwaggerSchema(schema['allOf'][i], prefix);
+            }
+        } else {
+            for (var propName in schema['properties']) {
+                let property = schema['properties'][propName];
 
-            if (!property['readOnly']) {
-                playbook += prefix + propName + ":\r";
+                if (!property['readOnly']) {
+                    playbook += prefix + propName + ":\r";
 
-                if (property['$ref'] != undefined) {
-                    playbook += this.playbookFromSwaggerSchema(this.swagger.definitions[property['$ref'].split('#/definitions/')[1]], prefix + '  ' );
+                    if (property['$ref'] != undefined) {
+                        playbook += this.playbookFromSwaggerSchema(this.swagger.definitions[property['$ref'].split('#/definitions/')[1]], prefix + '  ' );
+                    }
                 }
             }
         }
