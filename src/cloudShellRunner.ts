@@ -87,14 +87,25 @@ export class CloudShellRunner extends BaseRunner {
 
         if (this.terminal === null || this.terminal === undefined) {
             var result = await openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile);
+
+            if (!result) {
+                this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
+                this._outputChannel.show();
+                return;
+            }
             var terminal = result[0];
-            var storageAccount: CloudShellAzureFileShare = {
+            this.cloudShellFileShare = {
                 name: result[1],
                 key: result[2],
                 fileShareName: result[3],
                 resourceGroup: result[4]
             }
 
+            if (!this.cloudShellFileShare.fileShareName || !this.cloudShellFileShare.name || !this.cloudShellFileShare.key) {
+                this._outputChannel.appendLine('\nFailed to retrieve Cloud Shell storage account.');
+                this._outputChannel.show();
+                return;
+            }
             if (terminal) {
                 let count: number = 30;
                 while (count--) {
@@ -110,12 +121,13 @@ export class CloudShellRunner extends BaseRunner {
                     }
                     await delay(500);
                 }
+            } else {
+                this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
+                this._outputChannel.show();
             }
-        } else {
-            this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
         }
-        await uploadFilesToAzureStorage(playbook, storageAccount.name, storageAccount.key, storageAccount.fileShareName);
-        return [this.terminal, getCloudShellPlaybookPath(storageAccount.fileShareName, playbook)];
+        await uploadFilesToAzureStorage(playbook, this.cloudShellFileShare.name, this.cloudShellFileShare.key, this.cloudShellFileShare.fileShareName);
+        return [this.terminal, getCloudShellPlaybookPath(this.cloudShellFileShare.fileShareName, playbook)];
     }
 
     private sendCommandsToTerminal(playbook: string) {
