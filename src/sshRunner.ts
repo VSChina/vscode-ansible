@@ -10,8 +10,10 @@ import { TelemetryClient } from './telemetryClient';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { openSSHConsole } from './SSHConsole';
+import * as os from 'os';
 
 const addNewHost = 'Add New Host';
+const browseThePC = 'Browse the PC..';
 
 export class SSHRunner extends TerminalBaseRunner {
     constructor(outputChannel: vscode.OutputChannel) {
@@ -84,14 +86,15 @@ export class SSHRunner extends TerminalBaseRunner {
 export type Hosts = { [key: string]: SSHServer };
 
 export async function addSSHServer(): Promise<SSHServer> {
+
     let server = <SSHServer>{};
-    var host = await vscode.window.showInputBox({ value: 'host', prompt: 'ssh host', placeHolder: 'host', password: false });
+    var host = await vscode.window.showInputBox({ value: 'host', prompt: 'SSH host', placeHolder: 'host', password: false });
     if (host) {
-        var port = await vscode.window.showInputBox({ value: '22', prompt: 'ssh port', placeHolder: 'port', password: false });
+        var port = await vscode.window.showInputBox({ value: '22', prompt: 'SSH port', placeHolder: 'port', password: false });
         if (port) {
-            var user = await vscode.window.showInputBox({ value: 'username', prompt: 'ssh username', placeHolder: 'username', password: false });
+            var user = await vscode.window.showInputBox({ value: 'username', prompt: 'SSH username', placeHolder: 'username', password: false });
             if (user) {
-                var password = await vscode.window.showInputBox({ value: '', prompt: 'ssh password', placeHolder: 'password', password: true });
+                var password = await vscode.window.showInputBox({ value: '', prompt: 'SSH password', placeHolder: 'password', password: true });
                 server.host = host;
                 server.port = +port;
                 server.user = user;
@@ -101,11 +104,21 @@ export async function addSSHServer(): Promise<SSHServer> {
                     utilities.updateSSHConfig(server);
                     return server;
                 } else {
-                    var key = await vscode.window.showInputBox({ value: '', prompt: 'ssh key file', placeHolder: 'ssh private key file', password: false });
-                    if (key && key != '') {
-                        server.key = key;
-                        utilities.updateSSHConfig(server);
-                        return server;
+                    var defaultPath = path.join(os.homedir(), '.ssh', 'id_rsa');
+                    var items = [defaultPath, browseThePC];
+
+                    var pick = await vscode.window.showQuickPick(items);
+
+                    if (pick && pick === browseThePC) {
+                        var result = await vscode.window.showOpenDialog({
+                            canSelectFiles: true,
+                            canSelectFolders: false, canSelectMany: false
+                        });
+                        if (result && result.length === 1) {
+                            server.key = result[0].fsPath;
+                            utilities.updateSSHConfig(server);
+                            return server;
+                        }
                     }
                 }
             }
