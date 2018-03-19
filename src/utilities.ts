@@ -217,14 +217,30 @@ export function copyFileRemote(source: string, dest: string, sshServer: SSHServe
         return false;
     }
 
-    scp.scp(source, {
-        host: sshServer.host,
-        port: sshServer.port,
-        username: sshServer.user,
-        password: sshServer.password,
-        privateKey: sshServer.key ? sshServer.key : '',
-        path: dest
-    }, (err) => {
+    var client: {};
+
+    if (sshServer.password) {
+        client = {
+            host: sshServer.host,
+            port: sshServer.port,
+            username: sshServer.user,
+            password: sshServer.password,
+            path: dest
+        };
+    } else if (sshServer.key) {
+        if (!fsExtra.existsSync(sshServer.key)) {
+            vscode.window.showErrorMessage('File not exists: ' + sshServer.key);
+        }
+        client = {
+            host: sshServer.host,
+            port: sshServer.port,
+            username: sshServer.user,
+            privateKey: String(fsExtra.readFileSync(sshServer.key)),
+            path: dest
+        };
+    }
+
+    scp.scp(source, client, (err) => {
         if (err) {
             vscode.window.showErrorMessage('Failed to copy file ' + source + ' to ' + sshServer.host + ': ' + err);
         }

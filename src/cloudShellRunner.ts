@@ -24,6 +24,12 @@ export class CloudShellRunner extends BaseRunner {
     constructor(outputChannel: vscode.OutputChannel) {
 
         super(outputChannel);
+
+        vscode.window.onDidCloseTerminal((terminal) => {
+            if (terminal === this.terminal) {
+                this.terminal = null;
+            }
+        })
     }
 
     protected runPlaybookInternal(playbook: string): void {
@@ -77,7 +83,6 @@ export class CloudShellRunner extends BaseRunner {
             var terminal = await openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile);
 
             if (terminal) {
-
                 let count: number = 30;
                 while (count--) {
                     if (await fsExtra.exists(tempFile)) {
@@ -131,4 +136,7 @@ export class CloudShellRunner extends BaseRunner {
         return Promise.resolve(null);
     }
 
+    protected onDidCloseTerminal(terminal) {
+
+    }
 }

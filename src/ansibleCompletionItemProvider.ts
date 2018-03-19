@@ -31,11 +31,10 @@ export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvi
 
     private enableAutoCompletion(document: vscode.TextDocument): boolean {
         if (!utilities.getCodeConfiguration('ansible', 'autocompletion')) {
-            if (document.getText().indexOf('# ansible-configured') === 0) {
-                return true;
+            if (document.getText().indexOf('# ansible-configured') === -1) {
+                return false;
             }
         }
-
-        return false;
+        return true;
     }
 }

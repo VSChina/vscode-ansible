@@ -24,7 +24,7 @@
 
 ## Features
 
-  - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc, Auto completion for variables.
+  - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc, Auto completion for variables. Disable auto completion by setting `ansible.autocompletion` to `false`.
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
   - Syntax highlighting.
   - Code navigation by Symbols, press `Ctrl + Shift + O`.

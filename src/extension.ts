@@ -50,10 +50,6 @@ export function activate(context: vscode.ExtensionContext) {
         sshRunner.runPlaybook(playbook ? playbook.fsPath : null);
     }));
 
-    // context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.deployment-templates', (playbook) => {
-    //     deploymentTemplate.displayDeploymentTemplateMenu();
-    // }));
-
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
         TerminalExecutor.onDidCloseTerminal(closedTerminal);
     }));
