@@ -6,26 +6,17 @@ import * as path from 'path';
 
 const DIRECTORY_NAME = 'ansible-playbooks';
 
-export async function uploadFilesToAzureStorage(localFileName: string, storageAccountName: string, storageAccountKey: string, fileShareName: string): Promise<void> {
+export function uploadFilesToAzureStorage(localFileName: string, storageAccountName: string, storageAccountKey: string, fileShareName: string): Promise<void> {
     const client = storage.createFileService(storageAccountName, storageAccountKey);
 
-    try {
-        await createFileShare(client, fileShareName);
-    } catch (err) {
-        console.log('Failed to create FileShare ' + fileShareName + ', detail ' + err);
-    }
-
-    try {
-        await createDirectory(client, fileShareName, DIRECTORY_NAME);
-    } catch (err) {
-        console.log('Failed to create directory: ' + DIRECTORY_NAME + ', detail ' + err);
-    }
-
-    try {
-        await createFile(client, fileShareName, DIRECTORY_NAME, path.basename(localFileName), localFileName);
-    } catch (err) {
-        console.log('Failed to create file: ' + path.basename(localFileName) + ', detail' + err);
-    }
+    return createFileShare(client, fileShareName)
+        .then(() => {
+            return createDirectory(client, fileShareName, DIRECTORY_NAME);
+        })
+        .then(() => {
+            return createFile(client, fileShareName, DIRECTORY_NAME, path.basename(localFileName), localFileName);
+        })
+        .catch((err) => { throw err; });
 }
 
 function createFileShare(client: FileService, fileShareName: string): Promise<void> {

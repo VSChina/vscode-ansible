@@ -126,8 +126,17 @@ export class CloudShellRunner extends BaseRunner {
                 this._outputChannel.show();
             }
         }
-        await uploadFilesToAzureStorage(playbook, this.cloudShellFileShare.name, this.cloudShellFileShare.key, this.cloudShellFileShare.fileShareName);
-        return [this.terminal, getCloudShellPlaybookPath(this.cloudShellFileShare.fileShareName, playbook)];
+
+        try {
+            await uploadFilesToAzureStorage(playbook, this.cloudShellFileShare.name, this.cloudShellFileShare.key, this.cloudShellFileShare.fileShareName);
+            return [this.terminal, getCloudShellPlaybookPath(this.cloudShellFileShare.fileShareName, playbook)];
+        } catch (err) {
+            if (err) {
+                this._outputChannel.appendLine('\nFailed to upload playbook to Cloud Shell: ' + err);
+                this._outputChannel.show();
+                return;
+            }
+        }
     }
 
     private sendCommandsToTerminal(playbook: string) {
