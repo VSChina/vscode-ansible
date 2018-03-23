@@ -5,7 +5,7 @@ All notable changes to the "vscode-ansible" extension will be documented in this
 Make below improvement:
 - Cloud Shell terminal reusable. Issue #42.
 - Show hover up document linking in role structure. Issue #88.
-- Improve code snippets triggering, no need of `ctril + space`.
+- Improve code snippets triggering, no need of `ctril + space`. Issue #90.
 - Add new host option in run playbook via ssh command. Issue #96.
 - Add configuration to enable/disable auto completion. Issue #93.
 
