@@ -123,6 +123,7 @@ This extension collects telemetry data to help improve our products. Please read
 ```
 telemetry.enableTelemetry = false
 ```
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
@@ -134,3 +135,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 Please see below documents to learn how to contribute:
 - [How to build, run and debug from source](https://github.com/VSChina/vscode-ansible/wiki/How-to-Contribute)
 - [Coding Guidelines](https://github.com/VSChina/vscode-ansible/wiki/Coding-Guidelines)
+
+
+## Release Notes and Thank you
+Please see our [releases](https://github.com/VSChina/vscode-ansible/releases) to see detail in each release, and `Thank you`. Or check [CHANGELOG](./CHANGELOG.md).
