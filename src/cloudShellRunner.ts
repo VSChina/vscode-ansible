@@ -139,13 +139,6 @@ export class CloudShellRunner extends BaseRunner {
         }
     }
 
-    private sendCommandsToTerminal(playbook: string) {
-
-    }
-
-    protected stop(interval: NodeJS.Timer): void {
-        clearInterval(interval);
-    }
 
     protected async showPrompt() {
 

@@ -1,19 +1,61 @@
 'use strict';
 import * as ssh from 'ssh2';
 import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as ost from 'os';
+import * as fsExtra from 'fs-extra';
 
-async function connectTerminal(host: string, port: string, user: string, password: string, key: string) {
+async function connectTerminal(host: string, port: string, user: string, password: string, keyfile: string) {
+    const tempFile = path.join(ost.tmpdir(), 'vscodeansible-ssh-' + host + '.log');
+    var connected = false;
+
+    if (fsExtra.existsSync(tempFile)) {
+        fsExtra.removeSync(tempFile);
+    }
+
     console.log('Connecting host ' + host + '...');
+    process.stdin.setEncoding('utf-8');
 
     var conn = new ssh.Client();
+
+    conn.connect({
+        host: host,
+        port: port,
+        username: user,
+        password: password,
+        privateKey: (keyfile === null || keyfile === undefined) ? keyfile : fs.readFileSync(keyfile),
+        keepaliveInternal: 4000
+    });
+
+    conn.on('error', (err) => {
+        process.stdout.write('ssh error: ' + err);
+    });
+
+    conn.on('end', () => {
+        process.stdout.write('ssh connection end.');
+
+    });
+
+    conn.on('close', (hasError) => {
+        process.stdout.write('ssh connection close.');
+    });
+
     conn.on('ready', () => {
 
-        conn.shell((err, stream) => {
+        var sshShellOption = {
+            cols: 200, rows: 30
+        };
+        conn.shell(sshShellOption, { pty: sshShellOption }, (err, stream) => {
 
             if (err) {
                 process.stdout.write('ssh failed to start shell: ' + err);
-
             }
+
+            if (!connected) {
+                fs.writeFileSync(tempFile, 'connected: ' + host);
+                connected = true;
+            }
+
             stream.on('data', (data) => {
                 process.stdout.write(String(data));
 
@@ -28,24 +70,7 @@ async function connectTerminal(host: string, port: string, user: string, passwor
 
         });
 
-    }).on('error', (err) => {
-        process.stdout.write('ssh error: ' + err);
-
-    }).on('end', () => {
-        process.stdout.write('ssh connection end.');
-
-    }).on('close', (hasError) => {
-        process.stdout.write('ssh connection close.');
-
-    }).connect({
-        host: host,
-        port: port,
-        username: user,
-        password: password,
-        key: key,
-        keepaliveInternal: 4000
     });
-
 }
 
 export async function runInTerminal(host: string, port: string, user: string, password: string, key: string) {

@@ -1,6 +1,6 @@
 import * as fsextra from 'fs-extra';
 import { open } from 'fs';
-import { CompletionItem, CompletionItemKind } from 'vscode';
+import { CompletionItem, CompletionItemKind, SnippetString } from 'vscode';
 import { filter } from 'fuzzaldrin-plus';
 import * as path from 'path';
 
@@ -51,10 +51,10 @@ export function parseAnsibleCompletionFile(sourcefile: string): Promise<AnsibleC
             let snippet = codeSnippets[key];
 
             let item = new AnsibleCompletionItem(key + '_snippet', CompletionItemKind.Snippet);
-            let text = snippet.body.join('\n' + indent);
-            item.insertText = snippet.body.join('\n' + indent);
+            item.insertText = new SnippetString(snippet.body.join('\n' + indent));
             item.detail = snippet.description + ' (Ansible)';
             item.documentation = snippet.body.join('\n' + indent);
+            item.filterText = snippet.prefix;
             codeSnippetItems.push(item);
         })
     }
