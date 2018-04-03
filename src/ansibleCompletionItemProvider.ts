@@ -22,6 +22,11 @@ export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvi
         let prefix = range ? document.getText(range) : '';
         let lineText = document.lineAt(position.line).text;
 
+        var index = lineText.indexOf(':');
+        if (index != -1 && index < range.end.character) {
+            return;
+        }
+
         if (pattern_variable.exec(lineText)) {
             return this.completionEngine.getVariablesCompletionItem(document, prefix, lineText);
         } else {
