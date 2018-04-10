@@ -11,6 +11,7 @@ import * as opn from 'opn';
 import { platform } from 'os';
 import { SSHServer } from './interfaces';
 import * as scp from 'scp2';
+import { clearInterval } from 'timers';
 
 const sshConfigFile = path.join(os.homedir(), '.ssh', 'servers.json');
 
@@ -285,4 +286,9 @@ export function updateSSHConfig(server: SSHServer): void {
     servers.push(server);
 
     fsExtra.writeJsonSync(sshConfigFile, servers, { spaces: '  ' });
+}
+
+
+export function stop(interval: NodeJS.Timer): void {
+    clearInterval(interval);
 }

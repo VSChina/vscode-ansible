@@ -7,7 +7,12 @@ import * as path from 'path';
 import { Constants } from './constants';
 
 export function openSSHConsole(outputChannel: OutputChannel, server: SSHServer) {
+	const progress = delayedInterval(() => { outputChannel.append('..') }, 500);
+
 	return (async function retry(): Promise<any> {
+		outputChannel.appendLine('\nConnecting to host ' + server.host);
+		outputChannel.show();
+
 		const isWindows = process.platform === 'win32';
 
 		let shellPath = path.join(__dirname, `../bin/node.${isWindows ? 'bat' : 'sh'}`);
@@ -42,12 +47,22 @@ export function openSSHConsole(outputChannel: OutputChannel, server: SSHServer) 
 			shellArgs,
 			env: envs
 		});
+		progress.cancel();
 
 		terminal.show();
 		return terminal;
 	})().catch(err => {
+		progress.cancel();
 		outputChannel.append('\nConnecting to SSH failed with error: \n' + err);
 		outputChannel.show();
 		throw err;
 	});
+
+
+	function delayedInterval(func: () => void, interval: number) {
+		const handle = setInterval(func, interval);
+		return {
+			cancel: () => clearInterval(handle)
+		}
+	}
 }
