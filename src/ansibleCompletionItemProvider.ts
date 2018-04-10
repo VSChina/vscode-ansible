@@ -22,6 +22,7 @@ export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvi
         let prefix = range ? document.getText(range) : '';
         let lineText = document.lineAt(position.line).text;
 
+        // provide auto completion for property name only, not on value
         var index = lineText.indexOf(':');
         if (index != -1 && index < range.end.character) {
             return;
