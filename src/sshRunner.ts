@@ -34,8 +34,6 @@ export class SSHRunner extends TerminalBaseRunner {
         if (utilities.isTelemetryEnabled()) {
             cmdsToTerminal.push('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
         }
-
-        cmdsToTerminal.push('ansible-playbook ~/' + path.basename(playbook));
         return cmdsToTerminal;
     }
 
@@ -45,70 +43,101 @@ export class SSHRunner extends TerminalBaseRunner {
             TelemetryClient.sendEvent('ssh');
 
             // get ssh config
-            getSSHServer().then((server) => {
-                if (server === undefined || server === null) {
-                    return;
-                }
-
-                const tempFile = path.join(os.tmpdir(), 'vscodeansible-ssh-' + server.host + '.log');
-
-                // copy playbook
-                let destPlaybookFolder = this.getTargetFolder();
-
-                this._outputChannel.appendLine('\nCopying playbook to host ' + server.host + '...');
-                fs.removeSync(tempFile);
-
-                utilities.copyFileRemote(playbook, destPlaybookFolder, server, (err) => {
-                    if (err) {
+            getSSHServer()
+                .then((server) => {
+                    if (server === undefined || server === null) {
                         return;
-                    } else {
-                        // run playbook
-                        openSSHConsole(this._outputChannel, server).then((terminal) => {
-                            if (terminal) {
-                                var count: number = 60;
-                                var _localthis = this;
-                                var connected = false;
-
-                                var interval = setInterval(function () {
-                                    count--;
-                                    if (count > 0) {
-                                        if (fs.existsSync(tempFile)) {
-                                            count = 0;
-                                            fs.removeSync(tempFile);
-                                            connected = true;
-
-                                            if (utilities.isTelemetryEnabled()) {
-                                                terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
-                                            }
-
-                                            for (let cmd of cmds) {
-                                                terminal.sendText(cmd);
-                                            }
-                                            terminal.show();
-                                        }
-                                    } else {
-                                        clearInterval(interval);
-
-                                        if (!connected) {
-                                            _localthis._outputChannel.appendLine('\nFailed to connect to ' + server.host + ' after 30 seconds');
-                                        }
-                                    }
-                                }, 500);
-
-                            } else {
-                                this._outputChannel.appendLine('\nSSH connection failed.');
-                                this._outputChannel.show();
-                            }
-                        })
                     }
+
+                    let workspaceRoot = '';
+                    if (vscode.workspace.workspaceFolders) {
+                        workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                    }
+                    const tempFile = path.join(os.tmpdir(), 'vscodeansible-ssh-' + server.host + '.log');
+
+                    // copy playbook
+                    fs.removeSync(tempFile);
+
+                    const cancelItem: vscode.MessageItem = { title: "Cancel" };
+                    const okItem: vscode.MessageItem = { title: "Ok" };
+                    vscode.window.showWarningMessage('Sync Workspace to Remote host?', okItem, cancelItem)
+                        .then((response) => {
+                            let src = playbook;
+                            let target = path.join('\./', path.basename(playbook));
+                            let targetPlaybook = target;
+
+                            if (response === okItem) {
+                                src = utilities.getWorkspaceRoot(playbook) + '/';
+                                target = path.join('\./', path.basename(src)) + '/';
+                                targetPlaybook = ['\./' + path.basename(src), path.relative(workspaceRoot, playbook)].join(path.posix.sep).replace(/\\/g, '/');
+                            }
+
+                            this._outputChannel.append('\nCopying ' + src + ' to ' + server.host + '..');
+                            this._outputChannel.show();
+                            const progress = this.delayedInterval(() => { this._outputChannel.append('.') }, 500);
+                            utilities.copyFileRemote(src, target, server, (err) => {
+                                progress.cancel();
+                                this._outputChannel.append('Done!');
+                                if (err) {
+                                    return;
+                                } else {
+                                    // run playbook
+                                    openSSHConsole(this._outputChannel, server).then((terminal) => {
+                                        if (terminal) {
+                                            var count: number = 60;
+                                            var _localthis = this;
+                                            var connected = false;
+
+                                            var interval = setInterval(function () {
+                                                count--;
+                                                if (count > 0) {
+                                                    if (fs.existsSync(tempFile)) {
+                                                        count = 0;
+                                                        fs.removeSync(tempFile);
+                                                        connected = true;
+
+                                                        if (utilities.isTelemetryEnabled()) {
+                                                            terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
+                                                        }
+
+                                                        for (let cmd of cmds) {
+                                                            terminal.sendText(cmd);
+                                                        }
+                                                        terminal.sendText('ansible-playbook ' + targetPlaybook);
+                                                        terminal.show();
+                                                    }
+                                                } else {
+                                                    clearInterval(interval);
+
+                                                    if (!connected) {
+                                                        _localthis._outputChannel.appendLine('\nFailed to connect to ' + server.host + ' after 30 seconds');
+                                                    }
+                                                }
+                                            }, 500);
+
+                                        } else {
+                                            this._outputChannel.appendLine('\nSSH connection failed.');
+                                            this._outputChannel.show();
+                                        }
+                                    })
+                                }
+                            });
+                        })
                 });
-            });
         });
     }
 
-    private getTargetFolder(): string {
-        return '\./';
+    private getTargetFolder(workspaceRoot: string, playbook: string): string {
+        return '\./' + path.relative(workspaceRoot, path.dirname(playbook));
     }
+
+    private delayedInterval(func: () => void, interval: number) {
+        const handle = setInterval(func, interval);
+        return {
+            cancel: () => clearInterval(handle)
+        }
+    }
+
 
 }
 

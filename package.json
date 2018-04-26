@@ -30,7 +30,8 @@
     "onCommand:vscode-ansible.playbook-in-docker",
     "onCommand:vscode-ansible.playbook-in-localansible",
     "onCommand:vscode-ansible.ssh",
-    "onCommand:vscode-ansible.deployment-templates"
+    "onCommand:vscode-ansible.deployment-templates",
+    "onCommand:vscode-ansible.sync-folder-ssh"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -38,27 +39,32 @@
       {
         "command": "vscode-ansible.cloudshell",
         "title": "Run Ansible Playbook in Cloud Shell",
-        "category": "ansible"
+        "category": "Ansible"
       },
       {
         "command": "vscode-ansible.playbook-in-docker",
         "title": "Run Ansible Playbook in Docker",
-        "category": "ansible"
+        "category": "Ansible"
       },
       {
         "command": "vscode-ansible.playbook-in-localansible",
         "title": "Run Ansible Playbook in Local Ansible",
-        "category": "ansible"
+        "category": "Ansible"
       },
       {
         "command": "vscode-ansible.ssh",
         "title": "Run Ansible Playbook Remotely via ssh",
-        "category": "ansible"
+        "category": "Ansible"
       },
       {
         "command": "vscode-ansible.deployment-templates",
         "title": "Use Azure Deployment Template",
-        "category": "ansible"
+        "category": "Ansible"
+      },
+      {
+        "command": "vscode-ansible.sync-folder-ssh",
+        "title": "Sync folder to Remote Host",
+        "category": "Ansible"
       }
     ],
     "menus": {

@@ -21,13 +21,13 @@ export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.
 
         cp.stdout.on('data', function (data) {
             if (outputChannel) {
-                outputChannel.append('\n' + String(data));
+                outputChannel.appendLine('\n' + String(data));
                 outputChannel.show();
             }
         });
 
         cp.stderr.on('data', function (data) {
-            if (outputChannel) outputChannel.append('\n' + String(data));
+            if (outputChannel) outputChannel.appendLine('\n' + String(data));
         });
 
         cp.on('close', function (code) {
@@ -78,8 +78,8 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
         if (!code) {
             cb();
         } else {
-            outputChannel.append('\nPlease go to below link and install Ansible first.');
-            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html');
+            outputChannel.appendLine('\nPlease go to below link and install Ansible first.');
+            outputChannel.appendLine('http://docs.ansible.com/ansible/latest/intro_installation.html');
             outputChannel.show();
 
             const open: vscode.MessageItem = { title: "View" };
@@ -100,7 +100,7 @@ export function IsNodeInstalled(outputChannel: vscode.OutputChannel, cb: Functio
         if (!code) {
             cb();
         } else {
-            outputChannel.append('\nPlease install Node.js 6 or later version\n.');
+            outputChannel.appendLine('Please install Node.js 6 or later version\n.');
             outputChannel.show();
 
             const open: vscode.MessageItem = { title: "View" };
@@ -125,7 +125,7 @@ export function validatePlaybook(playbook: string, outputChannel: vscode.OutputC
 
     if (outputChannel) {
         // todo: more validation
-        outputChannel.append(message);
+        outputChannel.appendLine(message);
         outputChannel.show();
     }
     return isValid;
@@ -138,7 +138,7 @@ export function parseCredentialsFile(outputChannel): string[] {
     var configValue = getCredentialsFile();
 
     if (outputChannel != null) {
-        outputChannel.append('\nCredential file: ' + configValue);
+        outputChannel.appendLine('\nCredential file: ' + configValue);
         outputChannel.show();
     }
     var credentials = [];
@@ -257,7 +257,6 @@ export function getSSHConfig(): SSHServer[] {
         } catch (err) {
             return null;
         }
-
     }
 
     return null;
@@ -291,4 +290,19 @@ export function updateSSHConfig(server: SSHServer): void {
 
 export function stop(interval: NodeJS.Timer): void {
     clearInterval(interval);
+}
+
+export function getWorkspaceRoot(playbook: string): string {
+    if (vscode.workspace.getWorkspaceFolder) {
+        return vscode.workspace.workspaceFolders[0].uri.fsPath;
+    } else {
+        return path.dirname(playbook);
+    }
+}
+
+export function delayedInterval(func: () => void, interval: number) {
+    const handle = setInterval(func, interval);
+    return {
+        cancel: () => clearInterval(handle)
+    }
 }

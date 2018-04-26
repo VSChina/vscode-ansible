@@ -7,10 +7,10 @@ import * as path from 'path';
 import { Constants } from './constants';
 
 export function openSSHConsole(outputChannel: OutputChannel, server: SSHServer) {
-	const progress = delayedInterval(() => { outputChannel.append('..') }, 500);
+	const progress = delayedInterval(() => { outputChannel.append('.') }, 100);
 
 	return (async function retry(): Promise<any> {
-		outputChannel.appendLine('\nConnecting to host ' + server.host);
+		outputChannel.appendLine('\nConnecting to host ' + server.host + '..');
 		outputChannel.show();
 
 		const isWindows = process.platform === 'win32';
@@ -53,7 +53,7 @@ export function openSSHConsole(outputChannel: OutputChannel, server: SSHServer) 
 		return terminal;
 	})().catch(err => {
 		progress.cancel();
-		outputChannel.append('\nConnecting to SSH failed with error: \n' + err);
+		outputChannel.appendLine('\nConnecting to SSH failed with error: \n' + err);
 		outputChannel.show();
 		throw err;
 	});
