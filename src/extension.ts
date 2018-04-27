@@ -16,6 +16,11 @@ import { LocalAnsibleRunner } from './localAnsibleRunner';
 import { SSHRunner } from './sshRunner';
 import { DeploymentTemplate } from './deploymentTemplate';
 
+const documentSelector = [
+    { language: 'yaml', scheme: 'file' },
+    { language: 'yaml', scheme: 'untitled' }
+];
+
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
     var outputChannel = vscode.window.createOutputChannel("VSCode extension for Ansible");
@@ -25,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
     utilities.generateCredentialsFile();
 
     const triggerCharacters = ' abcdefghijklmnopqrstuvwxyz'.split('');
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(['yaml'], new AnsibleCompletionItemProvider(), ...triggerCharacters));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(documentSelector, new AnsibleCompletionItemProvider(), ...triggerCharacters));
 
 
     var dockerRunner = new DockerRunner(outputChannel);
@@ -65,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     var clientOptions: LanguageClientOptions = {
-        documentSelector: ['yaml'],
+        documentSelector,
         synchronize: {
             configurationSection: 'ansible',
             fileEvents: vscode.workspace.createFileSystemWatcher('**/*.?(e)y?(a)ml')
