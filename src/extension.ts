@@ -15,7 +15,7 @@ import { DockerRunner } from './dockerRunner';
 import { LocalAnsibleRunner } from './localAnsibleRunner';
 import { SSHRunner } from './sshRunner';
 import { DeploymentTemplate } from './deploymentTemplate';
-import { FileSyncer } from './fileSyncer';
+import { FolderSyncer } from './folderSyncer';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-ansible" is now active!');
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
     var cloudShellRunner = new CloudShellRunner(outputChannel);
     var sshRunner = new SSHRunner(outputChannel);
     var deploymentTemplate = new DeploymentTemplate();
-    var fileSyncer = new FileSyncer(outputChannel);
+    var folderSyncer = new FolderSyncer(outputChannel);
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.playbook-in-docker', (playbook) => {
         dockerRunner.runPlaybook(playbook ? playbook.fsPath : null);
@@ -53,7 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.sync-folder-ssh', () => {
-        fileSyncer.syncFolderToRemoteSSHHost();
+        let srcFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        let targetFolder = path.join('\./', path.basename(srcFolder)) + '/';
+        folderSyncer.syncFolder(srcFolder, targetFolder, null, true);
     }));
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {

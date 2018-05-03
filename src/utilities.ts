@@ -93,24 +93,26 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
     })
 }
 
-export function IsNodeInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
+export function IsNodeInstalled(outputChannel: vscode.OutputChannel): Promise<boolean> {
     var cmd = 'node --version';
+    return new Promise<boolean>((resolve, reject) => {
+        child_process.exec(cmd).on('exit', function (code) {
+            if (!code) {
+                return resolve(true);
+            } else {
+                outputChannel.appendLine('Please install Node.js 6 or later version\n.');
+                outputChannel.show();
 
-    child_process.exec(cmd).on('exit', function (code) {
-        if (!code) {
-            cb();
-        } else {
-            outputChannel.appendLine('Please install Node.js 6 or later version\n.');
-            outputChannel.show();
-
-            const open: vscode.MessageItem = { title: "View" };
-            vscode.window.showErrorMessage('Please install Node.js 6 or later version.', open)
-                .then(response => {
-                    if (response === open) {
-                        opn('https://nodejs.org');
-                    }
-                });
-        }
+                const open: vscode.MessageItem = { title: "View" };
+                vscode.window.showErrorMessage('Please install Node.js 6 or later version.', open)
+                    .then(response => {
+                        if (response === open) {
+                            opn('https://nodejs.org');
+                        }
+                        return resolve(false);
+                    });
+            }
+        });
     })
 }
 
@@ -207,45 +209,52 @@ export function updateCodeConfiguration(section, configName, configValue) {
     }
 }
 
-export function copyFileRemote(source: string, dest: string, sshServer: SSHServer, cb: Function): boolean {
-    if (!sshServer) {
-        console.log('invalid ssh server!');
-        return false;
-    }
-
-    if (!source || !fsExtra.existsSync(source)) {
-        console.log('invalid source file: ' + source);
-        return false;
-    }
-
-    var client: {};
-
-    if (sshServer.password) {
-        client = {
-            host: sshServer.host,
-            port: sshServer.port,
-            username: sshServer.user,
-            password: sshServer.password,
-            path: dest
-        };
-    } else if (sshServer.key) {
-        if (!fsExtra.existsSync(sshServer.key)) {
-            vscode.window.showErrorMessage('File not exists: ' + sshServer.key);
+export function copyFilesRemote(source: string, dest: string, sshServer: SSHServer): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        if (!sshServer) {
+            console.log('invalid ssh server!');
+            return false;
         }
-        client = {
-            host: sshServer.host,
-            port: sshServer.port,
-            username: sshServer.user,
-            privateKey: String(fsExtra.readFileSync(sshServer.key)),
-            path: dest
-        };
-    }
 
-    scp.scp(source, client, (err) => {
-        if (err) {
-            vscode.window.showErrorMessage('Failed to copy file ' + source + ' to ' + sshServer.host + ': ' + err);
+        if (!source || !fsExtra.existsSync(source)) {
+            console.log('invalid source file: ' + source);
+            return false;
         }
-        return cb(err);
+
+        var client: {};
+
+        try {
+            if (sshServer.password) {
+                client = {
+                    host: sshServer.host,
+                    port: sshServer.port,
+                    username: sshServer.user,
+                    password: sshServer.password,
+                    path: dest
+                };
+            } else if (sshServer.key) {
+                if (!fsExtra.existsSync(sshServer.key)) {
+                    vscode.window.showErrorMessage('File not exists: ' + sshServer.key);
+                }
+                client = {
+                    host: sshServer.host,
+                    port: sshServer.port,
+                    username: sshServer.user,
+                    privateKey: String(fsExtra.readFileSync(sshServer.key)),
+                    path: dest
+                };
+            }
+        } catch (err) {
+            reject(err);
+        }
+
+        scp.scp(source, client, (err) => {
+            if (err) {
+                vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
+                reject(err);
+            }
+            resolve();
+        });
     });
 }
 

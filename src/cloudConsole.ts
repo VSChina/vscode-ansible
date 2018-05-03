@@ -40,7 +40,7 @@ export const OSes: Record<string, OS> = {
 };
 
 export async function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel, tempFile: string) {
-	const progress = delayedInterval(() => { outputChannel.append('.') }, 500);
+	const progress = delayedInterval(() => { outputChannel.append('.') }, 800);
 	return (async function retry(): Promise<any> {
 		outputChannel.appendLine('\nConnecting to Cloud Shell.');
 		outputChannel.show();
@@ -140,22 +140,6 @@ export async function openCloudConsole(api: AzureAccount, os: OS, files, outputC
 		}
 
 		let response = await runInTerminal(result.token.accessToken, consoleUri, '');
-
-		// upload files to cloudshell
-		const retry_interval = 500;
-		const retry_times = 30;
-		for (var i = 0; i < retry_times; i++) {
-			if (response.readyState != ws.OPEN) {
-				await delay(retry_interval);
-			} else {
-				for (let file of files) {
-					const data = fsExtra.readFileSync(file, { encoding: 'utf8' }).toString();
-					outputChannel.appendLine('\nUpload playbook to CloudShell: ' + file + ' as $HOME/' + path.basename(file));
-					response.send('echo -e "' + escapeFile(data) + '" > ' + path.basename(file) + ' \n');
-				}
-				break;
-			}
-		}
 
 		const terminal = window.createTerminal({
 			name: localize('azure-account.cloudConsole', "{0} in Cloud Shell", os.shellName),
