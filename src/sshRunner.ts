@@ -12,7 +12,7 @@ import * as fs from 'fs-extra';
 import { openSSHConsole } from './SSHConsole';
 import * as os from 'os';
 import { setInterval, clearInterval } from 'timers';
-import { FolderSyncer } from './FolderSyncer';
+import { FolderSyncer } from './folderSyncer';
 
 const addNewHost = 'Add New Host';
 const browseThePC = 'Browse the PC..';
