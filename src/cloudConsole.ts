@@ -42,7 +42,7 @@ export const OSes: Record<string, OS> = {
 export async function openCloudConsole(api: AzureAccount, os: OS, files, outputChannel: OutputChannel, tempFile: string) {
 	const progress = delayedInterval(() => { outputChannel.append('.') }, 800);
 	return (async function retry(): Promise<any> {
-		outputChannel.appendLine('\nConnecting to Cloud Shell.');
+		outputChannel.append('\nConnecting to Cloud Shell.');
 		outputChannel.show();
 
 		const isWindows = process.platform === 'win32';

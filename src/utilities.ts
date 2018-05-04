@@ -113,21 +113,19 @@ export function IsNodeInstalled(): Promise<boolean> {
     })
 }
 
-export function validatePlaybook(playbook: string, outputChannel: vscode.OutputChannel): boolean {
-    var message = '\nValidate playbook: passed.';
-    var isValid = true;
-
-    if (path.parse(playbook).ext != '.yml') {
-        message = '\nValidate playbook: failed! file extension is not yml.';
-        isValid = false;
+export function validatePlaybook(playbook: string): boolean {
+    if (!fsExtra.existsSync(playbook)) {
+        vscode.window.showErrorMessage('No such file or directory: ' + playbook);
+        return false;
     }
 
-    if (outputChannel) {
-        // todo: more validation
-        outputChannel.appendLine(message);
-        outputChannel.show();
+    if (path.parse(playbook).ext != '.yml' && path.parse(playbook).ext != '.yaml') {
+        vscode.window.showErrorMessage('Playbook is not yaml file: ' + playbook);
+        return false;
     }
-    return isValid;
+
+    return true;
+
 }
 
 

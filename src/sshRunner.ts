@@ -49,12 +49,6 @@ export class SSHRunner extends TerminalBaseRunner {
             return;
         }
 
-        // check if playbook exists
-        if (!fs.existsSync(playbook)) {
-            vscode.window.showErrorMessage('No such file or directory: ' + playbook);
-            return;
-        }
-
         // get ssh server
         let targetServer = await getSSHServer();
         if (!targetServer) {
