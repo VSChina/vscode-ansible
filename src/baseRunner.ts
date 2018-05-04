@@ -39,21 +39,25 @@ export abstract class BaseRunner {
                 .then((input) => {
                     if (input != undefined && input != '') {
                         playbook = input;
+                    } else {
+                        return;
                     }
 
-                    if (this.validatePlaybook(playbook, this._outputChannel)) {
+                    if (this.validatePlaybook(playbook)) {
                         return this.runPlaybookInternal(playbook);
                     }
                 })
         } else {
-            if (this.validatePlaybook(playbook, this._outputChannel)) {
+            if (this.validatePlaybook(playbook)) {
+                this._outputChannel.appendLine('Validated playbook ' + playbook);
+                this._outputChannel.show();
                 return this.runPlaybookInternal(playbook);
             }
         }
     }
 
-    protected validatePlaybook(playbook: string, outputChannel: OutputChannel): boolean {
-        if (!utilties.validatePlaybook(playbook, this._outputChannel)) {
+    protected validatePlaybook(playbook: string): boolean {
+        if (!utilties.validatePlaybook(playbook)) {
             return false;
         }
 
