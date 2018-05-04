@@ -21,13 +21,13 @@ export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.
 
         cp.stdout.on('data', function (data) {
             if (outputChannel) {
-                outputChannel.append('\n' + String(data));
+                outputChannel.appendLine('\n' + String(data));
                 outputChannel.show();
             }
         });
 
         cp.stderr.on('data', function (data) {
-            if (outputChannel) outputChannel.append('\n' + String(data));
+            if (outputChannel) outputChannel.appendLine('\n' + String(data));
         });
 
         cp.on('close', function (code) {
@@ -78,8 +78,8 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
         if (!code) {
             cb();
         } else {
-            outputChannel.append('\nPlease go to below link and install Ansible first.');
-            outputChannel.append('\nhttp://docs.ansible.com/ansible/latest/intro_installation.html');
+            outputChannel.appendLine('\nPlease go to below link and install Ansible first.');
+            outputChannel.appendLine('http://docs.ansible.com/ansible/latest/intro_installation.html');
             outputChannel.show();
 
             const open: vscode.MessageItem = { title: "View" };
@@ -93,24 +93,23 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
     })
 }
 
-export function IsNodeInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
+export function IsNodeInstalled(): Promise<boolean> {
     var cmd = 'node --version';
-
-    child_process.exec(cmd).on('exit', function (code) {
-        if (!code) {
-            cb();
-        } else {
-            outputChannel.append('\nPlease install Node.js 6 or later version\n.');
-            outputChannel.show();
-
-            const open: vscode.MessageItem = { title: "View" };
-            vscode.window.showErrorMessage('Please install Node.js 6 or later version.', open)
-                .then(response => {
-                    if (response === open) {
-                        opn('https://nodejs.org');
-                    }
-                });
-        }
+    return new Promise<boolean>((resolve, reject) => {
+        child_process.exec(cmd).on('exit', function (code) {
+            if (!code) {
+                return resolve(true);
+            } else {
+                const open: vscode.MessageItem = { title: "View" };
+                vscode.window.showErrorMessage('Please install Node.js 6 or later version.', open)
+                    .then(response => {
+                        if (response === open) {
+                            opn('https://nodejs.org');
+                        }
+                        return resolve(false);
+                    });
+            }
+        });
     })
 }
 
@@ -125,7 +124,7 @@ export function validatePlaybook(playbook: string, outputChannel: vscode.OutputC
 
     if (outputChannel) {
         // todo: more validation
-        outputChannel.append(message);
+        outputChannel.appendLine(message);
         outputChannel.show();
     }
     return isValid;
@@ -138,7 +137,7 @@ export function parseCredentialsFile(outputChannel): string[] {
     var configValue = getCredentialsFile();
 
     if (outputChannel != null) {
-        outputChannel.append('\nCredential file: ' + configValue);
+        outputChannel.appendLine('\nCredential file: ' + configValue);
         outputChannel.show();
     }
     var credentials = [];
@@ -207,45 +206,50 @@ export function updateCodeConfiguration(section, configName, configValue) {
     }
 }
 
-export function copyFileRemote(source: string, dest: string, sshServer: SSHServer, cb: Function): boolean {
-    if (!sshServer) {
-        console.log('invalid ssh server!');
-        return false;
-    }
-
-    if (!source || !fsExtra.existsSync(source)) {
-        console.log('invalid source file: ' + source);
-        return false;
-    }
-
-    var client: {};
-
-    if (sshServer.password) {
-        client = {
-            host: sshServer.host,
-            port: sshServer.port,
-            username: sshServer.user,
-            password: sshServer.password,
-            path: dest
-        };
-    } else if (sshServer.key) {
-        if (!fsExtra.existsSync(sshServer.key)) {
-            vscode.window.showErrorMessage('File not exists: ' + sshServer.key);
+export function copyFilesRemote(source: string, dest: string, sshServer: SSHServer): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        if (!sshServer) {
+            reject('Invalid ssh server!');
         }
-        client = {
-            host: sshServer.host,
-            port: sshServer.port,
-            username: sshServer.user,
-            privateKey: String(fsExtra.readFileSync(sshServer.key)),
-            path: dest
-        };
-    }
 
-    scp.scp(source, client, (err) => {
-        if (err) {
-            vscode.window.showErrorMessage('Failed to copy file ' + source + ' to ' + sshServer.host + ': ' + err);
+        if (!source || !fsExtra.existsSync(source)) {
+            reject('No such file or directory: ' + source);
         }
-        return cb(err);
+
+        var client: {};
+
+        try {
+            if (sshServer.password) {
+                client = {
+                    host: sshServer.host,
+                    port: sshServer.port,
+                    username: sshServer.user,
+                    password: sshServer.password,
+                    path: dest
+                };
+            } else if (sshServer.key) {
+                if (!fsExtra.existsSync(sshServer.key)) {
+                    vscode.window.showErrorMessage('File not exists: ' + sshServer.key);
+                }
+                client = {
+                    host: sshServer.host,
+                    port: sshServer.port,
+                    username: sshServer.user,
+                    privateKey: String(fsExtra.readFileSync(sshServer.key)),
+                    path: dest
+                };
+            }
+        } catch (err) {
+            reject(err);
+        }
+
+        scp.scp(source, client, (err) => {
+            if (err) {
+                vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
+                reject(err);
+            }
+            resolve();
+        });
     });
 }
 
@@ -257,7 +261,6 @@ export function getSSHConfig(): SSHServer[] {
         } catch (err) {
             return null;
         }
-
     }
 
     return null;
@@ -291,4 +294,19 @@ export function updateSSHConfig(server: SSHServer): void {
 
 export function stop(interval: NodeJS.Timer): void {
     clearInterval(interval);
+}
+
+export function getWorkspaceRoot(playbook: string): string {
+    if (vscode.workspace.getWorkspaceFolder) {
+        return vscode.workspace.workspaceFolders[0].uri.fsPath;
+    } else {
+        return path.dirname(playbook);
+    }
+}
+
+export function delayedInterval(func: () => void, interval: number) {
+    const handle = setInterval(func, interval);
+    return {
+        cancel: () => clearInterval(handle)
+    }
 }

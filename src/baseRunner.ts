@@ -53,9 +53,6 @@ export abstract class BaseRunner {
     }
 
     protected validatePlaybook(playbook: string, outputChannel: OutputChannel): boolean {
-        this._outputChannel.append('\n' + Constants.LineSeperator + '\nRun playbook: ' + playbook);
-        this._outputChannel.show();
-
         if (!utilties.validatePlaybook(playbook, this._outputChannel)) {
             return false;
         }
