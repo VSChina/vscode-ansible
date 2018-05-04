@@ -3,7 +3,7 @@
   "displayName": "Ansible",
   "description": "VSCode extension for Ansible",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "0.1.5",
+  "version": "0.2.6",
   "publisher": "vscoss",
   "icon": "images/logo.png",
   "engines": {
@@ -19,7 +19,7 @@
     "snippets",
     "ansible module"
   ],
-  "aiKey": "c0832760-3476-4e38-8ffc-32624202fcf1",
+  "aiKey": "670060a9-86f4-4273-bd35-972087d5da34",
   "repository": {
     "url": "https://github.com/VSChina/vscode-ansible.git"
   },
