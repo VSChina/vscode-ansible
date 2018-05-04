@@ -228,8 +228,8 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
 
         } else if (sshServer.key) {
             if (!fsExtra.existsSync(sshServer.key)) {
-                vscode.window.showErrorMessage('File not exists: ' + sshServer.key);
-                reject('File not exists: ' + sshServer.key);
+                vscode.window.showErrorMessage('File does not exist: ' + sshServer.key);
+                reject('File does not exist: ' + sshServer.key);
             }
 
             client = {
