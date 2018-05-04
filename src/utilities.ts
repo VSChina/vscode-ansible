@@ -93,16 +93,13 @@ export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Func
     })
 }
 
-export function IsNodeInstalled(outputChannel: vscode.OutputChannel): Promise<boolean> {
+export function IsNodeInstalled(): Promise<boolean> {
     var cmd = 'node --version';
     return new Promise<boolean>((resolve, reject) => {
         child_process.exec(cmd).on('exit', function (code) {
             if (!code) {
                 return resolve(true);
             } else {
-                outputChannel.appendLine('Please install Node.js 6 or later version\n.');
-                outputChannel.show();
-
                 const open: vscode.MessageItem = { title: "View" };
                 vscode.window.showErrorMessage('Please install Node.js 6 or later version.', open)
                     .then(response => {
@@ -212,13 +209,11 @@ export function updateCodeConfiguration(section, configName, configValue) {
 export function copyFilesRemote(source: string, dest: string, sshServer: SSHServer): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         if (!sshServer) {
-            console.log('invalid ssh server!');
-            return false;
+            reject('Invalid ssh server!');
         }
 
         if (!source || !fsExtra.existsSync(source)) {
-            console.log('invalid source file: ' + source);
-            return false;
+            reject('No such file or directory: ' + source);
         }
 
         var client: {};

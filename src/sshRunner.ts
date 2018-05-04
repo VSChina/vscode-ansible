@@ -45,7 +45,13 @@ export class SSHRunner extends TerminalBaseRunner {
 
     protected async runAnsibleInTerminal(playbook, cmds, terminalId: string): Promise<void> {
         // check node is installed
-        if (!await utilities.IsNodeInstalled(this._outputChannel)) {
+        if (!await utilities.IsNodeInstalled()) {
+            return;
+        }
+
+        // check if playbook exists
+        if (!fs.existsSync(playbook)) {
+            vscode.window.showErrorMessage('No such file or directory: ' + playbook);
             return;
         }
 
@@ -64,10 +70,10 @@ export class SSHRunner extends TerminalBaseRunner {
         // ask for weather to sync workspace
         const cancelItem: vscode.MessageItem = { title: "Cancel" };
         const okItem: vscode.MessageItem = { title: "Ok" };
-        let response = await vscode.window.showWarningMessage('Sync Workspace to Remote host?', okItem, cancelItem);
+        let response = await vscode.window.showWarningMessage('Copy Workspace to Remote host?', okItem, cancelItem);
 
         if (response && response === okItem) {
-            
+
             src = utilities.getWorkspaceRoot(playbook) + '/';
             target = path.join('\./', path.basename(src)) + '/';
             targetPlaybook = ['\./' + path.basename(src), path.relative(src, playbook)].join(path.posix.sep).replace(/\\/g, '/');

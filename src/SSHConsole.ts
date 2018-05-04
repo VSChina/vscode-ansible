@@ -7,7 +7,7 @@ import * as path from 'path';
 import { Constants } from './constants';
 
 export function openSSHConsole(outputChannel: OutputChannel, server: SSHServer) {
-	const progress = delayedInterval(() => { outputChannel.append('.') }, 100);
+	const progress = delayedInterval(() => { outputChannel.append('.') }, 500);
 
 	return (async function retry(): Promise<any> {
 		outputChannel.appendLine('\nConnecting to host ' + server.host + '..');

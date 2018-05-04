@@ -2,12 +2,10 @@
 
 import * as vscode from 'vscode';
 import * as utilities from './utilities';
-import * as azHelper from './azureStorageHelper';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { SSHServer } from './interfaces';
 import * as sshHelper from './sshRunner';
-import { services } from 'azure-storage';
 
 const browseThePC = 'Browse the PC..';
 
@@ -42,16 +40,23 @@ export class FolderSyncer {
             if (pick === browseThePC) {
                 var result = await vscode.window.showOpenDialog({
                     canSelectFiles: false,
-                    canSelectFolders: true, canSelectMany: false
+                    canSelectFolders: true,
+                    canSelectMany: false
                 });
                 if (result && result.length === 1) {
                     sourceFolder = result[0].fsPath;
+                } else {
+                    return;
                 }
             }
         }
 
-        if (!sourceFolder && !fs.existsSync(sourceFolder)) {
-            this._outputChannel.appendLine('Copy failed: source folder ' + sourceFolder + ' not exists');
+        if (!sourceFolder) {
+            return;
+        }
+
+        if (!fs.existsSync(sourceFolder)) {
+            this._outputChannel.appendLine('No such file or directory ' + sourceFolder);
             this._outputChannel.show();
             return;
         }

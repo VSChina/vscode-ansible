@@ -63,7 +63,7 @@
       },
       {
         "command": "vscode-ansible.sync-folder-ssh",
-        "title": "Sync folder to Remote Host",
+        "title": "Copy folder to Remote Host",
         "category": "Ansible"
       }
     ],
