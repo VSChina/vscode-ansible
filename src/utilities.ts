@@ -12,6 +12,7 @@ import { platform } from 'os';
 import { SSHServer } from './interfaces';
 import * as scp from 'scp2';
 import { clearInterval } from 'timers';
+import * as ssh from 'ssh2';
 
 const sshConfigFile = path.join(os.homedir(), '.ssh', 'servers.json');
 
@@ -135,7 +136,7 @@ export function parseCredentialsFile(outputChannel): string[] {
     var configValue = getCredentialsFile();
 
     if (outputChannel != null) {
-        outputChannel.appendLine('\nCredential file: ' + configValue);
+        outputChannel.appendLine('Credential file: ' + configValue);
         outputChannel.show();
     }
     var credentials = [];
@@ -216,38 +217,58 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
 
         var client: {};
 
-        try {
-            if (sshServer.password) {
-                client = {
-                    host: sshServer.host,
-                    port: sshServer.port,
-                    username: sshServer.user,
-                    password: sshServer.password,
-                    path: dest
-                };
-            } else if (sshServer.key) {
-                if (!fsExtra.existsSync(sshServer.key)) {
-                    vscode.window.showErrorMessage('File not exists: ' + sshServer.key);
-                }
-                client = {
-                    host: sshServer.host,
-                    port: sshServer.port,
-                    username: sshServer.user,
-                    privateKey: String(fsExtra.readFileSync(sshServer.key)),
-                    path: dest
-                };
+        if (sshServer.password) {
+            client = {
+                host: sshServer.host,
+                port: sshServer.port,
+                username: sshServer.user,
+                password: sshServer.password,
+                path: dest
+            };
+
+        } else if (sshServer.key) {
+            if (!fsExtra.existsSync(sshServer.key)) {
+                vscode.window.showErrorMessage('File does not exist: ' + sshServer.key);
+                reject('File does not exist: ' + sshServer.key);
             }
-        } catch (err) {
-            reject(err);
+
+            client = {
+                host: sshServer.host,
+                port: sshServer.port,
+                username: sshServer.user,
+                privateKey: String(fsExtra.readFileSync(sshServer.key)),
+                path: dest
+            };
         }
 
-        scp.scp(source, client, (err) => {
-            if (err) {
-                vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
+        try {
+            var conn = new ssh.Client();
+
+            conn.connect({
+                host: sshServer.host,
+                port: sshServer.port,
+                username: sshServer.user,
+                password: sshServer.password,
+                privateKey: (sshServer.key === null || sshServer.key === undefined) ? sshServer.key : fsExtra.readFileSync(sshServer.key)
+            });
+
+            conn.on('error', (err) => {
                 reject(err);
-            }
-            resolve();
-        });
+            });
+
+            conn.end();
+
+            scp.scp(source, client, (err) => {
+                if (err) {
+                    vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
+                    return reject(err);
+                }
+                return resolve();
+            });
+
+        } catch (err) {
+            reject('scp error: ' + err);
+        }
     });
 }
 
