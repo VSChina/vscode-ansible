@@ -31,7 +31,7 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
         if (utilities.isTelemetryEnabled()) {
             cmdsToTerminal.push(envCmd + Constants.UserAgentName + '=' + utilities.getUserAgent());
         }
-        cmdsToTerminal.push('ansible-playbook \"' + playbook + '\"');
+        cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + playbook + "\""));
         return cmdsToTerminal;
     }
 

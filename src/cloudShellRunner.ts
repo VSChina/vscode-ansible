@@ -58,7 +58,7 @@ export class CloudShellRunner extends BaseRunner {
                                 return;
                             }
 
-                            terminal.sendText('ansible-playbook ' + remotePlaybookPath);
+                            terminal.sendText(this.getRunPlaybookCmd(remotePlaybookPath));
                             terminal.show();
                             TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Succeeded });
                         });

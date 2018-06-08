@@ -51,7 +51,7 @@ export class DockerRunner extends TerminalBaseRunner {
 
             cmd += ' ' + Constants.DockerImageName + ' bash';
             cmdsToTerminal.push(cmd);
-            cmdsToTerminal.push('ansible-playbook ' + targetPlaybook);
+            cmdsToTerminal.push(this.getRunPlaybookCmd(targetPlaybook));
         } else {
             cmdsToTerminal.push(cmd);
         }

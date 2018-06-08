@@ -127,7 +127,7 @@ export class SSHRunner extends TerminalBaseRunner {
                             for (let cmd of cmds) {
                                 terminal.sendText(cmd);
                             }
-                            terminal.sendText('ansible-playbook ' + targetPlaybook);
+                            terminal.sendText(_localthis.getRunPlaybookCmd(targetPlaybook));
                             terminal.show();
                         }
                     } else {

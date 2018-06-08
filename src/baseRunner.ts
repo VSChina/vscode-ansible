@@ -65,5 +65,18 @@ export abstract class BaseRunner {
     }
 
     protected abstract runPlaybookInternal(playbook: string);
+
+    protected getRunPlaybookCmd(playbook: string): string {
+        let cmd = ['ansible-playbook'];
+        let customOption = utilties.getCodeConfiguration<string>('ansible', 'runPlaybookOptions');
+
+        if (customOption)  {
+            cmd.push(customOption);
+        }
+
+        cmd.push(playbook);
+
+        return cmd.join(" ");
+    }
 }
 
