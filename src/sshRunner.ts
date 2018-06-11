@@ -195,9 +195,17 @@ export async function addSSHServer(): Promise<SSHServer> {
                         }
 
                         server.key = keyfile;
-                        utilities.updateSSHConfig(server);
-                        return server;
 
+                        if (keyfile) {
+                            var passphrase = await vscode.window.showInputBox({ value: '', prompt: 'key passphrase', placeHolder: 'passphrase', password: true });
+
+                            if (passphrase) {
+                                server.passphrase = passphrase;
+                            }
+
+                            utilities.updateSSHConfig(server);
+                            return server;
+                        }
                     }
                 }
             }
