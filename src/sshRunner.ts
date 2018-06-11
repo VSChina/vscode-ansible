@@ -28,8 +28,8 @@ export class SSHRunner extends TerminalBaseRunner {
 
         vscode.window.onDidCloseTerminal((terminal) => {
 
-            var termianlNames = Object.keys(this.terminalList);
-            for (let name of termianlNames) {
+            var terminalNames = Object.keys(this.terminalList);
+            for (let name of terminalNames) {
                 if (name === terminal.name) {
                     this.terminalList[name].dispose();
                     delete this.terminalList[name];
