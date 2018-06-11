@@ -61,13 +61,10 @@ export class SSHRunner extends TerminalBaseRunner {
         let targetPlaybook = target;
 
 
-        // ask for weather to sync workspace
-        const cancelItem: vscode.MessageItem = { title: "Cancel" };
-        const okItem: vscode.MessageItem = { title: "Ok" };
-        let response = await vscode.window.showWarningMessage('Copy Workspace to Remote host?', okItem, cancelItem);
+        // check configuration weather to sync workspace
+        let copyWorkspace = utilities.getCodeConfiguration<boolean>('ansible', 'copyWorkspace');
 
-        if (response && response === okItem) {
-
+        if (copyWorkspace) {
             src = utilities.getWorkspaceRoot(playbook) + '/';
             target = path.join('\./', path.basename(src)) + '/';
             targetPlaybook = ['\./' + path.basename(src), path.relative(src, playbook)].join(path.posix.sep).replace(/\\/g, '/');
@@ -77,10 +74,7 @@ export class SSHRunner extends TerminalBaseRunner {
             } catch (err) {
                 return;
             }
-        }
-
-        if (!response || response === cancelItem) {
-
+        } else {
             this._outputChannel.append('\nCopying ' + src + ' to ' + targetServer.host + '..');
             this._outputChannel.show();
 
@@ -201,9 +195,17 @@ export async function addSSHServer(): Promise<SSHServer> {
                         }
 
                         server.key = keyfile;
-                        utilities.updateSSHConfig(server);
-                        return server;
 
+                        if (keyfile) {
+                            var passphrase = await vscode.window.showInputBox({ value: '', prompt: 'key passphrase', placeHolder: 'passphrase', password: true });
+
+                            if (passphrase) {
+                                server.passphrase = passphrase;
+                            }
+
+                            utilities.updateSSHConfig(server);
+                            return server;
+                        }
                     }
                 }
             }
