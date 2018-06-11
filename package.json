@@ -64,7 +64,7 @@
       {
         "command": "vscode-ansible.sync-folder-ssh",
         "title": "Copy folder to Remote Host",
-        "category": "Ansible"
+        "category": "Ansible"        
       }
     ],
     "menus": {
@@ -151,6 +151,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/Disable ansible autocompletion"
+        },
+        "ansible.copyWorkspace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/Disable copying whole workspace to remote SSH host"
         }
       }
     }
