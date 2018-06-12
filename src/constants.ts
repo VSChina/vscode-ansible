@@ -23,7 +23,7 @@ export enum CloudShellErrors {
     ProvisionFailed = 'cloud shell provision failed'
 }
 
-export enum CloudShellStatus {
+export enum CloudShellConnectionStatus {
     Init = 'init',
     Succeeded = 'succeeded',
     Failed = 'failed'

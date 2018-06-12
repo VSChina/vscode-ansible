@@ -2,17 +2,16 @@
 
 import { BaseRunner } from './baseRunner';
 import * as vscode from 'vscode';
-import { AzureAccount } from './azure-account.api';
-import { Constants, CloudShellStatus, CloudShellErrors } from './constants';
+import { AzureAccount, CloudShell, AzureSession, CloudShellStatus } from './azure-account.api';
+import { Constants, CloudShellConnectionStatus, CloudShellErrors } from './constants';
 import * as utilities from './utilities';
-import { openCloudConsole, OSes } from './cloudConsole';
 import * as path from 'path';
 import * as opn from 'opn';
 import * as fsExtra from 'fs-extra';
 import * as ost from 'os';
 import { setInterval, clearInterval } from 'timers';
 import { TelemetryClient } from './telemetryClient';
-import { delay } from './cloudConsoleLauncher';
+import { IStorageAccount, getStorageAccountforCloudShell } from './cloudConsoleLauncher';
 import { Terminal } from 'vscode';
 import { uploadFilesToAzureStorage, getCloudShellPlaybookPath } from './azureStorageHelper';
 
@@ -21,7 +20,8 @@ const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '
 export class CloudShellRunner extends BaseRunner {
 
     private terminal: vscode.Terminal;
-    private cloudShellFileShare: CloudShellAzureFileShare;
+    private cloudShellFileShare: IStorageAccount;
+    private cloudShellSession: CloudShell;
 
     constructor(outputChannel: vscode.OutputChannel) {
 
@@ -31,6 +31,7 @@ export class CloudShellRunner extends BaseRunner {
             if (terminal === this.terminal) {
                 this.terminal = null;
                 this.cloudShellFileShare = null;
+                this.cloudShellSession = null;
             }
         })
     }
@@ -41,7 +42,7 @@ export class CloudShellRunner extends BaseRunner {
 
         const installedExtension: any[] = vscode.extensions.all;
 
-        TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Init });
+        TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellConnectionStatus.Init });
 
         let azureAccount: AzureAccount;
         for (var i = 0; i < installedExtension.length; i++) {
@@ -49,7 +50,10 @@ export class CloudShellRunner extends BaseRunner {
             if (ext.id === Constants.AzureAccountExtensionId) {
                 azureAccount = ext.activate().then((azureAccount) => {
                     if (azureAccount) {
-                        this.startCloudShell(playbook).then((response) => {
+                        this.connectToCloudShell(playbook).then((response) => {
+
+                            if (!response)
+                                return;
 
                             var terminal = response[0];
                             var remotePlaybookPath = response[1];
@@ -59,8 +63,7 @@ export class CloudShellRunner extends BaseRunner {
                             }
 
                             terminal.sendText(this.getRunPlaybookCmd(remotePlaybookPath));
-                            terminal.show();
-                            TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellStatus.Succeeded });
+
                         });
                     };
                     return;
@@ -80,7 +83,7 @@ export class CloudShellRunner extends BaseRunner {
     }
 
 
-    protected async startCloudShell(playbook: string): Promise<any> {
+    protected async connectToCloudShell(playbook: string): Promise<any> {
         const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
         try {
@@ -90,59 +93,68 @@ export class CloudShellRunner extends BaseRunner {
         }
 
         if (this.terminal === null || this.terminal === undefined) {
-            var result = await openCloudConsole(accountApi, OSes.Linux, [playbook], this._outputChannel, tempFile);
 
-            if (!result) {
-                this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
-                this._outputChannel.show();
-                return;
-            }
-            var terminal = result[0];
-            this.cloudShellFileShare = {
-                name: result[1],
-                key: result[2],
-                fileShareName: result[3],
-                resourceGroup: result[4]
-            }
+            this._outputChannel.append('\nConnecting to Cloud Shell.');
+            this._outputChannel.show();
+            const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 500);
 
-            if (!this.cloudShellFileShare.fileShareName || !this.cloudShellFileShare.name || !this.cloudShellFileShare.key) {
-                this._outputChannel.appendLine('\nFailed to retrieve Cloud Shell storage account.');
-                this._outputChannel.show();
-                return;
-            }
-            if (terminal) {
-                let count: number = 30;
-                while (count--) {
-                    if (await fsExtra.exists(tempFile)) {
-                        count = 0;
-                        this.terminal = terminal;
+            try {
+                this.cloudShellSession = accountApi.createCloudShell("Linux");
+                this.terminal = await this.cloudShellSession.terminal;
 
-                        if (utilities.isTelemetryEnabled()) {
-                            terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
-                        }
+                this.terminal.show();
 
-                        fsExtra.remove(tempFile);
+                let count: number = 60;
+                while (count-- > 0) {
+                    if (this.cloudShellSession.status === "Connected") {
+                        break;
                     }
-                    await delay(500);
+                    await utilities.delay(500);
                 }
-            } else {
-                this._outputChannel.appendLine('\nConnecting to Cloud Shell failed, please retry.');
+
+                progress.cancel();
+
+                if (count === 0) {
+                    this._outputChannel.appendLine("Failed to connect to cloud shell after 30 seconds,  pls retry later.");
+                    TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.ProvisionFailed });
+                    return;
+                }
+
+                TelemetryClient.sendEvent('cloudshell', { 'status': CloudShellConnectionStatus.Succeeded });
+
+                this.cloudShellFileShare = await getStorageAccountforCloudShell(this.cloudShellSession);
+
+                if (!this.cloudShellFileShare) {
+                    this._outputChannel.appendLine("Failed to get Storage Account for Cloud Shell, please retry later.");
+                    TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.ProvisionFailed });
+                    return;
+                }
+            } catch (err) {
+                progress.cancel();
+
+                this._outputChannel.appendLine('Connecting to Cloud Shell failed with error: \n' + err);
                 this._outputChannel.show();
             }
         }
 
         try {
-            await uploadFilesToAzureStorage(playbook, this.cloudShellFileShare.name, this.cloudShellFileShare.key, this.cloudShellFileShare.fileShareName);
+            await uploadFilesToAzureStorage(playbook,
+                this.cloudShellFileShare.storageAccountName,
+                this.cloudShellFileShare.storageAccountKey,
+                this.cloudShellFileShare.fileShareName);
+
             return [this.terminal, getCloudShellPlaybookPath(this.cloudShellFileShare.fileShareName, playbook)];
+
         } catch (err) {
             if (err) {
+                TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.ProvisionFailed });
+
                 this._outputChannel.appendLine('\nFailed to upload playbook to Cloud Shell: ' + err);
                 this._outputChannel.show();
                 return;
             }
         }
     }
-
 
     protected async showPrompt(): Promise<void> {
 
@@ -172,11 +184,4 @@ export class CloudShellRunner extends BaseRunner {
     protected onDidCloseTerminal(terminal) {
 
     }
-}
-
-export type CloudShellAzureFileShare = {
-    name: string,
-    key: string,
-    fileShareName: string,
-    resourceGroup: string
 }
