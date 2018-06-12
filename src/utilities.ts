@@ -331,3 +331,7 @@ export function delayedInterval(func: () => void, interval: number) {
         cancel: () => clearInterval(handle)
     }
 }
+
+export async function delay(ms: number) {
+	return new Promise<void>(resolve => setTimeout(resolve, ms));
+}
