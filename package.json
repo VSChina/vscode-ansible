@@ -26,6 +26,7 @@
   "homepage": "https://github.com/VSChina/vscode-ansible/blob/master/README.md",
   "activationEvents": [
     "onLanguage:yaml",
+    "onLanguage:ansible",
     "onCommand:vscode-ansible.cloudshell",
     "onCommand:vscode-ansible.playbook-in-docker",
     "onCommand:vscode-ansible.playbook-in-localansible",
@@ -35,6 +36,17 @@
   ],
   "main": "./out/extension",
   "contributes": {
+    "languages": [
+      {
+        "id": "ansible",
+        "alias": [
+          "ansible"
+        ],
+        "extensions": [
+          "ansible"
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "vscode-ansible.cloudshell",
@@ -115,7 +127,7 @@
     },
     "grammars": [
       {
-        "language": "yaml",
+        "language": "ansible",
         "scopeName": "source.ansible",
         "path": "./syntaxes/Ansible.tmLanguage"
       }
@@ -151,6 +163,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/Disable ansible autocompletion"
+        },
+        "ansible.copyWorkspace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/Disable copying whole workspace to remote SSH host"
         }
       }
     }

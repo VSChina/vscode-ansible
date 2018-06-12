@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as ost from 'os';
 import * as fsExtra from 'fs-extra';
 
-async function connectTerminal(host: string, port: string, user: string, password: string, keyfile: string) {
+async function connectTerminal(host: string, port: string, user: string, password: string, keyfile: string, passphrase: string) {
     const tempFile = path.join(ost.tmpdir(), 'vscodeansible-ssh-' + host + '.log');
     var connected = false;
 
@@ -24,6 +24,7 @@ async function connectTerminal(host: string, port: string, user: string, passwor
         username: user,
         password: password,
         privateKey: (keyfile === null || keyfile === undefined) ? keyfile : fs.readFileSync(keyfile),
+        passphrase: passphrase,
         keepaliveInternal: 4000
     });
 
@@ -73,11 +74,11 @@ async function connectTerminal(host: string, port: string, user: string, passwor
     });
 }
 
-export async function runInTerminal(host: string, port: string, user: string, password: string, key: string) {
+export async function runInTerminal(host: string, port: string, user: string, password: string, key: string, passphrase: string) {
     process.stdin.setRawMode!(true);
     process.stdin.resume();
 
-    return connectTerminal(host, port, user, password, key);
+    return connectTerminal(host, port, user, password, key, passphrase);
 }
 
 export function main() {
@@ -86,6 +87,7 @@ export function main() {
     const user = process.env.SSH_USER!;
     const password = process.env.SSH_PASSWORD!;
     const key = process.env.SSH_KEY!;
-    return runInTerminal(host, port, user, password, key)
+    const passphrase = process.env.SSH_PASSPHRASE!;
+    return runInTerminal(host, port, user, password, key, passphrase)
         .catch(console.error);
 }

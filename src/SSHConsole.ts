@@ -38,7 +38,8 @@ export function openSSHConsole(outputChannel: OutputChannel, server: SSHServer) 
 			SSH_USER: server.user,
 			NODE_TLS_REJECT_UNAUTHORIZED: "0",
 			SSH_PASSWORD: server.password,
-			SSH_KEY: server.key
+			SSH_KEY: server.key,
+			SSH_PASSPHRASE: server.passphrase
 		};
 
 		const terminal = vscode.window.createTerminal({

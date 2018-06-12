@@ -5,5 +5,6 @@ export interface SSHServer {
     port: number,
     user: string,
     password: string,
-    key: string
+    key: string,
+    passphrase: string
 };
