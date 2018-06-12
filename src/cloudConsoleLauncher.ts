@@ -82,7 +82,7 @@ export async function getStorageAccountforCloudShell(cloudShell: CloudShell): Pr
 		resourceGroup: storageAccountSettings[3],
 		storageAccountName: storageAccountSettings[7],
 		fileShareName: storageProfile.fileShareName,
-		storageAccountKey,
+		storageAccountKey
 	};
 }
 
