@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vscode';
+import { Event, Terminal } from 'vscode';
 import { ServiceClientCredentials } from 'ms-rest';
 import { AzureEnvironment } from 'ms-rest-azure';
 import { SubscriptionModels } from 'azure-arm-resource';
@@ -22,6 +22,7 @@ export interface AzureAccount {
 	readonly filters: AzureResourceFilter[];
 	readonly onFiltersChanged: Event<void>;
 	readonly waitForFilters: () => Promise<boolean>;
+	createCloudShell(os: 'Linux' | 'Windows'): CloudShell;
 }
 
 export interface AzureSession {
@@ -37,3 +38,13 @@ export interface AzureSubscription {
 }
 
 export type AzureResourceFilter = AzureSubscription;
+
+export type CloudShellStatus = 'Connecting' | 'Connected' | 'Disconnected';
+
+export interface CloudShell {
+	readonly status: CloudShellStatus;
+	readonly onStatusChanged: Event<CloudShellStatus>;
+	readonly waitForConnection: () => Promise<boolean>;
+	readonly terminal: Promise<Terminal>;
+	readonly session: Promise<AzureSession>;
+}

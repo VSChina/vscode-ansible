@@ -237,6 +237,7 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
                 port: sshServer.port,
                 username: sshServer.user,
                 privateKey: String(fsExtra.readFileSync(sshServer.key)),
+                passphrase: sshServer.passphrase,
                 path: dest
             };
         }
@@ -249,6 +250,7 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
                 port: sshServer.port,
                 username: sshServer.user,
                 password: sshServer.password,
+                passphrase: sshServer.passphrase,
                 privateKey: (sshServer.key === null || sshServer.key === undefined) ? sshServer.key : fsExtra.readFileSync(sshServer.key)
             });
 
@@ -328,4 +330,8 @@ export function delayedInterval(func: () => void, interval: number) {
     return {
         cancel: () => clearInterval(handle)
     }
+}
+
+export async function delay(ms: number) {
+	return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
