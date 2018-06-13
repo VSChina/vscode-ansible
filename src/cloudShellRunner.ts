@@ -62,9 +62,7 @@ export class CloudShellRunner extends BaseRunner {
                                 return;
                             }
 
-                            terminal.show();
-
-                            terminal.sendText('ansible-playbook ' + remotePlaybookPath);
+                            terminal.sendText(this.getRunPlaybookCmd(remotePlaybookPath));
 
                         });
                     };

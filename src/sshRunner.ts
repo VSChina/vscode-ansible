@@ -159,6 +159,9 @@ export class SSHRunner extends TerminalBaseRunner {
                             if (!connected) {
                                 _localthis._outputChannel.appendLine('\nFailed to connect to ' + targetServer.host + ' after 30 seconds');
                             }
+
+                            terminal.sendText(_localthis.getRunPlaybookCmd(targetPlaybook));
+                            terminal.show();
                         }
                     }, 500);
                 });
