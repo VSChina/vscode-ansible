@@ -164,6 +164,11 @@
           "default": true,
           "description": "Enable/Disable ansible autocompletion"
         },
+        "ansible.runPlaybookOptions": {
+          "type": "string",
+          "default": "",
+          "description": "Custom options to run ansible playbook. eg. -i inventoryfile -vvv"
+        },
         "ansible.copyWorkspace": {
           "type": "boolean",
           "default": false,

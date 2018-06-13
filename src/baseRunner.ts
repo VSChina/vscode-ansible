@@ -2,7 +2,7 @@
 
 import * as vscode from "vscode";
 import { Constants } from "./constants";
-import * as utilties from "./utilities";
+import * as utilities from "./utilities";
 import * as path from "path";
 import { OutputChannel } from "vscode";
 
@@ -57,7 +57,7 @@ export abstract class BaseRunner {
     }
 
     protected validatePlaybook(playbook: string): boolean {
-        if (!utilties.validatePlaybook(playbook)) {
+        if (!utilities.validatePlaybook(playbook)) {
             return false;
         }
 
@@ -65,5 +65,18 @@ export abstract class BaseRunner {
     }
 
     protected abstract runPlaybookInternal(playbook: string);
+
+    protected getRunPlaybookCmd(playbook: string): string {
+        let cmd = ['ansible-playbook'];
+        let customOption = utilities.getCodeConfiguration<string>('ansible', 'runPlaybookOptions');
+
+        if (customOption)  {
+            cmd.push(customOption);
+        }
+
+        cmd.push(playbook);
+
+        return cmd.join(" ");
+    }
 }
 
