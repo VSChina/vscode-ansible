@@ -164,6 +164,11 @@
           "default": true,
           "description": "Enable/Disable ansible autocompletion"
         },
+        "ansible.reuseSSHTerminal": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable resuing SSH terminal session"
+        },
         "ansible.runPlaybookOptions": {
           "type": "string",
           "default": "",

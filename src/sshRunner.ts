@@ -19,12 +19,24 @@ const browseThePC = 'Browse the PC..';
 
 export class SSHRunner extends TerminalBaseRunner {
     private folderSyncer: FolderSyncer;
+    private terminalList: { [key: string]: vscode.Terminal } = {};
 
     constructor(outputChannel: vscode.OutputChannel) {
         super(outputChannel);
 
         this.folderSyncer = new FolderSyncer(outputChannel);
 
+        vscode.window.onDidCloseTerminal((terminal) => {
+
+            var terminalNames = Object.keys(this.terminalList);
+            for (let name of terminalNames) {
+                if (name === terminal.name) {
+                    this.terminalList[name].dispose();
+                    delete this.terminalList[name];
+                    break;
+                }
+            }
+        });
     }
 
     protected getCmds(playbook: string, envs: string[], terminalId: string): string[] {
@@ -93,48 +105,81 @@ export class SSHRunner extends TerminalBaseRunner {
             }
         }
 
-        openSSHConsole(this._outputChannel, targetServer)
-            .then((terminal) => {
-                if (!terminal) {
-                    this._outputChannel.appendLine('\nSSH connection failed.');
-                    this._outputChannel.show();
-                    return;
+        let terminal = undefined;
+
+        let reuse = utilities.getCodeConfiguration<boolean>('ansible', 'reuseSSHTerminal');
+
+        if (reuse) {
+            let terminalNames = Object.keys(this.terminalList);
+            for (let t of terminalNames) {
+                if (t === this.getTerminalName(targetServer.host)) {
+                    terminal = this.terminalList[t];
+                    break;
                 }
-                var count: number = 60;
-                var _localthis = this;
-                var connected = false;
+            }
+        }
 
-                const tempFile = path.join(os.tmpdir(), 'vscodeansible-ssh-' + targetServer.host + '.log');
+        if (terminal) {
+            terminal.show();
 
-                var interval = setInterval(function () {
-                    count--;
-                    if (count > 0) {
-                        if (fs.existsSync(tempFile)) {
-                            count = 0;
-                            fs.removeSync(tempFile);
-                            connected = true;
+            cmds.push('ansible-playbook ' + targetPlaybook);
+            this.sendCommandsToTerminal(terminal, cmds);
 
-                            if (utilities.isTelemetryEnabled()) {
-                                terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
+        } else {
+            openSSHConsole(this._outputChannel, targetServer)
+                .then((term) => {
+                    if (!term) {
+                        this._outputChannel.appendLine('\nSSH connection failed.');
+                        this._outputChannel.show();
+                        return;
+                    }
+                    this.terminalList[this.getTerminalName(targetServer.host)] = term;
+
+                    var count: number = 60;
+                    var _localthis = this;
+                    var connected = false;
+
+                    const tempFile = path.join(os.tmpdir(), 'vscodeansible-ssh-' + targetServer.host + '.log');
+
+                    var interval = setInterval(function () {
+                        count--;
+                        if (count > 0) {
+                            if (fs.existsSync(tempFile)) {
+                                count = 0;
+                                fs.removeSync(tempFile);
+                                connected = true;
+
+                                cmds.push('ansible-playbook ' + targetPlaybook);
+                                _localthis.sendCommandsToTerminal(term, cmds);
+                                term.show();
+                            }
+                        } else {
+                            clearInterval(interval);
+
+                            if (!connected) {
+                                _localthis._outputChannel.appendLine('\nFailed to connect to ' + targetServer.host + ' after 30 seconds');
                             }
 
-                            for (let cmd of cmds) {
-                                terminal.sendText(cmd);
-                            }
                             terminal.sendText(_localthis.getRunPlaybookCmd(targetPlaybook));
                             terminal.show();
                         }
-                    } else {
-                        clearInterval(interval);
+                    }, 500);
+                });
+        }
+    }
 
-                        if (!connected) {
-                            _localthis._outputChannel.appendLine('\nFailed to connect to ' + targetServer.host + ' after 30 seconds');
-                        }
-                    }
-                }, 500);
-            });
+    private getTerminalName(host: string): string {
+        return 'SSH ' + host;
+    }
 
+    private sendCommandsToTerminal(terminal: vscode.Terminal, cmds: string[]): void {
+        if (utilities.isTelemetryEnabled()) {
+            terminal.sendText('export ' + Constants.UserAgentName + '=' + utilities.getUserAgent());
+        }
 
+        for (let cmd of cmds) {
+            terminal.sendText(cmd);
+        }
     }
 
     private getTargetFolder(workspaceRoot: string, playbook: string): string {
