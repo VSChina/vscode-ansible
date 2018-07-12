@@ -56,6 +56,8 @@ export class SSHRunner extends TerminalBaseRunner {
     }
 
     protected async runAnsibleInTerminal(playbook, cmds, terminalId: string): Promise<void> {
+        TelemetryClient.sendEvent('ssh');
+
         // check node is installed
         if (!await utilities.IsNodeInstalled()) {
             return;
