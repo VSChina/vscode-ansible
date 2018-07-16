@@ -287,6 +287,17 @@ export function getSSHConfig(): SSHServer[] {
     return null;
 }
 
+export function getSSHServer(hostname: string): SSHServer {
+    let servers = getSSHConfig();
+
+    for (let server of servers) {
+        if (server.host === hostname) {
+            return server;
+        }
+    }
+    return null;
+}
+
 export function updateSSHConfig(server: SSHServer): void {
     var servers: SSHServer[] = [];
 
