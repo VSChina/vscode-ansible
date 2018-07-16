@@ -7,6 +7,7 @@ import * as path from 'path';
 import { SSHServer } from './interfaces';
 import * as sshHelper from './sshRunner';
 import * as async from 'async';
+import { StatusBarAlignment } from 'vscode';
 
 const browseThePC = 'Browse the PC..';
 
@@ -21,49 +22,30 @@ export interface FileSyncConfiguration {
     targetPath: string
 }
 
-export type Configurations = FileSyncConfiguration[];
+export type FileSyncConfigurations = FileSyncConfiguration[];
 
 export class FileSyncer {
-
+    protected _statusBar: vscode.StatusBarItem;
     protected _outputChannel: vscode.OutputChannel;
-    protected _configuration: Configurations;
+    protected _configuration: FileSyncConfigurations;
     protected _hosts: { key: string, string };
 
     constructor(outputChannel: vscode.OutputChannel) {
         this._outputChannel = outputChannel;
-        this._configuration = utilities.getCodeConfiguration('ansible', 'fileSyncOnSave');
+        this._configuration = utilities.getCodeConfiguration('ansible', 'copyFileOnSave');
+        this._statusBar = vscode.window.createStatusBarItem(StatusBarAlignment.Right, 100);
     }
 
     public updateConfiguration(config: any): void {
         // check if changed
         let updatedConfig = this.hasConfigurationChanged(this._configuration, config);
 
-        // copy
-        let servers = utilities.getSSHConfig();
+        this.copyFiles(updatedConfig);
 
-        async.each(updatedConfig, (item, cb) => {
-            let remoteHost = null;
-            servers.forEach((m) => {
-                if (m.host === item.server) {
-                    return remoteHost = m;
-                }
-            });
-
-            if (remoteHost === null) {
-                this._outputChannel.appendLine("Invalid remote host in configuration " + item.server);
-                this._outputChannel.show();
-                return;
-            }
-            utilities.copyFilesRemote(item.sourcePath, item.targetPath, remoteHost)
-                .catch((err) => {
-                    this._outputChannel.appendLine('\nFailed to copy ' + item.sourcePath + ' to ' + item.server + ': ' + err);
-                    this._outputChannel.show();
-                    throw err;
-                });
-        });
+        this._configuration = config;
     }
 
-    protected hasConfigurationChanged(oldConfig: Configurations, newConfig: Configurations) {
+    protected hasConfigurationChanged(oldConfig: FileSyncConfigurations, newConfig: FileSyncConfigurations) {
         let result = [];
 
         if (!oldConfig || oldConfig.length === 0) {
@@ -87,35 +69,55 @@ export class FileSyncer {
         return result;
     }
 
-    public async syncFile(fileName: string) {
-        for (var item of this._configuration) {
-            if (item.sourcePath.toLowerCase() === fileName.toLowerCase() ||
-                fileName.toLowerCase().startsWith(item.sourcePath.toLowerCase() + path.sep)) {
-                // get server
+    public async copyFiles(configuration: FileSyncConfigurations, fileName: string = null) {
+        let servers = utilities.getSSHConfig();
 
-                if (item["serverinfo"] === undefined) {
-                    let server = utilities.getSSHServer(item.server);
+        if (configuration === null) {
+            configuration = this._configuration;
+        }
 
-                    if (server === null) {
-                        this._outputChannel.appendLine("Invalid remote server " + item.server);
-                        return;
-                    }
+        for (let item of configuration) {
+            // get server
+            let server = this.getServer(servers, item.server);
 
-                    item["serverinfo"] = server;
+            if (server === null) {
+                this._statusBar.text = "Invalid host " + item.server;
+                this._statusBar.show();
+            }
+
+            let source = item.sourcePath;
+            let target = item.targetPath;
+            if (fileName != null) {
+                // check if file under configured source path
+                if (fileName.startsWith(item.sourcePath + path.sep)) {
+                    source = fileName;
+                    target = path.join(item.targetPath, path.relative(item.sourcePath, fileName));
+                } else {
+                    return;
                 }
+            }
+            utilities.copyFilesRemote(source, target, server)
+                .then(() => {
+                    this._statusBar.text = "Copied " + source + " to " + item.server;
+                    this._statusBar.show();
+                })
+                .catch((err) => {
+                    this._statusBar.text = "Failed to copy " + source + " to " + item.server;
+                    this._statusBar.show();
+                    this._outputChannel.appendLine('\nFailed to copy ' + source + ' to ' + item.server + ': ' + err);
+                    this._outputChannel.show();
+                    throw err;
+                });
+        }
+    }
 
-                // if directory exists on remote
-                let targetFileName = path.join(item.targetPath, path.relative(fileName, item.sourcePath));
 
-                return utilities.copyFilesRemote(fileName, targetFileName, item["serverinfo"])
-                    .then(() => {
-                    })
-                    .catch((err) => {
-                        this._outputChannel.appendLine('\nFailed to copy ' + fileName + ' to ' + item.server + ': ' + err);
-                        this._outputChannel.show();
-                        throw err;
-                    });
+    public getServer(servers: SSHServer[], serverName: string): SSHServer {
+        for (let s of servers) {
+            if (s.host === serverName) {
+                return s;
             }
         }
+        return null;
     }
 }

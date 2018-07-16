@@ -65,18 +65,18 @@ export function activate(context: vscode.ExtensionContext) {
         folderSyncer.syncFolder(srcFolder, targetFolder, null, true);
     }));
 
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange: vscode.ConfigurationChangeEvent) => {
+        let config = vscode.workspace.getConfiguration('ansible').get('copyFileOnSave');
+        fileSyncer.updateConfiguration(config);
+    }));
+
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
         TerminalExecutor.onDidCloseTerminal(closedTerminal);
     }));
 
-    vscode.workspace.onDidSaveTextDocument(listener => {
-        fileSyncer.syncFile(listener.fileName);
-    });
-
-    vscode.workspace.onDidChangeConfiguration((configChange: vscode.ConfigurationChangeEvent) => {
-        let config = vscode.workspace.getConfiguration('ansible').get('fileSyncOnSave');
-        fileSyncer.updateConfiguration(config);
-    });
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(listener => {
+        fileSyncer.copyFiles(null, listener.fileName);
+    }));
 
     // start language client
     var serverModule = path.join(context.extensionPath, 'out', 'server', 'server.js');

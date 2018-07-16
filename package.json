@@ -179,10 +179,10 @@
           "default": false,
           "description": "Enable/Disable copying whole workspace to remote SSH host"
         },
-        "ansible.fileSyncOnSave": {
+        "ansible.copyFileOnSave": {
           "type": "array",
           "default": "",
-          "description": "Files under configured folders to be synced to remote SSH server when save"
+          "description": "Config copy saved file to remote host."
         }
       }
     }
