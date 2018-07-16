@@ -1,6 +1,6 @@
 'use strict';
 
-import { IConnection, createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType, TextDocument, DidSaveTextDocumentNotification, DidSaveTextDocumentParams } from 'vscode-languageserver';
+import { IConnection, createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType, TextDocument } from 'vscode-languageserver';
 import { } from './yamlLanguageService';
 import { LanguageService, LanguageSettings } from 'vscode-yaml-languageservice/lib/yamlLanguageService';
 import { parse as parseYAML } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
@@ -44,10 +44,6 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
     }
 
 });
-
-connection.onDidSaveTextDocument((didSaveTextDoc: DidSaveTextDocumentParams) => {
-    let fileName = didSaveTextDoc.textDocument.uri;
-})
 
 connection.onDocumentSymbol((documentSymbolParms) => {
     let document = documents.get(documentSymbolParms.textDocument.uri);
