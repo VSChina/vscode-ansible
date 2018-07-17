@@ -92,7 +92,7 @@ export class CloudShellRunner extends BaseRunner {
             return;
         }
 
-        if (this.terminal === null || this.terminal === undefined) {
+        if (!this.terminal) {
 
             this._outputChannel.append('\nConnecting to Cloud Shell.');
             this._outputChannel.show();

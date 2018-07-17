@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as utilities from './utilities';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { SSHServer } from './interfaces';
+import { SSHServer, FileCopyConfigs, FileCopyConfig } from './interfaces';
 import * as sshHelper from './sshRunner';
 import * as async from 'async';
 import { StatusBarAlignment } from 'vscode';
@@ -16,18 +16,11 @@ export enum TargetType {
     remotehost = 'remotehost'
 }
 
-export interface FileSyncConfiguration {
-    server: string,
-    sourcePath: string,
-    targetPath: string
-}
-
-export type FileSyncConfigurations = FileSyncConfiguration[];
 
 export class FileSyncer {
     protected _statusBar: vscode.StatusBarItem;
     protected _outputChannel: vscode.OutputChannel;
-    protected _configuration: FileSyncConfigurations;
+    protected _configuration: FileCopyConfigs;
     protected _hosts: { key: string, string };
 
     constructor(outputChannel: vscode.OutputChannel) {
@@ -45,7 +38,7 @@ export class FileSyncer {
         this._configuration = config;
     }
 
-    protected hasConfigurationChanged(oldConfig: FileSyncConfigurations, newConfig: FileSyncConfigurations) {
+    protected hasConfigurationChanged(oldConfig: FileCopyConfigs, newConfig: FileCopyConfigs) {
         let result = [];
 
         if (!oldConfig || oldConfig.length === 0) {
@@ -69,10 +62,13 @@ export class FileSyncer {
         return result;
     }
 
-    public async copyFiles(configuration: FileSyncConfigurations, fileName: string = null) {
+    public async copyFiles(configuration: FileCopyConfigs, fileName: string = null) {
         let servers = utilities.getSSHConfig();
 
-        if (configuration === null) {
+        if (!configuration) {
+            if (!this._configuration) {
+                return;
+            }
             configuration = this._configuration;
         }
 
@@ -80,7 +76,7 @@ export class FileSyncer {
             // get server
             let server = this.getServer(servers, item.server);
 
-            if (server === null) {
+            if (!server) {
                 this._statusBar.text = "Invalid host " + item.server;
                 this._statusBar.show();
             }
@@ -89,13 +85,17 @@ export class FileSyncer {
             let target = item.targetPath;
             if (fileName != null) {
                 // check if file under configured source path
-                if (fileName.startsWith(item.sourcePath + path.sep)) {
+                if (utilities.isSubPath(fileName, item.sourcePath)) {
                     source = fileName;
                     target = path.join(item.targetPath, path.relative(item.sourcePath, fileName));
                 } else {
                     return;
                 }
             }
+
+            this._statusBar.text = "Copying " + source + " to " + item.server;
+            this._statusBar.show();
+
             utilities.copyFilesRemote(source, target, server)
                 .then(() => {
                     this._statusBar.text = "Copied " + source + " to " + item.server;

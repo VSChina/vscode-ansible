@@ -65,9 +65,11 @@ export function activate(context: vscode.ExtensionContext) {
         folderSyncer.syncFolder(srcFolder, targetFolder, null, true);
     }));
 
-    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange: vscode.ConfigurationChangeEvent) => {
-        let config = vscode.workspace.getConfiguration('ansible').get('copyFileOnSave');
-        fileSyncer.updateConfiguration(config);
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange) => {
+        if (configChange.affectsConfiguration("ansible.fileCopyConfig")) {
+            let config = vscode.workspace.getConfiguration('ansible').get('fileCopyConfig');
+            fileSyncer.updateConfiguration(config);
+        }
     }));
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {

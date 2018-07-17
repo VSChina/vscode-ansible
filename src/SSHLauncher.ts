@@ -23,7 +23,7 @@ async function connectTerminal(host: string, port: string, user: string, passwor
         port: port,
         username: user,
         password: password,
-        privateKey: (keyfile === null || keyfile === undefined) ? keyfile : fs.readFileSync(keyfile),
+        privateKey: keyfile ? fs.readFileSync(keyfile) : keyfile,
         passphrase: passphrase,
         keepaliveInternal: 4000
     });
