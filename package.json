@@ -3,7 +3,7 @@
   "displayName": "Ansible",
   "description": "VSCode extension for Ansible",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "publisher": "vscoss",
   "icon": "images/logo.png",
   "engines": {
@@ -169,7 +169,7 @@
           "default": true,
           "description": "Enable/Disable resuing SSH terminal session"
         },
-        "ansible.runPlaybookOptions": {
+        "ansible.customOptions": {
           "type": "string",
           "default": "",
           "description": "Custom options to run ansible playbook. eg. -i inventoryfile -vvv"

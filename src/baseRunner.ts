@@ -68,7 +68,7 @@ export abstract class BaseRunner {
 
     protected getRunPlaybookCmd(playbook: string): string {
         let cmd = ['ansible-playbook'];
-        let customOption = utilities.getCodeConfiguration<string>('ansible', 'runPlaybookOptions');
+        let customOption = utilities.getCodeConfiguration<string>('ansible', 'customOptions');
 
         if (customOption)  {
             cmd.push(customOption);

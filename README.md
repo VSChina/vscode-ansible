@@ -10,11 +10,13 @@
 - [Usage](#usage) 
    - [Auto completion](#auto-completion)
    - [Code Snippets](#code-snippets)
+   - [Syntax highlighting](#syntax-highlighting)
    - [Run Ansible playbook](#run-ansible-playbook) 
        - [Run Playbook in Docker](#run-playbook-in-docker)
        - [Run Playbook in Local Ansible](#run-playbook-in-local-ansible)
        - [Run Playbook in Cloud Shell](#run-playbook-in-cloud-shell)
        - [Run Playbook Remotely via ssh](#run-playbook-remotely-via-ssh)
+       - [Auto File Copy on saving](#files-copy-to-remote-on-saving)
 - [Configuration](#configuration)
 - [Feedback and Questions](#feedback-and-questions)
 - [License](#license)
@@ -26,7 +28,7 @@
 
   - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc, Auto completion for variables. Disable auto completion by setting `ansible.autocompletion` to `false`.
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
-  - Syntax highlighting.
+  - Syntax highlighting. Enable syntax highlighting by setting `files.associations` in `settings.json`.
   - Code navigation by Symbols, press `Ctrl + Shift + O`.
   - Hover over module names, to show module documentation. Disable hovering over by setting `ansible.hover` to `false`.
   - Run playbook from Docker.
@@ -49,8 +51,17 @@
 Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snippets. Then press `tab` to move inside snippet parameters. 
 ![auto completion and code snippets](./images/authoring.gif)
 
+### Syntax highlighting
+Enable syntax highlighting by add `files.associations` configuration in `settings.json`, to associate your paths with `ansible`.
+```
+    "files.associations": {
+        "C:\\mypath\\ansible-playbooks\\*.yml": "ansible",
+        "**/*.yaml": "ansible"
+    },
+```
+
 ### Run Ansible playbook   
-  4 methods are supported to run Ansible playbook: 
+  4 methods are supported to run Ansible playbook, with custom options configured in `ansible.customOptions`: 
   - [Docker](#run-playbook-in-docker).
   - [Local Ansible installation](#run-playbook-in-local-ansible).
   - [Cloud Shell](#run-playbook-in-cloud-shell).
@@ -100,6 +111,19 @@ Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snipp
    ]
    ```
 
+#### Files copy to remote on saving
+1. Configure file copying to remote host on saving as below  in `settings.json`. `sourcePath` will be copied to remote `server` as `targetPath` when configuration added/updated. `copyOnSave` will copy local files saved to remote host.
+```
+    "ansible.fileCopyConfig": [
+        {
+            "server": "remote-host-name",
+            "sourcePath": "local file/folder to copy from, eg. e:\\testfolder\\ansibleplaybooks",
+            "targetPath": "remote file/folder to copy to, eg. /home/user/ansibleplaybooks",
+            "copyOnSave": true
+        }
+    ]
+```
+
 ## Configuration  
 This extension provides below configurations in settings.json.
 
@@ -110,6 +134,8 @@ This extension provides below configurations in settings.json.
 |`ansible.autocompletion` | `true` | Enable/Disable ansible autocompletion(including code snippets) functionality. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
 |`ansible.credentialsFile` |`$HOME/.vscode/ansible-credentials.yml` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. |
 |`ansible.termininalInitCommand`|Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.| Specify customized terminal init command when run playbook in Docker/Local Ansible. |
+|`ansible.reuseSSHTerminal`|`true`| Enable/Disable SSH terminal resuing. |
+|`ansible.customOptions`| null | Customize run playbook options. eg. `-i xxxx -vvv`.|
 
 
 ## Feedback and Questions
