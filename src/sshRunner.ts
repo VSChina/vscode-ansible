@@ -17,6 +17,7 @@ import { FileSyncer } from './fileSyncer';
 
 const addNewHost = 'Add New Host';
 const browseThePC = 'Browse the PC..';
+const notShowThisAgain = "NotShowThisAgain";
 
 export class SSHRunner extends TerminalBaseRunner {
     private folderSyncer: FolderSyncer;
@@ -76,34 +77,36 @@ export class SSHRunner extends TerminalBaseRunner {
         let targetPlaybook = target;
 
         // check configuration
-        let fileSyncConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', 'fileCopyConfig');
+        let fileConfig = this.getWorkSpaceFileCopyConfig(playbook, targetServer.host);
 
-        if (fileSyncConfig) {
-            for (let config of fileSyncConfig) {
-                if (config.server === targetServer.host && utilities.isSubPath(playbook, config.sourcePath)) {
-                    // if configured, get target playbook path from config
-                    targetPlaybook = utilities.posixPath(path.join(config.targetPath, path.relative(config.sourcePath, playbook)));
+        if (fileConfig) {
+            if (fileConfig.targetPath != notShowThisAgain) {
+                targetPlaybook = utilities.posixPath(path.join(fileConfig.targetPath, path.relative(fileConfig.sourcePath, playbook)));
 
-                    // if not saved on copy, copy playbook to remote
-                    if (!config.copyOnSave) {
-                        await utilities.copyFilesRemote(source, targetPlaybook, targetServer);
-                    }
+                // if not saved on copy, copy playbook to remote
+                if (!fileConfig.copyOnSave) {
+                    await utilities.copyFilesRemote(source, targetPlaybook, targetServer);
                 }
             }
         } else {
             // if no config in settings.json, ask for promote whether to copy workspace, thend do copy, then run it.
             const okItem: vscode.MessageItem = { title: "ok" };
-            let response = await vscode.window.showWarningMessage('Copy workspace to remote host?', okItem);
+            const cancelItem: vscode.MessageItem = { title: "no, not show this again" };
+            let response = await vscode.window.showWarningMessage('Copy workspace to remote host?', okItem, cancelItem);
+            let existingConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', 'fileCopyConfig');
+
+            if (!existingConfig) {
+                existingConfig = [];
+            }
+
+            let fileConfig: FileCopyConfig = {
+                server: targetServer.host,
+                sourcePath: utilities.getWorkspaceRoot(playbook) + '/',
+                targetPath: path.join('\./', path.basename(utilities.getWorkspaceRoot(playbook))) + '/',
+                copyOnSave: true
+            };
 
             if (response && response === okItem) {
-                // save configuration
-                let fileConfig: FileCopyConfig = {
-                    server: targetServer.host,
-                    sourcePath: utilities.getWorkspaceRoot(playbook) + '/',
-                    targetPath: path.join('\./', path.basename(utilities.getWorkspaceRoot(playbook))) + '/',
-                    copyOnSave: false
-                };
-
                 targetPlaybook = utilities.posixPath(['\./' + path.basename(fileConfig.sourcePath), path.relative(fileConfig.sourcePath, playbook)]
                     .join(path.posix.sep));
 
@@ -121,13 +124,15 @@ export class SSHRunner extends TerminalBaseRunner {
                     }
                     return;
                 }
-
-                // update config
-                utilities.updateCodeConfiguration('ansible', 'fileCopyConfig', [fileConfig]);
             } else {
-                // copy playbook only
+                fileConfig.targetPath = notShowThisAgain;
+                // if cancel, copy playbook only
                 await utilities.copyFilesRemote(source, target, targetServer);
             }
+
+            // update config
+            existingConfig.push(fileConfig);
+            utilities.updateCodeConfiguration('ansible', 'fileCopyConfig', existingConfig);
         }
         // run playbook
         this.OpenTerminal(targetServer, targetPlaybook, cmds);
@@ -209,6 +214,19 @@ export class SSHRunner extends TerminalBaseRunner {
         return {
             cancel: () => clearInterval(handle)
         }
+    }
+
+    private getWorkSpaceFileCopyConfig(playbook: string, host: string): FileCopyConfig {
+        let fileSyncConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', 'fileCopyConfig');
+
+        if (fileSyncConfig) {
+            for (let config of fileSyncConfig) {
+                if (config.server === host && utilities.isSubPath(playbook, config.sourcePath)) {
+                    return config;
+                }
+            }
+        }
+        return null;
     }
 
 

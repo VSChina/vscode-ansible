@@ -29,20 +29,24 @@ export class FileSyncer {
         this._statusBar = vscode.window.createStatusBarItem(StatusBarAlignment.Right, 100);
     }
 
-    public updateConfiguration(config: any): void {
+    public onConfigurationChange(config: any): void {
         // check if changed
-        let updatedConfig = this.hasConfigurationChanged(this._configuration, config);
+        let updatedConfig = this.getChangedConfiguration(this._configuration, config);
 
         this.copyFiles(updatedConfig);
 
         this._configuration = config;
     }
 
-    protected hasConfigurationChanged(oldConfig: FileCopyConfigs, newConfig: FileCopyConfigs) {
+    protected getChangedConfiguration(oldConfig: FileCopyConfigs, newConfig: FileCopyConfigs) {
         let result = [];
 
         if (!oldConfig || oldConfig.length === 0) {
             return newConfig;
+        }
+
+        if (!newConfig) {
+            return result;
         }
 
         for (let newc of newConfig) {
@@ -62,7 +66,7 @@ export class FileSyncer {
         return result;
     }
 
-    public async copyFiles(configuration: FileCopyConfigs, fileName: string = null) {
+    public copyFiles(configuration: FileCopyConfigs, fileName: string = null) {
         let servers = utilities.getSSHConfig();
 
         if (!configuration) {

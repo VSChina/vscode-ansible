@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange) => {
         if (configChange.affectsConfiguration("ansible.fileCopyConfig")) {
             let config = vscode.workspace.getConfiguration('ansible').get('fileCopyConfig');
-            fileSyncer.updateConfiguration(config);
+            fileSyncer.onConfigurationChange(config);
         }
     }));
 

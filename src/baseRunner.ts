@@ -49,8 +49,6 @@ export abstract class BaseRunner {
                 })
         } else {
             if (this.validatePlaybook(playbook)) {
-                this._outputChannel.appendLine('Validated playbook ' + playbook);
-                this._outputChannel.show();
                 return this.runPlaybookInternal(playbook);
             }
         }
