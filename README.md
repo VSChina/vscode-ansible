@@ -55,8 +55,7 @@ Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snipp
 Enable syntax highlighting by add `files.associations` configuration in `settings.json`, to associate your paths with `ansible`.
 ```
     "files.associations": {
-        "C:\\mypath\\ansible-playbooks\\*.yml": "ansible",
-        "**/*.yaml": "ansible"
+        "**/*.yml": "ansible"
     },
 ```
 
