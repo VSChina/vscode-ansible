@@ -34,7 +34,7 @@ export class YAMLHover {
         let currentDoc = matchOffsetToDocument(offset, jsonDoc);
 
 
-        if (currentDoc === null || currentDoc === undefined) {
+        if (!currentDoc) {
             return this.promise.resolve(void 0);
         }
 

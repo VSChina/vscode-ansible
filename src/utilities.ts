@@ -185,7 +185,7 @@ export function isTelemetryEnabled(): boolean {
 }
 
 export function getCodeConfiguration<T>(section, configName): T {
-    if (section === undefined || section === null) {
+    if (!section) {
         section = 'ansible';
     }
     if (vscode.workspace.getConfiguration(section).has(configName)) {
@@ -196,13 +196,11 @@ export function getCodeConfiguration<T>(section, configName): T {
 }
 
 export function updateCodeConfiguration(section, configName, configValue) {
-    if (section === undefined || section === null) {
+    if (!section) {
         section = 'ansible';
     }
 
-    if (vscode.workspace.getConfiguration(section).has(configName)) {
-        return vscode.workspace.getConfiguration(section).update(configName, configValue);
-    }
+    return vscode.workspace.getConfiguration(section).update(configName, configValue);
 }
 
 export function copyFilesRemote(source: string, dest: string, sshServer: SSHServer): Promise<void> {
@@ -243,6 +241,7 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
         }
 
         try {
+
             var conn = new ssh.Client();
 
             conn.connect({
@@ -251,7 +250,7 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
                 username: sshServer.user,
                 password: sshServer.password,
                 passphrase: sshServer.passphrase,
-                privateKey: (sshServer.key === null || sshServer.key === undefined) ? sshServer.key : fsExtra.readFileSync(sshServer.key)
+                privateKey: sshServer.key ? fsExtra.readFileSync(sshServer.key) : sshServer.key
             });
 
             conn.on('error', (err) => {
@@ -287,10 +286,21 @@ export function getSSHConfig(): SSHServer[] {
     return null;
 }
 
+export function getSSHServer(hostname: string): SSHServer {
+    let servers = getSSHConfig();
+
+    for (let server of servers) {
+        if (server.host === hostname) {
+            return server;
+        }
+    }
+    return null;
+}
+
 export function updateSSHConfig(server: SSHServer): void {
     var servers: SSHServer[] = [];
 
-    if (server === undefined || server === null) {
+    if (!server) {
         return;
     }
     if (fsExtra.existsSync(sshConfigFile)) {
@@ -333,5 +343,22 @@ export function delayedInterval(func: () => void, interval: number) {
 }
 
 export async function delay(ms: number) {
-	return new Promise<void>(resolve => setTimeout(resolve, ms));
+    return new Promise<void>(resolve => setTimeout(resolve, ms));
+}
+
+export function isSubPath(child: string, parent: string): boolean {
+    if (child === parent) return false;
+    let parentTokens = [];
+    parent.split(/\\/).forEach((s) => parentTokens = parentTokens.concat(s.split(/\//).filter(i => i.length)));
+
+    let childTokens = [];
+    child.split(/\\/).forEach((s) => childTokens = childTokens.concat(s.split(/\//).filter(i => i.length)));
+    return parentTokens.every((t, i) => childTokens[i] === t);
+}
+
+export function posixPath(path: string): string {
+    if (path) {
+        return path.replace(/\\/g, '/');
+    }
+    return path;
 }

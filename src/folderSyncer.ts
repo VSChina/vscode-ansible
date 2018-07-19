@@ -18,7 +18,6 @@ export class FolderSyncer {
 
     protected _outputChannel: vscode.OutputChannel;
 
-
     constructor(outputChannel: vscode.OutputChannel) {
         this._outputChannel = outputChannel;
     }

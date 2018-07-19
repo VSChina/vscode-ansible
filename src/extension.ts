@@ -16,6 +16,7 @@ import { LocalAnsibleRunner } from './localAnsibleRunner';
 import { SSHRunner } from './sshRunner';
 import { DeploymentTemplate } from './deploymentTemplate';
 import { FolderSyncer } from './folderSyncer';
+import { FileSyncer } from './fileSyncer';
 
 const documentSelector = [
     { language: 'yaml', scheme: 'file' },
@@ -40,6 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
     var sshRunner = new SSHRunner(outputChannel);
     var deploymentTemplate = new DeploymentTemplate();
     var folderSyncer = new FolderSyncer(outputChannel);
+    var fileSyncer = new FileSyncer(outputChannel);
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.playbook-in-docker', (playbook) => {
         dockerRunner.runPlaybook(playbook ? playbook.fsPath : null);
@@ -63,10 +65,20 @@ export function activate(context: vscode.ExtensionContext) {
         folderSyncer.syncFolder(srcFolder, targetFolder, null, true);
     }));
 
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange) => {
+        if (configChange.affectsConfiguration("ansible.fileCopyConfig")) {
+            let config = vscode.workspace.getConfiguration('ansible').get('fileCopyConfig');
+            fileSyncer.onConfigurationChange(config);
+        }
+    }));
+
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
         TerminalExecutor.onDidCloseTerminal(closedTerminal);
     }));
 
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(listener => {
+        fileSyncer.copyFiles(null, listener.fileName);
+    }));
 
     // start language client
     var serverModule = path.join(context.extensionPath, 'out', 'server', 'server.js');

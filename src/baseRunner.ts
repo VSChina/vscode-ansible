@@ -49,8 +49,6 @@ export abstract class BaseRunner {
                 })
         } else {
             if (this.validatePlaybook(playbook)) {
-                this._outputChannel.appendLine('Validated playbook ' + playbook);
-                this._outputChannel.show();
                 return this.runPlaybookInternal(playbook);
             }
         }
@@ -68,7 +66,7 @@ export abstract class BaseRunner {
 
     protected getRunPlaybookCmd(playbook: string): string {
         let cmd = ['ansible-playbook'];
-        let customOption = utilities.getCodeConfiguration<string>('ansible', 'runPlaybookOptions');
+        let customOption = utilities.getCodeConfiguration<string>('ansible', 'customOptions');
 
         if (customOption)  {
             cmd.push(customOption);
