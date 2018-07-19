@@ -14,6 +14,7 @@ import { TelemetryClient } from './telemetryClient';
 import { IStorageAccount, getStorageAccountforCloudShell } from './cloudConsoleLauncher';
 import { Terminal } from 'vscode';
 import { uploadFilesToAzureStorage, getCloudShellPlaybookPath } from './azureStorageHelper';
+import * as semver  from 'semver';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
@@ -47,7 +48,7 @@ export class CloudShellRunner extends BaseRunner {
         let azureAccount: AzureAccount;
         for (var i = 0; i < installedExtension.length; i++) {
             const ext = installedExtension[i];
-            if (ext.id === Constants.AzureAccountExtensionId) {
+            if (ext.id === Constants.AzureAccountExtensionId && this.isAzureAccountVersionValid(ext)) {
                 azureAccount = ext.activate().then((azureAccount) => {
                     if (azureAccount) {
                         this.connectToCloudShell(playbook).then((response) => {
@@ -183,5 +184,17 @@ export class CloudShellRunner extends BaseRunner {
 
     protected onDidCloseTerminal(terminal) {
 
+    }
+
+    protected isAzureAccountVersionValid(extension: any): boolean {
+        if (!extension || !extension.packageJSON) {
+            return false;
+        }
+
+        let version = extension.packageJSON.version;
+        if (version && semver.valid(version) && semver.gte(version, '0.3.2')) {
+            return true;
+        }
+        return false;
     }
 }
