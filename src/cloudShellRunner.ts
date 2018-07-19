@@ -187,7 +187,7 @@ export class CloudShellRunner extends BaseRunner {
     }
 
     protected isAzureAccountVersionValid(extension: any): boolean {
-        if (!extension) {
+        if (!extension || !extension.packageJSON) {
             return false;
         }
 
