@@ -63,6 +63,7 @@ export class CloudShellRunner extends BaseRunner {
                                 return;
                             }
 
+                            terminal.show();
                             terminal.sendText(this.getRunPlaybookCmd(remotePlaybookPath));
 
                         });
