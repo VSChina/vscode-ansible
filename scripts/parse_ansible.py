@@ -28,14 +28,15 @@ display = Display()
 doc_cli = DocCLI([])
 
 def get_module_list():
+    module_list = set()
     module_paths = module_loader._get_paths()
     for path in module_paths:
         if use_old_loader:
-            doc_cli.find_modules(path)
+            doc_cli.find_plugins(path, "module"))
+            module_list = doc_cli.plugin_list
         else:
-            doc_cli.find_plugins(path, 'module')
-    module_list = doc_cli.module_list if use_old_loader else doc_cli.plugin_list
-    return sorted(set(module_list))
+            module_list.update(doc_cli.find_plugins(path, 'module'))
+            return sorted(set(module_list))
 
 
 def main():
