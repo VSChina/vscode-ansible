@@ -90,7 +90,7 @@ export class SSHRunner extends TerminalBaseRunner {
             }
         } else {
             // if no config in settings.json, ask for promote whether to copy workspace, thend do copy, then run it.
-            const okItem: vscode.MessageItem = { title: "ok" };
+            const okItem: vscode.MessageItem = { title: "always" };
             const cancelItem: vscode.MessageItem = { title: "no, not show this again" };
             let response = await vscode.window.showWarningMessage('Copy workspace to remote host?', okItem, cancelItem);
             let existingConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', 'fileCopyConfig');
