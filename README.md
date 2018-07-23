@@ -28,13 +28,14 @@
 
   - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc, Auto completion for variables. Disable auto completion by setting `ansible.autocompletion` to `false`.
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
-  - Syntax highlighting. Enable syntax highlighting by setting `files.associations` in `settings.json`.
+  - Syntax highlighting. Enable syntax highlighting by setting `files.associations` to `ansible` in `settings.json`.
   - Code navigation by Symbols, press `Ctrl + Shift + O`.
   - Hover over module names, to show module documentation. Disable hovering over by setting `ansible.hover` to `false`.
   - Run playbook from Docker.
   - Run playbook from local Ansible installation.
   - Run playbook from [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
   - Run playbook remotely via ssh.
+  - Auto File Copy to remote host on saving.
 
 
 ## Prerequisites

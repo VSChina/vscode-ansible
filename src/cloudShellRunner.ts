@@ -14,7 +14,7 @@ import { TelemetryClient } from './telemetryClient';
 import { IStorageAccount, getStorageAccountforCloudShell } from './cloudConsoleLauncher';
 import { Terminal } from 'vscode';
 import { uploadFilesToAzureStorage, getCloudShellPlaybookPath } from './azureStorageHelper';
-import * as semver  from 'semver';
+import * as semver from 'semver';
 
 const tempFile = path.join(ost.tmpdir(), 'cloudshell' + vscode.env.sessionId + '.log');
 
@@ -63,6 +63,7 @@ export class CloudShellRunner extends BaseRunner {
                                 return;
                             }
 
+                            terminal.show();
                             terminal.sendText(this.getRunPlaybookCmd(remotePlaybookPath));
 
                         });
