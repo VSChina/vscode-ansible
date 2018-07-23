@@ -100,6 +100,26 @@
           "command": "vscode-ansible.ssh",
           "when": "resourceLangId == yaml",
           "group": "vscode-ansible@4"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-docker",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@1"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-localansible",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@2"
+        },
+        {
+          "command": "vscode-ansible.cloudshell",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@3"
+        },
+        {
+          "command": "vscode-ansible.ssh",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@4"
         }
       ],
       "editor/title/context": [
@@ -121,6 +141,26 @@
         {
           "command": "vscode-ansible.ssh",
           "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@4"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-docker",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@1"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-localansible",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@2"
+        },
+        {
+          "command": "vscode-ansible.cloudshell",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@3"
+        },
+        {
+          "command": "vscode-ansible.ssh",
+          "when": "resourceLangId == ansible",
           "group": "vscode-ansible@4"
         }
       ]

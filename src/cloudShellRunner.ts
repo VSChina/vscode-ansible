@@ -135,6 +135,7 @@ export class CloudShellRunner extends BaseRunner {
 
                 this._outputChannel.appendLine('Connecting to Cloud Shell failed with error: \n' + err);
                 this._outputChannel.show();
+                return;
             }
         }
 

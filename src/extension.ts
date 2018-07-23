@@ -20,7 +20,8 @@ import { FileSyncer } from './fileSyncer';
 
 const documentSelector = [
     { language: 'yaml', scheme: 'file' },
-    { language: 'yaml', scheme: 'untitled' }
+    { language: 'yaml', scheme: 'untitled' },
+    { language: 'ansible', scheme: 'file' }
 ];
 
 export function activate(context: vscode.ExtensionContext) {
