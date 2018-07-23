@@ -228,8 +228,6 @@ export class SSHRunner extends TerminalBaseRunner {
         }
         return null;
     }
-
-
 }
 
 

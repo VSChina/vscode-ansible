@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to the "vscode-ansible" extension will be documented in this file.
 
+## 0.3.0
+#### New features
+- Copy saved files automatically to remote host per configuration. [PR 138](https://github.com/VSChina/vscode-ansible/pull/138), [Issue 100](https://github.com/VSChina/vscode-ansible/issues/100), [Issue 120](https://github.com/VSChina/vscode-ansible/issues/120)
+- Reuse SSH per configuration. [PR 130](https://github.com/VSChina/vscode-ansible/pull/130)
+- Language Syntax per file association. [Issue 93](https://github.com/VSChina/vscode-ansible/issues/93)
+- Custom ansible-playbook options.  [Issue 107](https://github.com/VSChina/vscode-ansible/issues/107)
+
+#### Bug fixing/Improvement
+- Fix ssh passphrase not working. [Issue 126](https://github.com/VSChina/vscode-ansible/issues/126)
+- Update docker image tag to reflect ansible version. [Issue 113](https://github.com/VSChina/vscode-ansible/issues/93)
+- Update cloud shell runner to use cloudshell API for provisioning and file uploading. [PR 124](https://github.com/VSChina/vscode-ansible/pull/124)
+- Update code snippets/auto completion to latest Ansible 2.6.1 version. [PR 141](https://github.com/VSChina/vscode-ansible/pull/141)
+
 ## 0.1.5
 Make below improvement:
 - Cloud Shell terminal reusable. Issue #42.
