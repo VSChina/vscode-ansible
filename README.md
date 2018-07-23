@@ -123,6 +123,7 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
         }
     ]
 ```
+There's notification message at right side of status bar.
 
 ## Configuration  
 This extension provides below configurations in settings.json.
