@@ -107,10 +107,11 @@ export class CloudShellRunner extends BaseRunner {
                 this.terminal.show();
 
                 let count: number = 60;
-                while (count-- > 0) {
+                while (count > 0) {
                     if (this.cloudShellSession.status === "Connected") {
                         break;
                     }
+                    count--;
                     await utilities.delay(500);
                 }
 
