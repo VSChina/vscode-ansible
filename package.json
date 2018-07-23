@@ -31,7 +31,6 @@
     "onCommand:vscode-ansible.playbook-in-docker",
     "onCommand:vscode-ansible.playbook-in-localansible",
     "onCommand:vscode-ansible.ssh",
-    "onCommand:vscode-ansible.deployment-templates",
     "onCommand:vscode-ansible.sync-folder-ssh"
   ],
   "main": "./out/extension",
@@ -69,11 +68,6 @@
         "category": "Ansible"
       },
       {
-        "command": "vscode-ansible.deployment-templates",
-        "title": "Use Azure Deployment Template",
-        "category": "Ansible"
-      },
-      {
         "command": "vscode-ansible.sync-folder-ssh",
         "title": "Copy folder to Remote Host",
         "category": "Ansible"
@@ -100,6 +94,26 @@
           "command": "vscode-ansible.ssh",
           "when": "resourceLangId == yaml",
           "group": "vscode-ansible@4"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-docker",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@1"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-localansible",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@2"
+        },
+        {
+          "command": "vscode-ansible.cloudshell",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@3"
+        },
+        {
+          "command": "vscode-ansible.ssh",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@4"
         }
       ],
       "editor/title/context": [
@@ -121,6 +135,26 @@
         {
           "command": "vscode-ansible.ssh",
           "when": "resourceLangId == yaml",
+          "group": "vscode-ansible@4"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-docker",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@1"
+        },
+        {
+          "command": "vscode-ansible.playbook-in-localansible",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@2"
+        },
+        {
+          "command": "vscode-ansible.cloudshell",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@3"
+        },
+        {
+          "command": "vscode-ansible.ssh",
+          "when": "resourceLangId == ansible",
           "group": "vscode-ansible@4"
         }
       ]

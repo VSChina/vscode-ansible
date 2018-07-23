@@ -136,7 +136,7 @@ export function parseCredentialsFile(outputChannel): string[] {
     var configValue = getCredentialsFile();
 
     if (outputChannel != null) {
-        outputChannel.appendLine('Credential file: ' + configValue);
+        outputChannel.appendLine('\nCredential file: ' + configValue);
         outputChannel.show();
     }
     var credentials = [];
