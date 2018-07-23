@@ -76,7 +76,6 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
 ![docker share driver](./images/dockerconfig.png)
 1. This step is optional. If you want to run cloud provider specific Ansible modules, you need set cloud credentials in credential yaml file, default path is `$HOME/.vscode/ansible-credentials.yml`, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).    
 1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Docker`. Or right click playbook yaml file, choose `Run Ansible Playbook in Docker`.
-1. Input playbook file full path, or use default one.
 
            
     ***NOTE***  
@@ -95,8 +94,8 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
 1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login.
 1. Press `F1`, type: `Azure: Sign In`, do Azure login.
 1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Cloud Shell`. Or right click playbook yaml file, choose `Run Ansible Playbook in Cloud Shell`.
-1. Input playbook file full path, or use default one.
 1. Confirm awareness on Azure usage fee. Please refer to [this document](https://docs.microsoft.com/en-us/azure/cloud-shell/pricing) to learn more about Azure Cloud Shell pricing.
+1. **Known issue** due to [adal issue](https://github.com/AzureAD/azure-activedirectory-library-for-nodejs/issues/197), introduced in [azure account](https://github.com/Microsoft/vscode-azure-account/issues/53) extension, user might see `Entry not found` error when connect to cloud shell. Please retry open cloud shell.
     
 #### Run Playbook Remotely via ssh
 1. Configure your remote server in `$HOME/.ssh/servers.json` like below. Or follow wizard to fill in server information.
