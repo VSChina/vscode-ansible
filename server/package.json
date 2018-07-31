@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "fs-extra": "^5.0.0",
-        "request-light": "^0.2.2",
+        "request-light": "^0.2.3",
         "typescript": "^2.7.1",
         "vscode-json-languageservice": "^3.0.12",
         "vscode-languageserver": "^3.5.0",
