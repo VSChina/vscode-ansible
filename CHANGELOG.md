@@ -3,7 +3,7 @@ All notable changes to the "vscode-ansible" extension will be documented in this
 
 ## 0.3.1
 #### Bug fixing
-- Fix bug in ssh flow when no workspace.
+- Fixed bug in ssh flow when no workspace.
 
 ## 0.3.0
 #### New features
