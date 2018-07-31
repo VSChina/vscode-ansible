@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the "vscode-ansible" extension will be documented in this file.
 
+## 0.3.1
+#### Bug fixing
+- Fix bug in ssh flow when no workspace.
+
 ## 0.3.0
 #### New features
 - Copy saved files automatically to remote host per configuration. [PR 138](https://github.com/VSChina/vscode-ansible/pull/138), [Issue 100](https://github.com/VSChina/vscode-ansible/issues/100), [Issue 120](https://github.com/VSChina/vscode-ansible/issues/120)
