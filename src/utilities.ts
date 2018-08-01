@@ -328,8 +328,9 @@ export function stop(interval: NodeJS.Timer): void {
 }
 
 export function getWorkspaceRoot(playbook: string): string {
-    if (vscode.workspace.getWorkspaceFolder) {
-        return vscode.workspace.workspaceFolders[0].uri.fsPath;
+    let rootWorkspace = vscode.workspace.workspaceFolders;
+    if (rootWorkspace && rootWorkspace.length > 0) {
+        return rootWorkspace[0].uri.fsPath;
     } else {
         return path.dirname(playbook);
     }
