@@ -5,8 +5,6 @@ import * as utilities from './utilities';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { SSHServer, FileCopyConfigs, FileCopyConfig } from './interfaces';
-import * as sshHelper from './sshRunner';
-import * as async from 'async';
 import { StatusBarAlignment } from 'vscode';
 
 const browseThePC = 'Browse the PC..';
