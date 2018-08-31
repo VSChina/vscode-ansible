@@ -63,8 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.sync-folder-ssh', () => {
         let srcFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
-        let targetFolder = path.join('\./', path.basename(srcFolder)) + '/';
-        folderSyncer.syncFolder(srcFolder, targetFolder, null, true);
+        folderSyncer.syncFolder(srcFolder, null, true);
     }));
 
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange) => {
