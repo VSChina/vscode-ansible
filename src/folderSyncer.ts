@@ -104,9 +104,16 @@ export class FolderSyncer {
         let existingConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', 'fileCopyConfig');
 
         let configuredTargetPath = "";
-        for (let config of existingConfig) {
-            if (config.server.toLowerCase() == targetHostName.toLowerCase() && path.relative(config.sourcePath, srcFolder) == "") {
-                configuredTargetPath = config.targetPath;
+        if (existingConfig) {
+            for (let config of existingConfig) {
+                if (!config.server || !config.sourcePath || !config.targetPath) {
+                    break;
+                }
+
+                if (config.server.toLowerCase() == targetHostName.toLowerCase() && path.relative(config.sourcePath, srcFolder) == "") {
+                    configuredTargetPath = config.targetPath;
+                    break;
+                }
             }
         }
 
