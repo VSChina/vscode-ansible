@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as utilities from './utilities';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { SSHServer } from './interfaces';
+import { SSHServer, FileCopyConfigs } from './interfaces';
 import * as sshHelper from './sshRunner';
 
 const browseThePC = 'Browse the PC..';
@@ -22,7 +22,7 @@ export class FolderSyncer {
         this._outputChannel = outputChannel;
     }
 
-    public async syncFolder(defaultPath: string, targetPath: string, sshServer: SSHServer, allowFolderBrowse: boolean): Promise<void> {
+    public async syncFolder(defaultPath: string, sshServer: SSHServer, allowFolderBrowse: boolean): Promise<void> {
 
         let sourceFolder = defaultPath;
 
@@ -70,13 +70,19 @@ export class FolderSyncer {
             }
         }
 
+        let targetPath = await this.getTargetFolder(sourceFolder, targetServer.host);
+
+        if (!targetPath) {
+            return;
+        }
+
         // copy
         this._outputChannel.append('Copying folder ' + sourceFolder + ' to ' + targetServer.host);
         this._outputChannel.show();
 
         const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 800);
 
-        return utilities.copyFilesRemote(sourceFolder, this.getTargetFolder(sourceFolder), targetServer)
+        return utilities.copyFilesRemote(sourceFolder, targetPath, targetServer)
             .then(() => {
                 progress.cancel();
 
@@ -94,7 +100,22 @@ export class FolderSyncer {
     }
 
 
-    private getTargetFolder(srcFolder: string): string {
-        return '\./' + path.basename(srcFolder);
+    private async getTargetFolder(srcFolder: string, targetHostName: string): Promise<string> {
+        let existingConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', 'fileCopyConfig');
+
+        let configuredTargetPath = "";
+        for (let config of existingConfig) {
+            if (config.server.toLowerCase() == targetHostName.toLowerCase() && path.relative(config.sourcePath, srcFolder) == "") {
+                configuredTargetPath = config.targetPath;
+            }
+        }
+
+        let targetPath = await vscode.window.showInputBox({
+            value: configuredTargetPath,
+            prompt: 'target path on remote host',
+            placeHolder: configuredTargetPath,
+            password: false
+        });
+        return targetPath;
     }
 }
