@@ -112,7 +112,7 @@ export class FolderSyncer {
 
                 if (config.server.toLowerCase() == targetHostName.toLowerCase() && path.relative(config.sourcePath, srcFolder) == "") {
                     configuredTargetPath = config.targetPath;
-                    break;
+                    continue;
                 }
             }
         }
