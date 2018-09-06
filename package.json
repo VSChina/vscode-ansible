@@ -202,7 +202,7 @@
         "ansible.reuseSSHTerminal": {
           "type": "boolean",
           "default": true,
-          "description": "Enable/Disable resuing SSH terminal session"
+          "description": "Enable/Disable reusing SSH terminal session"
         },
         "ansible.customOptions": {
           "type": "string",
