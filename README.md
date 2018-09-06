@@ -135,7 +135,7 @@ This extension provides below configurations in settings.json.
 |`ansible.autocompletion` | `true` | Enable/Disable ansible autocompletion(including code snippets) functionality. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
 |`ansible.credentialsFile` |`$HOME/.vscode/ansible-credentials.yml` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. |
 |`ansible.termininalInitCommand`|Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.| Specify customized terminal init command when run playbook in Docker/Local Ansible. |
-|`ansible.reuseSSHTerminal`|`true`| Enable/Disable SSH terminal resuing. |
+|`ansible.reuseSSHTerminal`|`true`| Enable/Disable SSH terminal reusing. |
 |`ansible.customOptions`| null | Customize run playbook options. eg. `-i xxxx -vvv`.|
 
 
