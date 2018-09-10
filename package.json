@@ -194,6 +194,11 @@
           "default": true,
           "description": "Enable/Disable hover over on module name"
         },
+        "ansible.validation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable validation on yaml content"
+        },
         "ansible.autocompletion": {
           "type": "boolean",
           "default": true,

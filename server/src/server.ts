@@ -1,11 +1,12 @@
 'use strict';
 
 import { IConnection, createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType, TextDocument } from 'vscode-languageserver';
-import { } from './yamlLanguageService';
-import { LanguageService, LanguageSettings } from 'vscode-yaml-languageservice/lib/yamlLanguageService';
-import { parse as parseYAML } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
+import { LanguageService, LanguageSettings } from 'yaml-language-server/out/server/src/languageservice/yamlLanguageService';
+import { parse as parseYAML } from 'yaml-language-server/out/server/src/languageservice/parser/yamlParser';
+import { removeDuplicatesObj } from 'yaml-language-server/out/server/src/languageservice/utils/arrUtils';
+import { URI } from 'yaml-language-server/out/server/src/languageservice/utils/uri';
+import { CustomSchemaContentRequest } from 'yaml-language-server/out/server/src/server';
 import { getLanguageService, ClientSettings } from './yamlLanguageService';
-//import { Settings } from './interfaces';
 
 import { xhr, XHRResponse, configure as configureHttpRequests, getErrorStatusDescription } from 'request-light';
 import * as fs from 'fs-extra';
@@ -28,6 +29,7 @@ let documents: TextDocuments = new TextDocuments();
 documents.listen(connection);
 
 let enableHover = true;
+let enableValidation = true;
 connection.onInitialize((params: InitializeParams): InitializeResult => {
     let capabilities = params.capabilities;
     let workspaceFolders = params['workspaceFolders'];
@@ -96,7 +98,13 @@ let schemaRequestService = (uri: string): Thenable<string> => {
         }, error => {
             return error.message;
         });
-    }
+    } else {
+		let scheme = URI.parse(uri).scheme.toLowerCase();
+		if (scheme !== 'http' && scheme !== 'https') {
+			// custom scheme
+			return <Thenable<string>>connection.sendRequest(CustomSchemaContentRequest.type, uri);
+		}
+	}
     if (uri.indexOf('//schema.management.azure.com/') !== -1) {
         connection.telemetry.logEvent({
             key: 'json.schema',
@@ -147,7 +155,51 @@ function updateConfiguration() {
 
     let settings: LanguageSettings = {
         schemas: [],
+        validate: enableValidation
     }
     languageService.configure(settings, clientSetting);
+    documents.all().forEach(triggerValidation);
+}
 
+let pendingValidationRequests: { [uri: string]: NodeJS.Timer; } = {};
+const validationDelayMs = 200;
+
+function cleanPendingValidation(textDocument: TextDocument): void {
+    let request = pendingValidationRequests[textDocument.uri];
+    if (request) {
+        clearTimeout(request);
+        delete pendingValidationRequests[textDocument.uri];
+    }
+}
+
+function triggerValidation(textDocument: TextDocument): void {
+    cleanPendingValidation(textDocument);
+    pendingValidationRequests[textDocument.uri] = setTimeout(() => {
+        delete pendingValidationRequests[textDocument.uri];
+        validateTextDocument(textDocument);
+    }, validationDelayMs);
+}
+
+function validateTextDocument(textDocument: TextDocument): void {
+
+    if (!textDocument) {
+        return;
+    }
+
+    if (textDocument.getText().length === 0) {
+        connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: [] });
+        return;
+    }
+
+    let yamlDocument = parseYAML(textDocument.getText(), []);
+    languageService.doValidation(textDocument, yamlDocument).then(function (diagnosticResults) {
+
+        let diagnostics = [];
+        for (let diagnosticItem in diagnosticResults) {
+            diagnosticResults[diagnosticItem].severity = 1; //Convert all warnings to errors
+            diagnostics.push(diagnosticResults[diagnosticItem]);
+        }
+
+        connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: removeDuplicatesObj(diagnostics) });
+    }, function (error) { });
 }

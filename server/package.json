@@ -24,6 +24,6 @@
         "vscode-json-languageservice": "^3.1.6",
         "vscode-languageserver": "^3.5.1",
         "vscode-languageserver-protocol": "3.5.0",
-        "vscode-yaml-languageservice": "^0.2.0"
+        "yaml-language-server": "0.0.18"
     }
 }
