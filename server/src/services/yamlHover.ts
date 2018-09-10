@@ -2,7 +2,7 @@
 
 import { TextDocument, Position, Hover, Range } from "vscode-languageserver/lib/main";
 import * as Parser from 'vscode-json-languageservice/lib/umd/parser/jsonParser';
-import { SingleYAMLDocument } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
+import { SingleYAMLDocument } from 'yaml-language-server/out/server/src/languageservice/parser/yamlParser';
 import { PromiseConstructor } from 'vscode-json-languageservice';
 import * as path from 'path';
 import * as fsextra from 'fs-extra';

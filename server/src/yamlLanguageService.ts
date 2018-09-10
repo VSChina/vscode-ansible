@@ -1,15 +1,10 @@
 'use strict'
 
 import { YamlDocumentSymbols } from './services/yamlDocumentSymbol';
-
-import { LanguageServiceParams, YAMLDocument, SchemaRequestService, SchemaConfiguration, LanguageSettings } from 'vscode-yaml-languageservice/lib/yamlLanguageService';
-import { parse } from 'vscode-yaml-languageservice/lib/parser/yamlParser';
-import { format } from 'vscode-yaml-languageservice/lib/services/yamlFormatter';
-
-import { JSONSchemaService } from 'vscode-json-languageservice/lib/umd/services/jsonSchemaService';
+import { SchemaRequestService, YAMLDocument, LanguageSettings } from 'yaml-language-server/out/server/src/languageservice/yamlLanguageService';
+import { YAMLValidation } from 'yaml-language-server/out/server/src/languageservice/services/yamlValidation';
+import { JSONSchemaService } from 'yaml-language-server/out/server/src/languageservice/services/jsonSchemaService';
 import { schemaContributions } from 'vscode-json-languageservice/lib/umd/services/configuration';
-import { JSONValidation } from 'vscode-json-languageservice/lib/umd/services/jsonValidation';
-import { JSONSchema } from 'vscode-json-languageservice/lib/umd/jsonSchema';
 
 import { TextDocument, Diagnostic, CompletionItem, SymbolInformation, Position, CompletionList, Hover, TextEdit, FormattingOptions } from 'vscode-languageserver';
 import { YAMLHover } from './services/yamlHover';
@@ -22,15 +17,7 @@ export function getLanguageService(schemaRequestService: SchemaRequestService, w
 
     let hover = new YAMLHover(promise);
     let documentSymbol = new YamlDocumentSymbols();
-    let jsonValidation = new JSONValidation(jsonSchemaService, promise);
-
-    function doValidation(textDocument: TextDocument, yamlDocument: YAMLDocument) {
-        var validate: (JSONDocument) => Thenable<Diagnostic[]> =
-            jsonValidation.doValidation.bind(jsonValidation, textDocument)
-        const validationResults = yamlDocument.documents.map(d => validate(d))
-        const resultsPromise = promise.all(validationResults);
-        return resultsPromise.then(res => (<Diagnostic[]>[]).concat(...res))
-    }
+    let yamlvalidation = new YAMLValidation(jsonSchemaService, promise);
 
     return {
         configure: (settings: LanguageSettings, clientSettings: ClientSettings) => {
@@ -41,8 +28,10 @@ export function getLanguageService(schemaRequestService: SchemaRequestService, w
                 });
             }
             hover.configure(clientSettings.hover);
+            settings.validate = true;
+            yamlvalidation.configure(settings);
         },
-        doValidation: doValidation,
+        doValidation: yamlvalidation.doValidation.bind(yamlvalidation),
         doResolve: void 0,
         doComplete: void 0,
         findDocumentSymbols: documentSymbol.findDocumentSymbols.bind(documentSymbol),
