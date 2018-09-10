@@ -71,21 +71,21 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
   
 #### Run Playbook in Docker
 1. Make sure Docker is installed and running. For non-Windows platform, please configure Docker run without sudo.
-1. Default docker image is [microsoft/ansible:latest](https://hub.docker.com/r/microsoft/ansible/tags/), which is latest Ansible version. Customizing your own docker image/command by configuration `ansible.termininalInitCommand`, eg. `docker run -i -t microsoft/ansible:ansible2.5.5 /bin/bash`.
+1. Default docker image is [microsoft/ansible:latest](https://hub.docker.com/r/microsoft/ansible/tags/), which is latest Ansible version. Customizing your own docker image by configuration item `ansible.dockerImage`, customizing docker init command by configuration `ansible.termininalInitCommand`, eg. `docker run -i -t microsoft/ansible:ansible2.5.5 /bin/bash`. Detail please see [configuration](#configuration).
 1. For Windows user, please share your Windows driver where vscode workspace sits on with docker. This is because the extension will map your workspace containing playbook with docker.   
 ![docker share driver](./images/dockerconfig.png)
 1. This step is optional. If you want to run cloud provider specific Ansible modules, you need set cloud credentials in credential yaml file, default path is `$HOME/.vscode/ansible-credentials.yml`, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).    
 1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Docker`. Or right click playbook yaml file, choose `Run Ansible Playbook in Docker`.
 
-           
+
     ***NOTE***  
     - Docker on Windows is not as stable as on other platforms, please try to restart Docker in case of any issue.
     - Downloading Docker image first time usage may be time consuming in case of slow network connection.
 
 #### Run Playbook in Local Ansible
 1. Make sure Ansible is installed.
-1. This step is optional. If you want to run cloud provider specific Ansible modules, please setup cloud credentials by following [Ansible instruction](http://docs.ansible.com/ansible/latest/guides.html). Or you can set cloud credentials in credential yaml file, default path is `$HOME/.vscode/ansible-credentials.yml`, or change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).  
-1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Local Ansible`. Or right click playbook yaml file, choose `Run Ansible Playbook in Local Ansible`.
+1. This step is optional. If you want to run cloud provider specific Ansible modules, please setup cloud credentials by following [Ansible instruction](http://docs.ansible.com/ansible/latest/guides.html). Or you can set cloud credentials in credential file, default path is `$HOME/.vscode/ansible-credentials.yml`, change credential file path by settings item  `ansible.credentialsFile`. Credential file template is at [here](https://github.com/VSChina/vscode-ansible/blob/master/config/credentials.yml).  
+1. Press `F1`, type: `Ansible`, choose `Run Ansible Playbook in Local Ansible`. Or right click playbook yaml file, choose `Run Ansible Playbook in Local Ansible`.
 
 
 
@@ -93,7 +93,7 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
 1. **Important** Please setup Cloud Shell for first time usage in Azure Portal by following [this instruction](https://docs.microsoft.com/en-us/azure/cloud-shell/overview). After setup, input cmd `az account show` to learn your current subscription setting.
 1. Install [Azure Account](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account) VSCode extension, which is used for Azure login.
 1. Press `F1`, type: `Azure: Sign In`, do Azure login.
-1. Press `F1`, type: `ansible`, choose `Run Ansible Playbook in Cloud Shell`. Or right click playbook yaml file, choose `Run Ansible Playbook in Cloud Shell`.
+1. Press `F1`, type: `Ansible`, choose `Run Ansible Playbook in Cloud Shell`. Or right click playbook yaml file, choose `Run Ansible Playbook in Cloud Shell`.
 1. Confirm awareness on Azure usage fee. Please refer to [this document](https://docs.microsoft.com/en-us/azure/cloud-shell/pricing) to learn more about Azure Cloud Shell pricing.
 1. **Known issue** due to [adal issue](https://github.com/AzureAD/azure-activedirectory-library-for-nodejs/issues/197), introduced in [azure account](https://github.com/Microsoft/vscode-azure-account/issues/53) extension, user might see `Entry not found` error when connect to cloud shell. Please retry open cloud shell.
     
@@ -106,7 +106,8 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
             "port": 22,
             "user": "your user name",
             "password": "your ssh password",
-            "key": "your private key"
+            "key": "your private key",
+            "passphrase": "your passphrase"
         }
    ]
    ```
@@ -135,8 +136,10 @@ This extension provides below configurations in settings.json.
 |`ansible.autocompletion` | `true` | Enable/Disable ansible autocompletion(including code snippets) functionality. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
 |`ansible.credentialsFile` |`$HOME/.vscode/ansible-credentials.yml` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. |
 |`ansible.termininalInitCommand`|Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.| Specify customized terminal init command when run playbook in Docker/Local Ansible. |
+|`ansible.dockerImage`|`microsoft/ansible:latest`|Docker image name when running playbook in Docker.|
 |`ansible.reuseSSHTerminal`|`true`| Enable/Disable SSH terminal reusing. |
 |`ansible.customOptions`| null | Customize run playbook options. eg. `-i xxxx -vvv`.|
+|`ansible.fileCopyConfig`| null | File copying configuration when running playbook remotely via SSH. It's array of configuration. Please see detail at [above](files-copy-to-remote-on-saving)|
 
 
 ## Feedback and Questions

@@ -49,7 +49,7 @@ export class DockerRunner extends TerminalBaseRunner {
                 cmd += ' -e ' + Constants.UserAgentName + '=' + utilities.getUserAgent() + ' ';
             }
 
-            cmd += ' ' + Constants.DockerImageName + ' bash';
+            cmd += ' ' + this.getDockerImageName() + ' bash';
             cmdsToTerminal.push(cmd);
             cmdsToTerminal.push(this.getRunPlaybookCmd(targetPlaybook));
         } else {
@@ -126,5 +126,13 @@ export class DockerRunner extends TerminalBaseRunner {
                 })
             }
         });
+    }
+
+    private getDockerImageName(): string {
+        let customDocker = utilities.getCodeConfiguration<string>('ansible', Constants.Config_dockerImage);
+        if (customDocker === null || customDocker === undefined) {
+            customDocker = Constants.DockerImageName;
+        }
+        return customDocker;
     }
 }
