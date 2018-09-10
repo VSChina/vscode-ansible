@@ -130,7 +130,7 @@ export class DockerRunner extends TerminalBaseRunner {
 
     private getDockerImageName(): string {
         let customDocker = utilities.getCodeConfiguration<string>('ansible', Constants.Config_dockerImage);
-        if (customDocker === null || customDocker === undefined) {
+        if (!customDocker) {
             customDocker = Constants.DockerImageName;
         }
         return customDocker;
