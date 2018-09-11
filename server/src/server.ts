@@ -166,12 +166,12 @@ function updateConfiguration() {
 }
 
 documents.onDidChangeContent((textDocumentChangeEvent) => {
-	triggerValidation(textDocumentChangeEvent.document);
+    triggerValidation(textDocumentChangeEvent.document);
 });
 
 documents.onDidClose(textDocumentChangeEvent => {
-	cleanPendingValidation(textDocumentChangeEvent.document);
-	connection.sendDiagnostics({ uri: textDocumentChangeEvent.document.uri, diagnostics: [] });
+    cleanPendingValidation(textDocumentChangeEvent.document);
+    connection.sendDiagnostics({ uri: textDocumentChangeEvent.document.uri, diagnostics: [] });
 });
 
 let pendingValidationRequests: { [uri: string]: NodeJS.Timer; } = {};
