@@ -13,8 +13,8 @@
     },
     "scripts": {
         "installserver": "installServerIntoExtension ../out ./package.json ./tsconfig.json",
-        "compile": "installServerIntoExtension ../out ./package.json ./tsconfig.json && tsc -p ./",
-        "watch": "installServerIntoExtension ../out ./package.json ./tsconfig.json && tsc -w -p ./",
+        "compile": "tsc -p ./ && installServerIntoExtension ../out ./package.json ./tsconfig.json",
+        "watch": "tsc -w -p ./ && installServerIntoExtension ../out ./package.json ./tsconfig.json",
         "pkgvars": "node ./node_modules/vscode/bin/install"
     },
     "dependencies": {

@@ -12,12 +12,17 @@ import { YAMLHover } from './services/yamlHover';
 export function getLanguageService(schemaRequestService: SchemaRequestService, workspaceContext, clientSettings: ClientSettings, promiseConstructor?): LanguageService {
     let promise = promiseConstructor || Promise;
 
-    let jsonSchemaService = new JSONSchemaService(schemaRequestService, workspaceContext, promise);
+    let jsonSchemaService = new JSONSchemaService(schemaRequestService, workspaceContext, null);
     jsonSchemaService.setSchemaContributions(schemaContributions);
 
     let hover = new YAMLHover(promise);
     let documentSymbol = new YamlDocumentSymbols();
     let yamlvalidation = new YAMLValidation(jsonSchemaService, promise);
+    let languagesettings: LanguageSettings = {
+        schemas: [],
+        validate: clientSettings.validation
+    };
+    yamlvalidation.configure(languagesettings);
 
     return {
         configure: (settings: LanguageSettings, clientSettings: ClientSettings) => {
@@ -28,7 +33,7 @@ export function getLanguageService(schemaRequestService: SchemaRequestService, w
                 });
             }
             hover.configure(clientSettings.hover);
-            settings.validate = true;
+            settings.validate = clientSettings.validation;
             yamlvalidation.configure(settings);
         },
         doValidation: yamlvalidation.doValidation.bind(yamlvalidation),
@@ -40,7 +45,8 @@ export function getLanguageService(schemaRequestService: SchemaRequestService, w
 }
 
 export interface ClientSettings {
-    hover: boolean
+    hover: boolean,
+    validation: boolean
 };
 
 export interface LanguageService {
