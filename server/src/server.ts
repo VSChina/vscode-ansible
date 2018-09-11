@@ -19,7 +19,8 @@ export interface Settings {
         terminalInitCommand: string,
         credentialsConfigured: boolean,
         cloudShellConfirmed: boolean,
-        hover: boolean
+        hover: boolean,
+        validation: boolean
     }
 }
 
@@ -78,6 +79,7 @@ connection.onDidChangeConfiguration((didChangeConfigurationParams) => {
     var clientSettings = <Settings>didChangeConfigurationParams.settings;
 
     enableHover = clientSettings.ansible.hover;
+    enableValidation = clientSettings.ansible.validation;
     updateConfiguration();
 })
 
@@ -99,12 +101,12 @@ let schemaRequestService = (uri: string): Thenable<string> => {
             return error.message;
         });
     } else {
-		let scheme = URI.parse(uri).scheme.toLowerCase();
-		if (scheme !== 'http' && scheme !== 'https') {
-			// custom scheme
-			return <Thenable<string>>connection.sendRequest(CustomSchemaContentRequest.type, uri);
-		}
-	}
+        let scheme = URI.parse(uri).scheme.toLowerCase();
+        if (scheme !== 'http' && scheme !== 'https') {
+            // custom scheme
+            return <Thenable<string>>connection.sendRequest(CustomSchemaContentRequest.type, uri);
+        }
+    }
     if (uri.indexOf('//schema.management.azure.com/') !== -1) {
         connection.telemetry.logEvent({
             key: 'json.schema',
@@ -131,7 +133,8 @@ export let languageService = getLanguageService(
     schemaRequestService,
     workspaceContext,
     {
-        hover: enableHover
+        hover: enableHover,
+        validation: enableValidation
     }
 );
 
@@ -150,7 +153,8 @@ namespace VSCodeContentRequest {
 
 function updateConfiguration() {
     let clientSetting: ClientSettings = {
-        hover: enableHover
+        hover: enableHover,
+        validation: enableValidation
     };
 
     let settings: LanguageSettings = {
@@ -160,6 +164,15 @@ function updateConfiguration() {
     languageService.configure(settings, clientSetting);
     documents.all().forEach(triggerValidation);
 }
+
+documents.onDidChangeContent((textDocumentChangeEvent) => {
+    triggerValidation(textDocumentChangeEvent.document);
+});
+
+documents.onDidClose(textDocumentChangeEvent => {
+    cleanPendingValidation(textDocumentChangeEvent.document);
+    connection.sendDiagnostics({ uri: textDocumentChangeEvent.document.uri, diagnostics: [] });
+});
 
 let pendingValidationRequests: { [uri: string]: NodeJS.Timer; } = {};
 const validationDelayMs = 200;
