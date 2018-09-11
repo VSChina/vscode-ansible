@@ -3,13 +3,12 @@
 import * as storage from 'azure-storage';
 import { FileService } from 'azure-storage';
 import * as path from 'path';
-import { Client } from '_debugger';
 
 const DIRECTORY_NAME = 'ansible-playbooks';
+const startDate = new Date((new Date()).toUTCString());
 
 export function uploadFilesToAzureStorage(localFileName: string, storageAccountName: string, storageAccountKey: string, fileShareName: string): Promise<void> {
-    const fileClient = storage.createFileService(storageAccountName, storageAccountKey);
-    const client = createFileServiceWithSAS(fileClient, getStorageHostUri(storageAccountName), fileShareName);
+    const client = createFileServiceWithSAS(storageAccountName, storageAccountKey, getStorageHostUri(storageAccountName));
     client.logger.level = storage.Logger.LogLevels.DEBUG;
 
     return createFileShare(client, fileShareName)
@@ -62,8 +61,8 @@ export function getCloudShellPlaybookPath(fileShareName: string, playbook: strin
     return './clouddrive/' + DIRECTORY_NAME + '/' + path.basename(playbook);
 }
 
-function createFileServiceWithSAS(fileService: storage.FileService, hostUri: string, shareName: string): storage.FileService {
-    let sas = fileService.generateSharedAccessSignature(shareName, '', null, readWriteSharePolicy);
+function createFileServiceWithSAS(storageAccountName: string, storageAccountKey: string, hostUri: string): storage.FileService {
+    let sas = storage.generateAccountSharedAccessSignature(storageAccountName, storageAccountKey, sharePolicy);
     var fileServiceWithShareSas = storage.createFileServiceWithSas(hostUri, sas);
     return fileServiceWithShareSas;
 }
@@ -71,23 +70,12 @@ function createFileServiceWithSAS(fileService: storage.FileService, hostUri: str
 function getStorageHostUri(accountName: string): string {
     return "https://" + accountName + ".file.core.windows.net";
 }
-const readWriteSharePolicy = {
+const sharePolicy = {
     AccessPolicy: {
-      Permissions: 'rw',
-      Expiry: new Date('9999-10-01')
+        Services: 'f',
+        ResourceTypes: 'sco',
+        Permissions: 'racupwdl',
+        Start: startDate,
+        Expiry: new Date('9999-10-01')
     }
-  };
-  
-  var readCreateSharePolicy = {
-    AccessPolicy: {
-      Permissions: 'rc',
-      Expiry: new Date('9999-10-01')
-    }
-  };
-
-  var filePolicy = {
-    AccessPolicy: {
-      Permissions: 'd',
-      Expiry: new Date('9999-10-10')
-    }
-  };
+};
