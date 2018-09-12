@@ -18,6 +18,7 @@
         "pkgvars": "node ./node_modules/vscode/bin/install"
     },
     "dependencies": {
+        "es6-promisify": "^6.0.0",
         "fs-extra": "^5.0.0",
         "request-light": "^0.2.3",
         "typescript": "^2.9.2",
