@@ -14,6 +14,7 @@ export class Constants {
     public static GitHubRawContentHost = 'raw.githubusercontent.com';
     public static AzureQuickStartTemplates = 'Azure/azure-quickstart-templates';
     public static AzureManagementApiHost = 'management.azure.com';
+    public static NotShowThisAgain = "NotShowThisAgain";
 }
 
 export enum CloudShellErrors {
