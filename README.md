@@ -77,7 +77,7 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
 ```
 
 ### Run Ansible playbook   
-    ![run playbook](./images/menu.png)
+![run playbook](./images/menu.png)
   
 #### Run Playbook in Docker
 1. Make sure Docker is installed and running. For non-Windows platform, please configure Docker run without sudo.
