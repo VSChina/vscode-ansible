@@ -7,7 +7,7 @@ import * as path from 'path';
 const DIRECTORY_NAME = 'ansible-playbooks';
 
 export function uploadFilesToAzureStorage(localFileName: string, storageAccountName: string, storageAccountKey: string, fileShareName: string): Promise<void> {
-    const client = storage.createFileService(storageAccountName, storageAccountKey);
+    const client = createFileServiceWithSAS(storageAccountName, storageAccountKey, getStorageHostUri(storageAccountName));
 
     return createFileShare(client, fileShareName)
         .then(() => {
@@ -58,3 +58,30 @@ function createFile(client: FileService, fileShare: string, dirName: string, src
 export function getCloudShellPlaybookPath(fileShareName: string, playbook: string): string {
     return './clouddrive/' + DIRECTORY_NAME + '/' + path.basename(playbook);
 }
+
+function createFileServiceWithSAS(storageAccountName: string, storageAccountKey: string, hostUri: string): storage.FileService {
+    let sas = storage.generateAccountSharedAccessSignature(storageAccountName, storageAccountKey, getSharedPolicy());
+    var fileServiceWithShareSas = storage.createFileServiceWithSas(hostUri, sas);
+    return fileServiceWithShareSas;
+}
+
+function getStorageHostUri(accountName: string): string {
+    return "https://" + accountName + ".file.core.windows.net";
+}
+
+function getSharedPolicy() {
+    let startDate = new Date((new Date()).toUTCString());
+    let endDate = new Date(startDate);
+    startDate.setMinutes(startDate.getMinutes() - 5);
+    endDate.setHours(endDate.getHours() + 3);
+
+    return {
+        AccessPolicy: {
+            Services: 'f',
+            ResourceTypes: 'sco',
+            Permissions: 'racupwdl',
+            Start: startDate,
+            Expiry: endDate
+        }
+    }
+};
