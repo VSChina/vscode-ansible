@@ -5,11 +5,9 @@ import { FileService } from 'azure-storage';
 import * as path from 'path';
 
 const DIRECTORY_NAME = 'ansible-playbooks';
-const startDate = new Date((new Date()).toUTCString());
 
 export function uploadFilesToAzureStorage(localFileName: string, storageAccountName: string, storageAccountKey: string, fileShareName: string): Promise<void> {
     const client = createFileServiceWithSAS(storageAccountName, storageAccountKey, getStorageHostUri(storageAccountName));
-    client.logger.level = storage.Logger.LogLevels.DEBUG;
 
     return createFileShare(client, fileShareName)
         .then(() => {
@@ -62,7 +60,7 @@ export function getCloudShellPlaybookPath(fileShareName: string, playbook: strin
 }
 
 function createFileServiceWithSAS(storageAccountName: string, storageAccountKey: string, hostUri: string): storage.FileService {
-    let sas = storage.generateAccountSharedAccessSignature(storageAccountName, storageAccountKey, sharePolicy);
+    let sas = storage.generateAccountSharedAccessSignature(storageAccountName, storageAccountKey, getSharedPolicy());
     var fileServiceWithShareSas = storage.createFileServiceWithSas(hostUri, sas);
     return fileServiceWithShareSas;
 }
@@ -70,12 +68,20 @@ function createFileServiceWithSAS(storageAccountName: string, storageAccountKey:
 function getStorageHostUri(accountName: string): string {
     return "https://" + accountName + ".file.core.windows.net";
 }
-const sharePolicy = {
-    AccessPolicy: {
-        Services: 'f',
-        ResourceTypes: 'sco',
-        Permissions: 'racupwdl',
-        Start: startDate,
-        Expiry: new Date('9999-10-01')
+
+function getSharedPolicy() {
+    let startDate = new Date((new Date()).toUTCString());
+    let endDate = new Date(startDate);
+    startDate.setMinutes(startDate.getMinutes() - 5);
+    endDate.setHours(endDate.getHours() + 3);
+
+    return {
+        AccessPolicy: {
+            Services: 'f',
+            ResourceTypes: 'sco',
+            Permissions: 'racupwdl',
+            Start: startDate,
+            Expiry: endDate
+        }
     }
 };
