@@ -6,18 +6,19 @@
 
 ## Table of Content
 - [Features](#features)
+- [Configuration](#configuration)
 - [Prerequisites](#prerequisites)
 - [Usage](#usage) 
    - [Auto completion](#auto-completion)
    - [Code Snippets](#code-snippets)
    - [Syntax highlighting](#syntax-highlighting)
+   - Yaml validation
    - [Run Ansible playbook](#run-ansible-playbook) 
        - [Run Playbook in Docker](#run-playbook-in-docker)
        - [Run Playbook in Local Ansible](#run-playbook-in-local-ansible)
        - [Run Playbook in Cloud Shell](#run-playbook-in-cloud-shell)
        - [Run Playbook Remotely via ssh](#run-playbook-remotely-via-ssh)
        - [Auto File Copy on saving](#files-copy-to-remote-on-saving)
-- [Configuration](#configuration)
 - [Feedback and Questions](#feedback-and-questions)
 - [License](#license)
 - [Telemetry](#telemetry)
@@ -29,6 +30,7 @@
   - Auto completion. Auto completion Ansible directives, modules and plugins from Ansible doc, Auto completion for variables. Disable auto completion by setting `ansible.autocompletion` to `false`.
   - Code snippets.  Press `Ctrl + Space`, Ansible playbook code snippets will show up.
   - Syntax highlighting. Enable syntax highlighting by setting `files.associations` to `ansible` in `settings.json`.
+  - Yaml validation. Yaml validation by leverage [Yaml language server](https://github.com/redhat-developer/yaml-language-server).
   - Code navigation by Symbols, press `Ctrl + Shift + O`.
   - Hover over module names, to show module documentation. Disable hovering over by setting `ansible.hover` to `false`.
   - Run playbook from Docker.
@@ -36,6 +38,21 @@
   - Run playbook from [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/). 
   - Run playbook remotely via ssh.
   - Auto File Copy to remote host on saving.
+
+## Configuration  
+This extension provides below configurations in settings.json.
+
+
+|Cnfig Name| Default Value| Description|
+|--|--|--|
+|`ansible.hover`| `true`| Enable/Disable hover over module name functionality. |
+|`ansible.autocompletion` | `true` | Enable/Disable ansible autocompletion(including code snippets) functionality. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
+|`ansible.credentialsFile` |`$HOME/.vscode/ansible-credentials.yml` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. |
+|`ansible.termininalInitCommand`|Default is `docker run` command for Docker.| Specify customized terminal init command when run playbook in Docker. |
+|`ansible.dockerImage`|`microsoft/ansible:latest`|Docker image name when running playbook in Docker.|
+|`ansible.reuseSSHTerminal`|`true`| Enable/Disable SSH terminal reusing. |
+|`ansible.customOptions`| `null` | Customize run playbook options. eg. `-i xxxx -vvv`.|
+|`ansible.fileCopyConfig`| `null` | File copying configuration when running playbook remotely via SSH. It's array of configuration. Please see detail at [here](#files-copy-to-remote-on-saving)|
 
 
 ## Prerequisites
@@ -47,13 +64,12 @@
 |Run Playbook in Local Ansible| Ansible |
 
 ## Usage
-### Auto completion
 ### Code snippets  
-Press `Ctrl + Space` in playbook yml file, you'll see Ansible modules code snippets. Then press `tab` to move inside snippet parameters. 
+Code snippets will be in auto-completed list with suffix `_snippet`. Press `tab` to move inside snippet parameters. 
 ![auto completion and code snippets](./images/authoring.gif)
 
 ### Syntax highlighting
-Enable syntax highlighting by add `files.associations` configuration in `settings.json`, to associate your paths with `ansible`.
+Enable syntax highlighting by add `files.associations` configuration in `settings.json`, to associate your paths with `ansible` language.
 ```
     "files.associations": {
         "**/*.yml": "ansible"
@@ -61,13 +77,7 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
 ```
 
 ### Run Ansible playbook   
-  4 methods are supported to run Ansible playbook, with custom options configured in `ansible.customOptions`: 
-  - [Docker](#run-playbook-in-docker).
-  - [Local Ansible installation](#run-playbook-in-local-ansible).
-  - [Cloud Shell](#run-playbook-in-cloud-shell).
-  - [Remotely via ssh](#run-playbook-remotely-via-ssh).
-
-    ![run playbook](./images/menu.png)
+![run playbook](./images/menu.png)
   
 #### Run Playbook in Docker
 1. Make sure Docker is installed and running. For non-Windows platform, please configure Docker run without sudo.
@@ -98,7 +108,7 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
 1. **Known issue** due to [adal issue](https://github.com/AzureAD/azure-activedirectory-library-for-nodejs/issues/197), introduced in [azure account](https://github.com/Microsoft/vscode-azure-account/issues/53) extension, user might see `Entry not found` error when connect to cloud shell. Please retry open cloud shell.
     
 #### Run Playbook Remotely via ssh
-1. Configure your remote server in `$HOME/.ssh/servers.json` like below. Or follow wizard to fill in server information.
+1. Press `F1`, choose `Run Ansible Playbook Remotely via ssh`, follow wizard to pick up/add remote host. Or configure your remote server in `$HOME/.ssh/servers.json` like below.
    ```
    [
         {
@@ -113,9 +123,9 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
    ```
 
 #### Files copy to remote on saving
-1. Configure file copying to remote host on saving as below  in `settings.json`. `sourcePath` will be copied to remote `server` as `targetPath` when configuration added/updated. `copyOnSave` will copy local files saved to remote host.
+1. Configure file copying to remote host on saving as below in `settings.json`. `sourcePath` will be copied to remote `server` as `targetPath` when configuration added/updated. `copyOnSave` will copy local files saved to remote host.
 ```
-    "ansible.fileCopyConfig": [
+    "ansible.fileCopyConfig": 
         {
             "server": "remote-host-name",
             "sourcePath": "local file/folder to copy from, eg. e:\\testfolder\\ansibleplaybooks",
@@ -125,21 +135,6 @@ Enable syntax highlighting by add `files.associations` configuration in `setting
     ]
 ```
 There's notification message at right side of status bar.
-
-## Configuration  
-This extension provides below configurations in settings.json.
-
-
-|Cnfig Name| Default Value| Description|
-|--|--|--|
-|`ansible.hover`| `true`| Enable/Disable hover over module name functionality. |
-|`ansible.autocompletion` | `true` | Enable/Disable ansible autocompletion(including code snippets) functionality. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
-|`ansible.credentialsFile` |`$HOME/.vscode/ansible-credentials.yml` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. |
-|`ansible.termininalInitCommand`|Default is `docker run` command for Docker, and `ansible-playbook` for local ansible.| Specify customized terminal init command when run playbook in Docker/Local Ansible. |
-|`ansible.dockerImage`|`microsoft/ansible:latest`|Docker image name when running playbook in Docker.|
-|`ansible.reuseSSHTerminal`|`true`| Enable/Disable SSH terminal reusing. |
-|`ansible.customOptions`| null | Customize run playbook options. eg. `-i xxxx -vvv`.|
-|`ansible.fileCopyConfig`| null | File copying configuration when running playbook remotely via SSH. It's array of configuration. Please see detail at [above](files-copy-to-remote-on-saving)|
 
 
 ## Feedback and Questions

@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to the "vscode-ansible" extension will be documented in this file.
 
+## 0.3.2
+#### New features
+- Customize docker image name. [PR 166](https://github.com/VSChina/vscode-ansible/pull/166), [Issue 163](https://github.com/VSChina/vscode-ansible/issues/163)
+- Yaml Validation, by leveraging [Yaml language server](https://github.com/redhat-developer/yaml-language-server).
+
+#### Bug fixing
+- Storage 403 error when using Cloud Shell. [Issue 133](https://github.com/VSChina/vscode-ansible/issues/133)
+- Comments not work with ansible language. [Issue 154](https://github.com/VSChina/vscode-ansible/issues/154), [Issue 165](https://github.com/VSChina/vscode-ansible/issues/165)
+
+#### Thank you
+@muellerbe for fixing doc typo.
+
 ## 0.3.1
 #### Bug fixing
 - Fixed bug in ssh flow when no workspace.
