@@ -17,7 +17,6 @@ import { FileSyncer } from './fileSyncer';
 
 const addNewHost = 'Add New Host';
 const browseThePC = 'Browse the PC..';
-const notShowThisAgain = "NotShowThisAgain";
 
 export class SSHRunner extends TerminalBaseRunner {
     private folderSyncer: FolderSyncer;
@@ -80,7 +79,7 @@ export class SSHRunner extends TerminalBaseRunner {
         let fileConfig = this.getWorkSpaceFileCopyConfig(playbook, targetServer.host);
 
         if (fileConfig) {
-            if (fileConfig.targetPath != notShowThisAgain) {
+            if (fileConfig.targetPath != Constants.NotShowThisAgain) {
                 targetPlaybook = utilities.posixPath(path.join(fileConfig.targetPath, path.relative(fileConfig.sourcePath, playbook)));
 
                 // if not saved on copy, copy playbook to remote
@@ -125,7 +124,7 @@ export class SSHRunner extends TerminalBaseRunner {
                     return;
                 }
             } else {
-                fileConfig.targetPath = notShowThisAgain;
+                fileConfig.targetPath = Constants.NotShowThisAgain;
                 // if cancel, copy playbook only
                 await utilities.copyFilesRemote(source, target, targetServer);
             }

@@ -6,6 +6,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { SSHServer, FileCopyConfigs, FileCopyConfig } from './interfaces';
 import { StatusBarAlignment } from 'vscode';
+import { Constants } from './constants';
 
 const browseThePC = 'Browse the PC..';
 
@@ -85,6 +86,9 @@ export class FileSyncer {
 
             let source = item.sourcePath;
             let target = item.targetPath;
+            if (target === Constants.NotShowThisAgain) {
+                continue;
+            }
             if (fileName != null) {
                 // check if file under configured source path
                 if (utilities.isSubPath(fileName, item.sourcePath)) {

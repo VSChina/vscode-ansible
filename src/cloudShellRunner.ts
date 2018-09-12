@@ -30,9 +30,7 @@ export class CloudShellRunner extends BaseRunner {
 
         vscode.window.onDidCloseTerminal((terminal) => {
             if (terminal === this.terminal) {
-                this.terminal = null;
-                this.cloudShellFileShare = null;
-                this.cloudShellSession = null;
+                this.cleanUpTerminal();
             }
         })
     }
@@ -88,6 +86,15 @@ export class CloudShellRunner extends BaseRunner {
     protected async connectToCloudShell(playbook: string): Promise<any> {
         const accountApi: AzureAccount = vscode.extensions.getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
 
+        if (!(await accountApi.waitForLogin())) {
+            await vscode.commands.executeCommand('azure-account.askForLogin');
+
+            if (!(await accountApi.waitForLogin())) {
+                TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.AzureNotSignedIn });
+                return;
+            }
+        }
+
         try {
             await this.showPrompt();
         } catch (err) {
@@ -118,7 +125,11 @@ export class CloudShellRunner extends BaseRunner {
                 progress.cancel();
 
                 if (count === 0) {
+                    this.cleanUpTerminal();
+
                     this._outputChannel.appendLine("Failed to connect to cloud shell after 30 seconds,  pls retry later.");
+                    this._outputChannel.show();
+
                     TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.ProvisionFailed });
                     return;
                 }
@@ -129,11 +140,14 @@ export class CloudShellRunner extends BaseRunner {
 
                 if (!this.cloudShellFileShare) {
                     this._outputChannel.appendLine("Failed to get Storage Account for Cloud Shell, please retry later.");
+                    this._outputChannel.show();
+
                     TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.ProvisionFailed });
                     return;
                 }
             } catch (err) {
                 progress.cancel();
+                this.cleanUpTerminal();
 
                 this._outputChannel.appendLine('Connecting to Cloud Shell failed with error: \n' + err);
                 this._outputChannel.show();
@@ -185,8 +199,10 @@ export class CloudShellRunner extends BaseRunner {
         return;
     }
 
-    protected onDidCloseTerminal(terminal) {
-
+    protected cleanUpTerminal() {
+        this.terminal = null;
+        this.cloudShellFileShare = null;
+        this.cloudShellSession = null;
     }
 
     protected isAzureAccountVersionValid(extension: any): boolean {
