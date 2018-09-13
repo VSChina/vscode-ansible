@@ -76,12 +76,8 @@ Code snippets will be in auto-completed list with suffix `_snippet`. Press `tab`
 ![auto completion and code snippets](./images/authoring.gif)
 
 ### Syntax highlighting
-Enable syntax highlighting by add `files.associations` configuration in `settings.json`, to associate your paths with `ansible` language.
-```
-    "files.associations": {
-        "**/*.yml": "ansible"
-    },
-```
+Enable syntax highlighting by add `files.associations` configuration in `settings.json`, to associate your paths with `ansible` language, please see [sample](#usage).
+
 
 ### Run Ansible playbook   
 ![run playbook](./images/menu.png)
