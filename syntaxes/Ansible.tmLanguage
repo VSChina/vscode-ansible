@@ -100,6 +100,37 @@
 			<key>name</key>
 			<string>string.quoted.double.ansible</string>
 		</dict>
+		<dict>
+			<key>begin</key>
+			<string>(- \w+\:)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.ansible</string>
+				</dict>
+			</dict>
+			<key>contentName</key>
+			<string>string.other.ansible</string>
+			<key>end</key>
+			<string>\s*\w*</string>
+			<key>name</key>
+			<string>variable.complex.ansible</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>$self</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>.</string>
+					<key>name</key>
+					<string>constant.other.ansible</string>
+				</dict>
+			</array>
+		</dict>
 	</array>
 	<key>scopeName</key>
 	<string>source.ansible</string>
