@@ -109,6 +109,14 @@ export class CloudShellRunner extends BaseRunner {
 
             try {
                 this.cloudShellSession = accountApi.createCloudShell("Linux");
+
+                if (!this.cloudShellSession) {
+                    progress.cancel();
+                    this._outputChannel.appendLine("Failed to connect to cloud shell, please retry later.");
+                    this._outputChannel.show();
+                    return;
+                }
+
                 this.terminal = await this.cloudShellSession.terminal;
 
                 this.terminal.show();

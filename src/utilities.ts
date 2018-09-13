@@ -312,9 +312,10 @@ export function updateSSHConfig(server: SSHServer): void {
         fsExtra.ensureDirSync(path.dirname(sshConfigFile));
     }
 
-    for (let exist of servers) {
-        if (exist.host === server.host) {
-            return;
+    for (let i = 0; i < servers.length; i++) {
+        if (servers[i].host.trim() === server.host.trim()) {
+            servers.splice(i, 1);
+            break;
         }
     }
     servers.push(server);
