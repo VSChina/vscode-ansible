@@ -240,7 +240,7 @@ export async function addSSHServer(): Promise<SSHServer> {
         var port = await vscode.window.showInputBox({ value: '22', prompt: 'SSH port', placeHolder: 'port', password: false });
         if (port) {
             var user = await vscode.window.showInputBox({ value: '', prompt: 'SSH username', placeHolder: 'username', password: false });
-            if (user && password != '') {
+            if (user && user != '') {
                 var password = await vscode.window.showInputBox({ value: '', prompt: 'SSH password', placeHolder: 'password', password: true });
                 server.host = host;
                 server.port = +port;
