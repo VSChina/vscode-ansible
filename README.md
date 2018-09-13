@@ -64,7 +64,7 @@ This extension provides below configurations in settings.json.
 |Run Playbook in Local Ansible| Ansible |
 
 ## Usage
-Associate your yaml files to `ansible` language in VSCode `settings.json`:
+Associate your Yaml files with `ansible` language in VSCode `settings.json`:
 ```
    "files.associations": {
         "**/*.yml": "ansible"
