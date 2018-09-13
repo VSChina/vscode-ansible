@@ -119,7 +119,8 @@ let schemaRequestService = (uri: string): Thenable<string> => {
     return xhr({ url: uri, followRedirects: 5, headers }).then(response => {
         return response.responseText;
     }, (error: XHRResponse) => {
-        return Promise.reject(error.responseText || getErrorStatusDescription(error.status) || error.toString());
+        //return Promise.reject(error.responseText || getErrorStatusDescription(error.status) || error.toString());
+        return null;
     });
 };
 

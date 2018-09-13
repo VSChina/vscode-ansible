@@ -64,6 +64,13 @@ This extension provides below configurations in settings.json.
 |Run Playbook in Local Ansible| Ansible |
 
 ## Usage
+Associate your yaml files to `ansible` language in VSCode `settings.json`:
+```
+   "files.associations": {
+        "**/*.yml": "ansible"
+    },
+```
+
 ### Code snippets  
 Code snippets will be in auto-completed list with suffix `_snippet`. Press `tab` to move inside snippet parameters. 
 ![auto completion and code snippets](./images/authoring.gif)
