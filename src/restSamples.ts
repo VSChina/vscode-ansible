@@ -94,15 +94,14 @@ export class RestSamples {
     public getSpecificationLocation(cb) {
         let config = vscode.workspace.getConfiguration('ansible');
 
-        if (false /*config.has('AzureRestAPISpecificationPath') && config.get('AzureRestAPISpecificationPath') != ""*/) {
+        if (config.has('AzureRestAPISpecificationPath') && config.get('AzureRestAPISpecificationPath') != "") {
             cb(config.get('AzureRestAPISpecificationPath'));
         } else {
 
-            this._outputChannel.append('\nConnecting to Cloud Shell.');
             this._outputChannel.show();
             const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 500);
 
-            this._outputChannel.appendLine("Getting Azure REST API specifications...");
+            this._outputChannel.append("Getting Azure REST API specifications.");
             let clone = require('git-clone');
             let home: string = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
             clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
