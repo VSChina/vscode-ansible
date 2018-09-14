@@ -195,12 +195,12 @@ export function getCodeConfiguration<T>(section, configName): T {
     }
 }
 
-export function updateCodeConfiguration(section, configName, configValue) {
+export function updateCodeConfiguration(section, configName, configValue, global: boolean) {
     if (!section) {
         section = 'ansible';
     }
 
-    return vscode.workspace.getConfiguration(section).update(configName, configValue);
+    return vscode.workspace.getConfiguration(section).update(configName, configValue, global);
 }
 
 export function copyFilesRemote(source: string, dest: string, sshServer: SSHServer): Promise<void> {

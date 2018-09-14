@@ -78,10 +78,9 @@ export class RestSamples {
     }
 
     public getSpecificationLocation(cb) {
-        let config = vscode.workspace.getConfiguration('ansible');
-
-        if (config.has('azureRestSpec') && config.get('azureRestSpec') != "") {
-            cb(config.get('azureRestSpec'));
+        let spec = utilities.getCodeConfiguration('ansible', 'azureRestSpec');
+        if (spec != "") {
+            cb(spec);
         } else {
 
             this._outputChannel.show();
@@ -93,13 +92,14 @@ export class RestSamples {
             clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
                 progress.cancel();
                 if (result == undefined) {
-                    config.update('azureRestSpec', home, vscode.ConfigurationTarget.Global);
+                    utilities.updateCodeConfiguration('ansible', 'azureRestSpec', home, true);
+                    config.update('azureRestSpec', home, );
                     this._outputChannel.appendLine("");
                     this._outputChannel.appendLine("REST API feature ready");
                 } else {
                     this._outputChannel.appendLine("Failed to acquire REST API specifications");
                 }
-                cb(config.get('azureRestSpec'))
+                cb(home)
             })
         }            
     }
