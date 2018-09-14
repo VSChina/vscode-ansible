@@ -17,6 +17,7 @@ import { SSHRunner } from './sshRunner';
 import { DeploymentTemplate } from './deploymentTemplate';
 import { FolderSyncer } from './folderSyncer';
 import { FileSyncer } from './fileSyncer';
+import { RestSamples } from './restSamples';
 
 const documentSelector = [
     { language: 'yaml', scheme: 'file' },
@@ -44,6 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
     var deploymentTemplate = new DeploymentTemplate();
     var folderSyncer = new FolderSyncer(outputChannel);
     var fileSyncer = new FileSyncer(outputChannel);
+    var restSamples = new RestSamples();
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.playbook-in-docker', (playbook) => {
         dockerRunner.runPlaybook(playbook ? playbook.fsPath : null);
@@ -65,6 +67,10 @@ export function activate(context: vscode.ExtensionContext) {
         let srcFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
         folderSyncer.syncFolder(srcFolder, null, true);
     }));
+
+    let disposable = vscode.commands.registerCommand('vscode-ansible.rest-api-samples', () => {
+        restSamples.displayMenu();
+    });
 
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange) => {
         if (configChange.affectsConfiguration("ansible.fileCopyConfig")) {

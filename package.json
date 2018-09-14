@@ -31,7 +31,8 @@
     "onCommand:vscode-ansible.playbook-in-docker",
     "onCommand:vscode-ansible.playbook-in-localansible",
     "onCommand:vscode-ansible.ssh",
-    "onCommand:vscode-ansible.sync-folder-ssh"
+    "onCommand:vscode-ansible.sync-folder-ssh",
+    "onCommand:vscode-ansible.rest-api-samples"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -71,6 +72,11 @@
       {
         "command": "vscode-ansible.sync-folder-ssh",
         "title": "Copy folder to Remote Host",
+        "category": "Ansible"
+      },
+      {
+        "command": "vscode-ansible.rest-api-samples",
+        "title": "Samples for azure_rm_resource",
         "category": "Ansible"
       }
     ],
