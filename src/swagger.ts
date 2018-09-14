@@ -13,11 +13,12 @@ export class Swagger {
 
     public getExampleNames(path: string, method: string): string[] {
         let examples: string[] = [];
-        let __this = this;
 
-        for (var name in this.swagger.paths[path][method]['x-ms-examples']) {
-            examples.push(__this.swagger.paths[path][method]['x-ms-examples'][name]['$ref']);
-        }
+        try {
+            for (var name in this.swagger.paths[path][method]['x-ms-examples']) {
+                examples.push(this.swagger.paths[path][method]['x-ms-examples'][name]['$ref']);
+            }
+        } catch (e) {}
 
         return examples;
     }
