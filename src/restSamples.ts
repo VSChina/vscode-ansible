@@ -96,14 +96,14 @@ export class RestSamples {
             let clone = require('git-clone');
             let home: string = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
             clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
-
+                progress.cancel();
                 if (result == undefined) {
                     config.update('azureRestSpec', home, vscode.ConfigurationTarget.Global);
-                    this._outputChannel.appendLine("REST API feature ready...");
+                    this._outputChannel.appendLine("");
+                    this._outputChannel.appendLine("REST API feature ready");
                 } else {
-                    this._outputChannel.appendLine("Failed to acquire REST API specifications...");
+                    this._outputChannel.appendLine("Failed to acquire REST API specifications");
                 }
-                progress.cancel();
                 cb(config.get('azureRestSpec'))
             })
         }            
