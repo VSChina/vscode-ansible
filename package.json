@@ -254,6 +254,7 @@
     "azure-storage": "^2.10.1",
     "fs-extra": "^4.0.2",
     "fuzzaldrin-plus": "^0.6.0",
+    "git-clone": "^0.1.0",
     "ms-rest": "^2.3.6",
     "ms-rest-azure": "^2.5.7",
     "opn": "^5.3.0",
