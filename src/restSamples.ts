@@ -22,6 +22,7 @@ export class RestSamples {
             __this.queryDirectory(specLocation + '/specification', false, "", function (groups) {
                 if (groups != null) {
                     vscode.window.showQuickPick(groups).then(selection => {
+                        if (!selection) return;
                         __this.selectOperation(specLocation + "/specification/" + selection);
                     });
                 } 
@@ -30,7 +31,6 @@ export class RestSamples {
     }
 
     public selectOperation(path: string) {
-
         let operations = this.queryAll(path);
         let items = [];
 
@@ -71,13 +71,8 @@ export class RestSamples {
 
                 let swagger = require(selection['file']);
                 let swaggerHandler = new Swagger(swagger, selection['file'].split('/').slice(0, -1).join('/'));
-                if (selection['example'] == "From Definition") {
-                    let playbook = swaggerHandler.generateRestApiTasks(selection['path'], selection['method'], null);
-                    pm.insertTask(playbook);
-                } else {
-                    let playbook = swaggerHandler.generateRestApiTasks(selection['path'], selection['method'],  selection['example']);
-                    pm.insertTask(playbook);
-                }
+                let playbook = swaggerHandler.generateRestApiTasks(selection['path'], selection['method'],  selection['example']);
+                pm.insertTask(playbook);
             });
         });
     }
