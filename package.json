@@ -229,6 +229,11 @@
           "type": "string",
           "default": "microsoft/ansible:latest",
           "description": "Custom docker image when running playbook in Docker."
+        },
+        "ansible.azureRestSpec": {
+          "type": "string",
+          "default": "",
+          "description": "Locattion of Azure REST specification."
         }
       }
     }

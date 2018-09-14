@@ -19,7 +19,7 @@ export class RestSamples {
         let __this = this;
 
         this.getSpecificationLocation(function(specLocation) {
-            __this.queryApiGroups(specLocation, function (groups) {
+            __this.queryDirectory(specLocation + '/specification', false, "", function (groups) {
                 if (groups != null) {
                     vscode.window.showQuickPick(groups).then(selection => {
                         __this.selectOperation(specLocation + "/specification/" + selection);
@@ -85,8 +85,8 @@ export class RestSamples {
     public getSpecificationLocation(cb) {
         let config = vscode.workspace.getConfiguration('ansible');
 
-        if (config.has('AzureRestAPISpecificationPath') && config.get('AzureRestAPISpecificationPath') != "") {
-            cb(config.get('AzureRestAPISpecificationPath'));
+        if (config.has('azureRestSpec') && config.get('azureRestSpec') != "") {
+            cb(config.get('azureRestSpec'));
         } else {
 
             this._outputChannel.show();
@@ -98,13 +98,13 @@ export class RestSamples {
             clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
 
                 if (result == undefined) {
-                    config.update('AzureRestAPISpecificationPath', home, vscode.ConfigurationTarget.Global);
+                    config.update('azureRestSpec', home, vscode.ConfigurationTarget.Global);
                     this._outputChannel.appendLine("REST API feature ready...");
                 } else {
                     this._outputChannel.appendLine("Failed to acquire REST API specifications...");
                 }
                 progress.cancel();
-                cb(config.get('AzureRestAPISpecificationPath'))
+                cb(config.get('azureRestSpec'))
             })
         }            
     }
@@ -143,10 +143,6 @@ export class RestSamples {
         });
 
         return operations;
-    }
-
-    private queryApiGroups(specLocation: string, cb) {
-        this.queryDirectory(specLocation + '/specification', false, "", cb);
     }
 
     private queryApiGroup(path, cb) {
