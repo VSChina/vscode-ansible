@@ -16,12 +16,6 @@ export class RestSamples {
     }
 
     public displayMenu() {
-        this.createRestApiCall();
-    }
-
-    // - query list of api groups (compute, etc...)
-    // - user selects api group
-    public createRestApiCall() {
         let __this = this;
 
         this.getSpecificationLocation(function(specLocation) {
@@ -38,9 +32,6 @@ export class RestSamples {
     public selectOperation(path: string) {
 
         let operations = this.queryAll(path);
-        let __this = this;
-
-
         let items = [];
 
         for (var key in operations) {
@@ -63,7 +54,7 @@ export class RestSamples {
 
                     examples.forEach(function(s, i, a) {
                         items.push({
-                            'label': apiVersion + ' - Sample: ' + s.split('/').pop(),
+                            'label': 'API Version: ' + apiVersion + ' - ' + s.split('/').pop().split('.json')[0],
                             'file': selection['files'][f],
                             'example': require(xpath + '/' + s),
                             'path': selection['path'],
@@ -106,8 +97,8 @@ export class RestSamples {
             let home: string = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
             clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
 
-                config.update('AzureRestAPISpecificationPath', home, vscode.ConfigurationTarget.Global);
                 if (result == undefined) {
+                    config.update('AzureRestAPISpecificationPath', home, vscode.ConfigurationTarget.Global);
                     this._outputChannel.appendLine("REST API feature ready...");
                 } else {
                     this._outputChannel.appendLine("Failed to acquire REST API specifications...");
