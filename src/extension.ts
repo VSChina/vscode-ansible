@@ -45,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
     var deploymentTemplate = new DeploymentTemplate();
     var folderSyncer = new FolderSyncer(outputChannel);
     var fileSyncer = new FileSyncer(outputChannel);
-    var restSamples = new RestSamples();
+    var restSamples = new RestSamples(outputChannel);
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.playbook-in-docker', (playbook) => {
         dockerRunner.runPlaybook(playbook ? playbook.fsPath : null);

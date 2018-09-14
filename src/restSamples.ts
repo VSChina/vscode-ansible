@@ -3,16 +3,19 @@
 import * as vscode from 'vscode';
 import { Swagger } from './swagger';
 import { PlaybookManager } from './playbookManager';
+import * as utilities from './utilities';
+var path = require("path");
 var fs = require('fs');
-
 var pm = new PlaybookManager();
 
 export class RestSamples {
-    constructor() {
+    protected _outputChannel: vscode.OutputChannel;
+
+    constructor(outputChannel: vscode.OutputChannel) {
+        this._outputChannel = outputChannel;
     }
 
     public displayMenu() {
-
         this.createRestApiCall();
     }
 
@@ -24,11 +27,6 @@ export class RestSamples {
         this.getSpecificationLocation(function(specLocation) {
             __this.queryApiGroups(specLocation, function (groups) {
                 if (groups != null) {
-
-                    // this call will dump all possible outputs, comment it out to do it
-                    // it's just for testing purposes here
-                    //__this.generateAll(specLocation, groups);
-
                     vscode.window.showQuickPick(groups).then(selection => {
                         __this.selectOperation(specLocation + "/specification/" + selection);
                     });
@@ -96,19 +94,27 @@ export class RestSamples {
     public getSpecificationLocation(cb) {
         let config = vscode.workspace.getConfiguration('ansible');
 
-        if (config.has('AzureRestAPISpecificationPath') && config.get('AzureRestAPISpecificationPath') != "") {
+        if (false /*config.has('AzureRestAPISpecificationPath') && config.get('AzureRestAPISpecificationPath') != ""*/) {
             cb(config.get('AzureRestAPISpecificationPath'));
         } else {
-            const options: vscode.OpenDialogOptions = {
-                canSelectMany: false,
-                canSelectFiles: false,
-                canSelectFolders: true,
-                openLabel: 'Set Azure REST API spec location'
-           };
-       
-            vscode.window.showOpenDialog(options).then(selection => {
-                config.update('AzureRestAPISpecificationPath', selection[0].fsPath, vscode.ConfigurationTarget.Global);
-                cb(selection[0].fsPath);
+
+            this._outputChannel.append('\nConnecting to Cloud Shell.');
+            this._outputChannel.show();
+            const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 500);
+
+            this._outputChannel.appendLine("Getting Azure REST API specifications...");
+            let clone = require('git-clone');
+            let home: string = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
+            clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
+
+                config.update('AzureRestAPISpecificationPath', home, vscode.ConfigurationTarget.Global);
+                if (result == undefined) {
+                    this._outputChannel.appendLine("REST API feature ready...");
+                } else {
+                    this._outputChannel.appendLine("Failed to acquire REST API specifications...");
+                }
+                progress.cancel();
+                cb(config.get('AzureRestAPISpecificationPath'))
             })
         }            
     }
@@ -211,50 +217,6 @@ export class RestSamples {
             cb(directories);
         } catch (e) {
             cb(null);
-        }
-    }
-
-    // this is just internal function that can dump all the possible 
-    private generateAll(specLocation: string, groups: string[]) {
-        let __this = this;
-        for (var idx = 0; idx < groups.length; idx ++ ) {
-            let element = groups[idx];
-            let operations = __this.queryAll(specLocation + "/specification/" + element);
-
-            if (element == 'apimanagement')
-                continue;
-
-            console.log("GENERATING: " + element);
-            for (var key in operations) {
-                let operation = operations[key];
-
-                for (var f in operation['files']) {
-                    let swagger = require(operation['files'][f]);
-                    if (swagger != null) {
-                        let xpath =  operation['files'][f].split('/').slice(0, -1).join('/');
-                        let swaggerHandler = new Swagger(swagger, operation['files'][f].split('/').slice(0, -1).join('/'));
-                        let examples: string[] = swaggerHandler.getExampleNames(operation['path'], operation['method']);
-                        let apiVersion = xpath.split('/').slice(-1)[0];
-
-                        var p = "c:/dev/tmp/" + xpath.split('resource-manager/')[1].split('/').join('_') + '_' + operation['label'];
-
-                        var fs = require('fs');
-    
-                        examples.forEach(function(s, i, a) {
-                            let playbook = swaggerHandler.generateRestApiTasks(operation['path'], operation['method'],  require(xpath + '/' + s));
-
-                            let name = p + '_' + s.split('.json')[0].split('/').pop() + '.yml';
-                            fs.writeFile(name, playbook, function (result) {});
-
-                        })
-                        let playbook = swaggerHandler.generateRestApiTasks(operation['path'], operation['method'], null);
-                        fs.writeFile(p + '_full.yml' , playbook, function (result) {});
-                    } else {
-                        // XXX - generate stub?
-                    }
-                }
-            }    
-            console.log("DONE: " + element);
         }
     }
 }

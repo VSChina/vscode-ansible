@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 export class PlaybookManager {
     constructor() {
     }
-
+    
     public doesTaskExistByName(name: string, beforeCursor: boolean) {
         if (vscode.window.activeTextEditor != undefined && vscode.window.activeTextEditor.document.languageId == "yaml") {
             let text: string = null;
