@@ -48,7 +48,7 @@ export class RestSamples {
                 let swagger = require(selection['files'][f]);
                 if (swagger != null) {
                     let xpath =  selection['files'][f].split('/').slice(0, -1).join('/');
-                    let swaggerHandler = new Swagger(swagger, selection['files'][f].split('/').slice(0, -1).join('/'));
+                    let swaggerHandler = new Swagger(swagger);
                     let examples: string[] = swaggerHandler.getExampleNames(selection['path'], selection['method']);
                     let apiVersion = xpath.split('/').slice(-1)[0];
 
@@ -93,7 +93,6 @@ export class RestSamples {
                 progress.cancel();
                 if (result == undefined) {
                     utilities.updateCodeConfiguration('ansible', 'azureRestSpec', home, true);
-                    config.update('azureRestSpec', home, );
                     this._outputChannel.appendLine("");
                     this._outputChannel.appendLine("REST API feature ready");
                 } else {

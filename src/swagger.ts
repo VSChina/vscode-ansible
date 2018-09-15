@@ -3,9 +3,8 @@
 import * as vscode from 'vscode';
 
 export class Swagger {
-    constructor(definition: any, location: string) {
+    constructor(definition: any) {
         this.swagger = definition;
-        this.location = location;
     }
 
     private swagger: any = null;
