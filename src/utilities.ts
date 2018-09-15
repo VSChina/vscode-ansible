@@ -195,7 +195,7 @@ export function getCodeConfiguration<T>(section, configName): T {
     }
 }
 
-export function updateCodeConfiguration(section, configName, configValue, global: boolean) {
+export function updateCodeConfiguration(section, configName, configValue, global: boolean = false) {
     if (!section) {
         section = 'ansible';
     }
