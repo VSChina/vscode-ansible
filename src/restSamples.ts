@@ -70,7 +70,7 @@ export class RestSamples {
                 if (!selection) return;
 
                 let swagger = require(selection['file']);
-                let swaggerHandler = new Swagger(swagger, selection['file'].split('/').slice(0, -1).join('/'));
+                let swaggerHandler = new Swagger(swagger);
                 let playbook = swaggerHandler.generateRestApiTasks(selection['path'], selection['method'],  selection['example']);
                 pm.insertTask(playbook);
             });
