@@ -16,8 +16,6 @@ export class RestSamples {
     }
 
     public async displayMenu() {
-        let __this = this;
-
         let specLocation = await this.getSpecificationLocation();
         let groups = await this.queryDirectory(specLocation + '/specification', false, "");
 
@@ -146,8 +144,6 @@ export class RestSamples {
     }
 
     private async queryApiGroupInternal(dirsToQuery: string[], finalDirs: string[]): Promise<string[]> {
-
-        let __this = this;
         // if no more dirs to query, just respond via callback
         if (dirsToQuery.length == 0) {
             return finalDirs;
