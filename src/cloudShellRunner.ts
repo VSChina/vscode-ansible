@@ -73,8 +73,8 @@ export class CloudShellRunner extends BaseRunner {
         }
         TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.AzureAccountNotInstalled });
 
-        const open: vscode.MessageItem = { title: "View in MarketPlace" };
-        vscode.window.showErrorMessage('Please install the Azure Account extension before run CloudShell!', open)
+        const open: vscode.MessageItem = { title: "View in Marketplace" };
+        vscode.window.showErrorMessage('Please install the Azure Account extension before running Cloud Shell', open)
             .then(response => {
                 if (response === open) {
                     opn('https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account');
@@ -112,7 +112,7 @@ export class CloudShellRunner extends BaseRunner {
 
                 if (!this.cloudShellSession) {
                     progress.cancel();
-                    this._outputChannel.appendLine("Failed to connect to cloud shell, please retry later.");
+                    this._outputChannel.appendLine("Failed to connect to Cloud Shell, please retry later.");
                     this._outputChannel.show();
                     return;
                 }
@@ -135,7 +135,7 @@ export class CloudShellRunner extends BaseRunner {
                 if (count === 0) {
                     this.cleanUpTerminal();
 
-                    this._outputChannel.appendLine("Failed to connect to cloud shell after 30 seconds,  pls retry later.");
+                    this._outputChannel.appendLine("Failed to connect to Cloud Shell after 30 seconds,  please retry later.");
                     this._outputChannel.show();
 
                     TelemetryClient.sendEvent('cloudshell', { 'error': CloudShellErrors.ProvisionFailed });
@@ -191,7 +191,7 @@ export class CloudShellRunner extends BaseRunner {
             const msgItem: vscode.MessageItem = { title: 'Confirm & Don\'t show this again' };
 
             const cancelItem: vscode.MessageItem = { title: "View detail" };
-            const promptMsg = 'Run ansible playbook in Cloudshell will generate Azure usage fee since need uploading playbook to CloudShell!';
+            const promptMsg = 'Running your Ansible playbook in Cloud Shell will generate a small charge for Azure usage as the playbook needs to be uploaded to Cloud Shell';
 
             let response = await vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem);
 
