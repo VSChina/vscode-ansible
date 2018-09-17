@@ -38,6 +38,11 @@ export class RestSamples {
             items.push(operations[key]);
         }
 
+        if (items.length == 0) {
+            vscode.window.showInformationMessage("No samples available");
+            return;
+        }
+
         vscode.window.showQuickPick(items).then(selection => {
             // the user canceled the selection
             if (!selection) return;
@@ -64,7 +69,6 @@ export class RestSamples {
                 }
             }
 
-            // subfolder
             vscode.window.showQuickPick(items).then(selection => {
                 // the user canceled the selection
                 if (!selection) return;

@@ -151,6 +151,11 @@ export class Swagger {
                     })
                 }
             } else {
+                if (typeof p === 'string') {
+                    if (p.startsWith('{') && p.endsWith('}')) {
+                        p = p.substr(1, p.length - 2);
+                    }
+                }
                 playbook.push(name + ": " + p);
             }            
         }
