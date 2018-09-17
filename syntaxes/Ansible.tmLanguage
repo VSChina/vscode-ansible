@@ -69,7 +69,7 @@
 			<key>contentName</key>
 			<string>string.other.ansible</string>
 			<key>end</key>
-			<string>\"?\s</string>
+			<string>\"?\s?</string>
 			<key>name</key>
 			<string>variable.complex.ansible</string>
 			<key>patterns</key>
