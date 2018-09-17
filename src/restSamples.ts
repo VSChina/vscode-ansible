@@ -17,7 +17,7 @@ export class RestSamples {
 
     public async displayMenu() {
         let specLocation = await this.getSpecificationLocation();
-        let groups = await this.queryDirectory(specLocation + '/specification', false, "");
+        let groups = this.queryDirectory(specLocation + '/specification', false, "");
 
         if (groups != null) {
             let selection = await vscode.window.showQuickPick(groups);
@@ -26,8 +26,8 @@ export class RestSamples {
         } 
     }
 
-    public async selectOperation(path: string) {
-        let operations = await this.queryAll(path);
+    public selectOperation(path: string) {
+        let operations = this.queryAll(path);
         let items = [];
 
         if (operations) {
@@ -105,14 +105,14 @@ export class RestSamples {
         }            
     }
 
-    private async queryAll(path: string): Promise<{}> {
+    private queryAll(path: string) {
         let operations = {};
 
-        let dirs: string[] = await this.queryApiGroup(path);
+        let dirs = this.queryApiGroup(path);
 
         for (var idx = 0; idx < dirs.length; idx++) {
             let dir = dirs[idx];
-            let files = await this.queryDirectory(dir, true, ".json");
+            let files = this.queryDirectory(dir, true, ".json");
         
             if (files != null) {
                 files.forEach(file => {
@@ -139,11 +139,11 @@ export class RestSamples {
         return operations;
     }
 
-    private async queryApiGroup(path): Promise<string[]> {
+    private queryApiGroup(path) {
         return this.queryApiGroupInternal([ path ], []);
     }
 
-    private async queryApiGroupInternal(dirsToQuery: string[], finalDirs: string[]): Promise<string[]> {
+    private queryApiGroupInternal(dirsToQuery: string[], finalDirs: string[]) {
         // if no more dirs to query, just respond via callback
         if (dirsToQuery.length == 0) {
             return finalDirs;
@@ -151,7 +151,7 @@ export class RestSamples {
 
         // get first dir to query
         let nextDir: string = dirsToQuery.pop();
-        let dir = await this.queryDirectory(nextDir, false, "");
+        let dir = this.queryDirectory(nextDir, false, "");
 
         if (dir == null) {
             vscode.window.showErrorMessage("Failed to query: " + nextDir);
@@ -169,7 +169,7 @@ export class RestSamples {
         } 
     }
 
-    private async queryDirectory(path: string, files: boolean, ext: string): Promise<string[]> {
+    private queryDirectory(path: string, files: boolean, ext: string) {
         // just use filesystem
         try {
             let dirEntries = fs.readdirSync(path);
