@@ -123,7 +123,7 @@ export class RestSamples {
                             for (var path in swagger.paths) {
                                 for (var method in swagger.paths[path]) {
                                     // add only if there are examples
-                                    if (swagger.paths[path][method]['x-ms-examples'] != undefined) {
+                                    if (!swagger.paths[path][method]['x-ms-examples']) {
                                         let operationId: string = swagger.paths[path][method].operationId;
                                         let description: string = swagger.paths[path][method].description;
     
