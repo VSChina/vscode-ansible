@@ -19,18 +19,17 @@ export class RestSamples {
         let __this = this;
 
         let specLocation = await this.getSpecificationLocation();
-        __this.queryDirectory(specLocation + '/specification', false, "", function (groups) {
-            if (groups != null) {
-                vscode.window.showQuickPick(groups).then(selection => {
-                    if (!selection) return;
-                    __this.selectOperation(specLocation + "/specification/" + selection);
-                });
-            } 
-        })
+        let groups = await this.queryDirectory(specLocation + '/specification', false, "");
+
+        if (groups != null) {
+            let selection = await vscode.window.showQuickPick(groups);
+            if (!selection) return;
+            this.selectOperation(specLocation + "/specification/" + selection);
+        } 
     }
 
-    public selectOperation(path: string) {
-        let operations = this.queryAll(path);
+    public async selectOperation(path: string) {
+        let operations = await this.queryAll(path);
         let items = [];
 
         if (operations) {
@@ -38,7 +37,6 @@ export class RestSamples {
                 items.push(operations[key]);
             }
         }
-
 
         if (items.length == 0) {
             vscode.window.showInformationMessage("No samples available");
@@ -109,76 +107,73 @@ export class RestSamples {
         }            
     }
 
-    private queryAll(path: string) {
+    private async queryAll(path: string): Promise<{}> {
         let operations = {};
-        let __this = this;
 
-        __this.queryApiGroup(path, function (dirs: string[]) {
-            dirs.forEach(dir => {
-                __this.queryDirectory(dir, true, ".json", function(files) {
-                    if (files != null) {
-                        files.forEach(file => {
-                            let swagger = require(dir + '/' + file);
-                            for (var path in swagger.paths) {
-                                for (var method in swagger.paths[path]) {
-                                    // add only if there are examples
-                                    if (swagger.paths[path][method]['x-ms-examples']) {
-                                        let operationId: string = swagger.paths[path][method].operationId;
-                                        let description: string = swagger.paths[path][method].description;
-    
-                                        if (!operations[operationId]) {
-                                            operations[operationId] = { 'label': operationId, 'description': description, 'files': [], 'path': path, 'method': method }
-                                        }
+        let dirs: string[] = await this.queryApiGroup(path);
 
-                                        operations[operationId]['files'].push(dir + '/' + file);
-                                    }
+        for (var idx = 0; idx < dirs.length; idx++) {
+            let dir = dirs[idx];
+            let files = await this.queryDirectory(dir, true, ".json");
+        
+            if (files != null) {
+                files.forEach(file => {
+                    let swagger = require(dir + '/' + file);
+                    for (var path in swagger.paths) {
+                        for (var method in swagger.paths[path]) {
+                            // add only if there are examples
+                            if (swagger.paths[path][method]['x-ms-examples']) {
+                                let operationId: string = swagger.paths[path][method].operationId;
+                                let description: string = swagger.paths[path][method].description;
+
+                                if (!operations[operationId]) {
+                                    operations[operationId] = { 'label': operationId, 'description': description, 'files': [], 'path': path, 'method': method }
                                 }
+
+                                operations[operationId]['files'].push(dir + '/' + file);
                             }
-                        });
-                    };
+                        }
+                    }
                 });
-            });
-        });
+            };
+        }
 
         return operations;
     }
 
-    private queryApiGroup(path, cb) {
-        this.queryApiGroupInternal([ path ], [], cb);
+    private async queryApiGroup(path): Promise<string[]> {
+        return this.queryApiGroupInternal([ path ], []);
     }
 
-    private queryApiGroupInternal(dirsToQuery: string[], finalDirs: string[], cb) {
+    private async queryApiGroupInternal(dirsToQuery: string[], finalDirs: string[]): Promise<string[]> {
 
         let __this = this;
         // if no more dirs to query, just respond via callback
         if (dirsToQuery.length == 0) {
-            cb(finalDirs);
-            return;
+            return finalDirs;
         }
 
         // get first dir to query
         let nextDir: string = dirsToQuery.pop();
+        let dir = await this.queryDirectory(nextDir, false, "");
 
-        this.queryDirectory(nextDir, false, "", function(dir) {
-            if (dir == null) {
-                cb(null);
-                vscode.window.showErrorMessage("Failed to query: " + nextDir);
-                return;
+        if (dir == null) {
+            vscode.window.showErrorMessage("Failed to query: " + nextDir);
+            return null;
+        } else {
+            let depth: number = nextDir.split('/specification/')[1].split('/').length;
+
+            if (depth < 4) {
+                for (var i = 0; i < dir.length; i++) dirsToQuery.push(nextDir + '/' + dir[i])
             } else {
-                let depth: number = nextDir.split('/specification/')[1].split('/').length;
-
-                if (depth < 4) {
-                    for (var i = 0; i < dir.length; i++) dirsToQuery.push(nextDir + '/' + dir[i])
-                } else {
-                    for (var i = 0; i < dir.length; i++) finalDirs.push(nextDir + '/' + dir[i])
-                }
-
-                __this.queryApiGroupInternal(dirsToQuery, finalDirs, cb);
+                for (var i = 0; i < dir.length; i++) finalDirs.push(nextDir + '/' + dir[i])
             }
-        })
+
+            return this.queryApiGroupInternal(dirsToQuery, finalDirs);
+        } 
     }
 
-    private queryDirectory(path: string, files: boolean, ext: string,  cb) {
+    private async queryDirectory(path: string, files: boolean, ext: string): Promise<string[]> {
         // just use filesystem
         try {
             let dirEntries = fs.readdirSync(path);
@@ -198,9 +193,9 @@ export class RestSamples {
                     }
                 }
             }
-            cb(directories);
+            return directories;
         } catch (e) {
-            cb(null);
+            return [];
         }
     }
 }
