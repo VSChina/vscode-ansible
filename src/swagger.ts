@@ -33,7 +33,7 @@ export class Swagger {
 
         method = method.toLowerCase();
         playbook += //"# https://docs.microsoft.com/en-us/rest/api/" + area + "/" + resource + "/" + internalMethod + '\r';
-                    "- name: Call REST API - " + this.swagger.paths[path][method]['operationId'] + "\r" +
+                    "- name: Sample for Azure REST API - " + this.swagger.paths[path][method]['operationId'] + "\r" +
                     TAB + ((method == 'get') ? "azure_rm_resource_facts" : "azure_rm_resource") + ":\r" +
                     TAB + TAB + "# url: " + url + "\r" + 
                     TAB + TAB + "api_version: '" + this.swagger['info']['version'] + "'\r";
