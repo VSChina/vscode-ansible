@@ -25,11 +25,11 @@ export class PlaybookManager {
 
     public insertTask(task: string) {
         let __this = this;
-        
+
         // create new yaml document if not current document
         if (vscode.window.activeTextEditor == undefined || vscode.window.activeTextEditor.document.languageId != "yaml") {
-            vscode.workspace.openTextDocument({language: "yaml", content: ""} ).then((a: vscode.TextDocument) => {
-                vscode.window.showTextDocument(a, 1, false).then(e => {                                            
+            vscode.workspace.openTextDocument({ language: "yaml", content: "" }).then((a: vscode.TextDocument) => {
+                vscode.window.showTextDocument(a, 1, false).then(e => {
                     __this.insertTask(task);
                 });
             });
@@ -42,12 +42,12 @@ export class PlaybookManager {
 
             let lineCount = 0;
             if (vscode.window.activeTextEditor.document.getText() == "") {
-               
+
                 vscode.window.activeTextEditor.edit(function (edit) {
                     let prefix: string = "- hosts: localhost\r" +
-                    " ".repeat(tabSize) + "vars:\r" +
-                    " ".repeat(tabSize * 2) + "resource_group:\r" + 
-                    " ".repeat(tabSize) + "tasks:\r";
+                        " ".repeat(tabSize) + "vars:\r" +
+                        " ".repeat(tabSize * 2) + "resource_group:\r" +
+                        " ".repeat(tabSize) + "tasks:\r";
                     edit.insert(new vscode.Position(0, 0), prefix);
                 });
 
@@ -60,7 +60,6 @@ export class PlaybookManager {
             let lines: string[] = task.split('\r');
 
             for (var i = 0; i < lines.length; i++) {
-                // XXX - just 2 tabs at the moment, we have to detect exactly
                 let prefix = " ".repeat(tabSize * 2);
                 lines[i] = prefix + lines[i];
             }
