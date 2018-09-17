@@ -80,31 +80,34 @@ export class RestSamples {
     }
 
     public async getSpecificationLocation(): Promise<string> {
-        let spec = utilities.getCodeConfiguration('ansible', 'azureRestSpec');
-        if (spec != "") {
-            return spec as string;
-        } else {
 
-            this._outputChannel.show();
-            const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 500);
+        return new Promise<string>((resolve, reject) => {
+            let spec = utilities.getCodeConfiguration('ansible', 'azureRestSpec');
+            if (spec != "") {
+                resolve(spec as string);
+            } else {
 
-            this._outputChannel.append("Getting Azure REST API specifications.");
-            let clone = require('git-clone');
-            let home: string = path.join(vscode.extensions.getExtension("vscoss.vscode-ansible").extensionPath, 'azure-rest-api-specs');
-            
-            //path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
-            clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
-                progress.cancel();
-                if (!result) {
-                    utilities.updateCodeConfiguration('ansible', 'azureRestSpec', home, true);
-                    this._outputChannel.appendLine("");
-                    this._outputChannel.appendLine("REST API feature ready");
-                } else {
-                    this._outputChannel.appendLine("Failed to acquire REST API specifications");
-                }
-                return home;
-            })
-        }            
+                this._outputChannel.show();
+                const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 500);
+
+                this._outputChannel.append("Getting Azure REST API specifications.");
+                let clone = require('git-clone');
+                //let home: string = path.join(vscode.extensions.getExtension("vscoss.vscode-ansible").extensionPath, 'azure-rest-api-specs');
+                let home = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
+                clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
+                    progress.cancel();
+                    if (!result) {
+                        utilities.updateCodeConfiguration('ansible', 'azureRestSpec', home, true);
+                        this._outputChannel.appendLine("");
+                        this._outputChannel.appendLine("REST API feature ready");
+                        resolve(home)
+                    } else {
+                        this._outputChannel.appendLine("Failed to acquire REST API specifications");
+                        resolve("");
+                    }
+                })
+            }
+        });
     }
 
     private queryAll(path: string) {
