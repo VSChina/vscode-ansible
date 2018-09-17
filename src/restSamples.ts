@@ -15,18 +15,17 @@ export class RestSamples {
         this._outputChannel = outputChannel;
     }
 
-    public displayMenu() {
+    public async displayMenu() {
         let __this = this;
 
-        this.getSpecificationLocation(function(specLocation) {
-            __this.queryDirectory(specLocation + '/specification', false, "", function (groups) {
-                if (groups != null) {
-                    vscode.window.showQuickPick(groups).then(selection => {
-                        if (!selection) return;
-                        __this.selectOperation(specLocation + "/specification/" + selection);
-                    });
-                } 
-            })
+        let specLocation = await this.getSpecificationLocation();
+        __this.queryDirectory(specLocation + '/specification', false, "", function (groups) {
+            if (groups != null) {
+                vscode.window.showQuickPick(groups).then(selection => {
+                    if (!selection) return;
+                    __this.selectOperation(specLocation + "/specification/" + selection);
+                });
+            } 
         })
     }
 
@@ -84,10 +83,10 @@ export class RestSamples {
         });
     }
 
-    public getSpecificationLocation(cb) {
+    public async getSpecificationLocation(): Promise<string> {
         let spec = utilities.getCodeConfiguration('ansible', 'azureRestSpec');
         if (spec != "") {
-            cb(spec);
+            return spec as string;
         } else {
 
             this._outputChannel.show();
@@ -105,7 +104,7 @@ export class RestSamples {
                 } else {
                     this._outputChannel.appendLine("Failed to acquire REST API specifications");
                 }
-                cb(home)
+                return home;
             })
         }            
     }
