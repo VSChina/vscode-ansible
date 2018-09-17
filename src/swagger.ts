@@ -2,6 +2,8 @@
 
 import * as vscode from 'vscode';
 
+const TAB = "  ";
+
 export class Swagger {
     constructor(definition: any) {
         this.swagger = definition;
@@ -32,12 +34,12 @@ export class Swagger {
         method = method.toLowerCase();
         playbook += //"# https://docs.microsoft.com/en-us/rest/api/" + area + "/" + resource + "/" + internalMethod + '\r';
                     "- name: Call REST API - " + this.swagger.paths[path][method]['operationId'] + "\r" +
-                    "\t" + ((method == 'get') ? "azure_rm_resource_facts" : "azure_rm_resource") + ":\r" +
-                    "\t\t# url: " + url + "\r" + 
-                    "\t\tapi_version: '" + this.swagger['info']['version'] + "'\r";
+                    TAB + ((method == 'get') ? "azure_rm_resource_facts" : "azure_rm_resource") + ":\r" +
+                    TAB + TAB + "# url: " + url + "\r" + 
+                    TAB + TAB + "api_version: '" + this.swagger['info']['version'] + "'\r";
 
         if (method != 'get' && method != 'put' && method != 'delete') {
-            playbook += "\t\tmethod: " + method.toUpperCase() + "\r";
+            playbook += TAB + TAB + "method: " + method.toUpperCase() + "\r";
         }
 
         let splittedPath: string[] = url.split('/');
@@ -50,11 +52,11 @@ export class Swagger {
                     pathIdx += 2;
                     break;
                 case 'resourcegroups':
-                    playbook += "\t\tresource_group: \"{{ resource_group }}\"\r";
+                    playbook += TAB + TAB + "resource_group: \"{{ resource_group }}\"\r";
                     pathIdx += 2;
                     break;
                 case 'providers':
-                    playbook += "\t\tprovider: " + splittedPath[pathIdx + 1].split('.')[1].toLowerCase() + "\r";
+                    playbook += TAB + TAB + "provider: " + splittedPath[pathIdx + 1].split('.')[1].toLowerCase() + "\r";
                     pathIdx += 2;
                     break;
                 default:
@@ -68,17 +70,17 @@ export class Swagger {
                         }
 
                         if (subresourceCount == 0) {
-                            playbook += "\t\tresource_type: " + resourceType + "\r";
+                            playbook += TAB + TAB + "resource_type: " + resourceType + "\r";
                             if (resourceName != null) {
-                                playbook += "\t\tresource_name: \"{{ " + resourceName  + " }}\"\r";
+                                playbook += TAB + TAB + "resource_name: \"{{ " + resourceName  + " }}\"\r";
                             }
                         } else {
                             if (subresourceCount == 1) {
-                                playbook += "\t\tsubresource:\r";
+                                playbook += TAB + TAB + "subresource:\r";
                             }
-                            playbook += "\t\t\t- type: " + resourceType + "\r";
+                            playbook += TAB + TAB + + TAB + "- type: " + resourceType + "\r";
                             if (resourceName != null) {
-                                playbook += "\t\t\t  name: \"{{ " + resourceName  + " }}\"\r";
+                                playbook += TAB + TAB + + TAB + "  name: \"{{ " + resourceName  + " }}\"\r";
                             }
                         }
                         subresourceCount++;                
@@ -96,7 +98,7 @@ export class Swagger {
                 let p = example['parameters'][name];
                 if (typeof p === 'object') {
                     this.playbookFromExample(p, 0).forEach(element => {
-                        body += ("\t\t\t" + element + '\r');
+                        body += (TAB + TAB + TAB + element + '\r');
                     });
 
                 }
@@ -104,13 +106,13 @@ export class Swagger {
         }
 
         if (body != "") {
-            playbook += "\t\tbody:\r" + 
+            playbook += TAB + TAB + "body:\r" + 
                         body;
         }
 
         // in case of DELETE method we will use 'absent' state to indicate this
         if (method == 'delete') {
-            playbook += "\t\tstate: absent\r";
+            playbook += TAB + TAB + "state: absent\r";
         }
 
         return playbook;
@@ -147,7 +149,7 @@ export class Swagger {
                 } else {
                     let sub: string[] = this.playbookFromExample(p, level + 1);
                     sub.forEach(element => {
-                        playbook.push("\t" + element);
+                        playbook.push(TAB + element);
                     })
                 }
             } else {
