@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
         folderSyncer.syncFolder(srcFolder, null, true);
     }));
 
-    let disposable = vscode.commands.registerCommand('vscode-ansible.rest-api-samples', () => {
+    let disposable = vscode.commands.registerCommand('vscode-ansible.resource-module-samples', () => {
         restSamples.displayMenu();
     });
 

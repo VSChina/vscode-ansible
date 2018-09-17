@@ -32,7 +32,7 @@
     "onCommand:vscode-ansible.playbook-in-localansible",
     "onCommand:vscode-ansible.ssh",
     "onCommand:vscode-ansible.sync-folder-ssh",
-    "onCommand:vscode-ansible.rest-api-samples"
+    "onCommand:vscode-ansible.resource-module-samples"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -75,8 +75,8 @@
         "category": "Ansible"
       },
       {
-        "command": "vscode-ansible.rest-api-samples",
-        "title": "Samples for azure_rm_resource",
+        "command": "vscode-ansible.resource-module-samples",
+        "title": "Samples for azure_rm_resource (PREVIEW)",
         "category": "Ansible"
       }
     ],
@@ -233,7 +233,7 @@
         "ansible.azureRestSpec": {
           "type": "string",
           "default": "",
-          "description": "Locattion of Azure REST specification."
+          "description": "Location of Azure REST specification."
         }
       }
     }
