@@ -34,9 +34,12 @@ export class RestSamples {
         let operations = this.queryAll(path);
         let items = [];
 
-        for (var key in operations) {
-            items.push(operations[key]);
+        if (operations) {
+            for (var key in operations) {
+                items.push(operations[key]);
+            }
         }
+
 
         if (items.length == 0) {
             vscode.window.showInformationMessage("No samples available");
@@ -95,7 +98,7 @@ export class RestSamples {
             let home: string = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
             clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
                 progress.cancel();
-                if (result == undefined) {
+                if (!result) {
                     utilities.updateCodeConfiguration('ansible', 'azureRestSpec', home, true);
                     this._outputChannel.appendLine("");
                     this._outputChannel.appendLine("REST API feature ready");
@@ -124,9 +127,9 @@ export class RestSamples {
                                         let operationId: string = swagger.paths[path][method].operationId;
                                         let description: string = swagger.paths[path][method].description;
     
-                                        if (description == undefined || description == '') description = "Description not available";
+                                        if (!description || description == '') description = "Description not available";
 
-                                        if (operations[operationId] == undefined) {
+                                        if (!operations[operationId]) {
                                             operations[operationId] = { 'label': operationId, 'description': description, 'files': [], 'path': path, 'method': method }
                                         }
 
