@@ -90,7 +90,9 @@ export class RestSamples {
 
             this._outputChannel.append("Getting Azure REST API specifications.");
             let clone = require('git-clone');
-            let home: string = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
+            let home: string = path.join(vscode.extensions.getExtension("vscoss.vscode-ansible").extensionPath, 'azure-rest-api-specs');
+            
+            //path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], 'azure-rest-api-specs');
             clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {
                 progress.cancel();
                 if (!result) {
