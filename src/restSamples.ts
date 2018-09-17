@@ -126,8 +126,6 @@ export class RestSamples {
                                         let operationId: string = swagger.paths[path][method].operationId;
                                         let description: string = swagger.paths[path][method].description;
     
-                                        if (!description || description == '') description = "Description not available";
-
                                         if (!operations[operationId]) {
                                             operations[operationId] = { 'label': operationId, 'description': description, 'files': [], 'path': path, 'method': method }
                                         }
