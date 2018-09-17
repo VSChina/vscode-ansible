@@ -160,6 +160,7 @@ In case of any bugs encountered in samples please fill an issue here:
 https://github.com/Azure/azure-rest-api-specs/issues
 
 Note 1: This feature requires Ansible 2.7.
+
 Note 2: When using for the first time it may take a few minutes to retrieve REST API specifications.
 
 
