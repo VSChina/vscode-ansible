@@ -200,13 +200,18 @@ function validateTextDocument(textDocument: TextDocument): void {
     }
 
     if (textDocument.getText().length === 0) {
-        connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: [] });
         return;
     }
 
     let yamlDocument = parseYAML(textDocument.getText(), []);
-    languageService.doValidation(textDocument, yamlDocument).then(function (diagnosticResults) {
+    if (!yamlDocument) {
+        return;
+    }
+    languageService.doValidation(textDocument, yamlDocument).then((diagnosticResults) => {
 
+        if (!diagnosticResults) {
+            return;
+        }
         let diagnostics = [];
         for (let diagnosticItem in diagnosticResults) {
             diagnosticResults[diagnosticItem].severity = 1; //Convert all warnings to errors
@@ -214,5 +219,5 @@ function validateTextDocument(textDocument: TextDocument): void {
         }
 
         connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: removeDuplicatesObj(diagnostics) });
-    }, function (error) { });
+    }, (error) => { });
 }
