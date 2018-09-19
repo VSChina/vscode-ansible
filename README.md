@@ -3,6 +3,7 @@
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/vscoss.vscode-ansible.svg "Current Release")](https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible)
 
 # Visual Studio Code extension for [Ansible](https://www.ansible.com/)
+The VSCode ansible extension is designed to increase developer productivity authoring, testing and using Ansible with Azure. The extension provides cool features around playbook authoring and execution. It supports running playbook from various places e.g. Docker, local installation, remote machines via ssh and [Cloud Shell](https://azure.microsoft.com/en-us/features/cloud-shell/).
 
 ## Table of Content
 - [Features](#features)
@@ -43,7 +44,7 @@
 This extension provides below configurations in settings.json.
 
 
-|Cnfig Name| Default Value| Description|
+|Config Name| Default Value| Description|
 |--|--|--|
 |`ansible.hover`| `true`| Enable/Disable hover over module name functionality. |
 |`ansible.autocompletion` | `true` | Enable/Disable ansible autocompletion(including code snippets) functionality. To enable ansible autocompletion only in specific yaml files, set `ansible.autocompletion = false`, then add `# ansible-configured` header in first line of yaml file.|
