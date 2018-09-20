@@ -10,8 +10,7 @@
             "request": "attach",
             "port": 6003,
             "sourceMaps": true,
-            "outFiles": ["${workspaceFolder}/out/server/server.js"],
-            "trace": true
+            "outFiles": ["${workspaceFolder}/out/server/server.js"]
         }
     ]
 }

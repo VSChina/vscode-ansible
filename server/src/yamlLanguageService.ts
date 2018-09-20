@@ -6,7 +6,7 @@ import { YAMLValidation } from 'yaml-language-server/out/server/src/languageserv
 import { JSONSchemaService } from 'yaml-language-server/out/server/src/languageservice/services/jsonSchemaService';
 import { schemaContributions } from 'vscode-json-languageservice/lib/umd/services/configuration';
 
-import { TextDocument, Diagnostic, CompletionItem, SymbolInformation, Position, CompletionList, Hover, TextEdit, FormattingOptions } from 'vscode-languageserver';
+import { TextDocument, Diagnostic, SymbolInformation, Position, Hover } from 'vscode-languageserver';
 import { YAMLHover } from './services/yamlHover';
 
 export function getLanguageService(schemaRequestService: SchemaRequestService, workspaceContext, clientSettings: ClientSettings, promiseConstructor?): LanguageService {
@@ -19,7 +19,6 @@ export function getLanguageService(schemaRequestService: SchemaRequestService, w
     let documentSymbol = new YamlDocumentSymbols();
     let yamlvalidation = new YAMLValidation(jsonSchemaService, promise);
     let languagesettings: LanguageSettings = {
-        schemas: [],
         validate: clientSettings.validation
     };
     yamlvalidation.configure(languagesettings);
@@ -37,8 +36,6 @@ export function getLanguageService(schemaRequestService: SchemaRequestService, w
             yamlvalidation.configure(settings);
         },
         doValidation: yamlvalidation.doValidation.bind(yamlvalidation),
-        doResolve: void 0,
-        doComplete: void 0,
         findDocumentSymbols: documentSymbol.findDocumentSymbols.bind(documentSymbol),
         doHover: hover.doHover.bind(hover)
     };
@@ -52,8 +49,6 @@ export interface ClientSettings {
 export interface LanguageService {
     configure(settings: LanguageSettings, clientSettings: ClientSettings): void;
     doValidation(document: TextDocument, yamlDocument: YAMLDocument): Thenable<Diagnostic[]>;
-    doResolve(item: CompletionItem): Thenable<CompletionItem>;
-    doComplete(document: TextDocument, position: Position, doc: YAMLDocument): Thenable<CompletionList>;
     findDocumentSymbols(document: TextDocument, doc: YAMLDocument): SymbolInformation[];
     doHover(document: TextDocument, position: Position, doc: YAMLDocument): Thenable<Hover>;
 }

@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { CompletionEngine } from './completionEngine';
-import { Range } from 'vscode-languageclient/lib/main';
 import * as utilities from './utilities';
 
 const pattern_variable = new RegExp('\\S+: \".*{{\\s*(}}.)*\"*\\s*#*.*$');
@@ -23,6 +22,9 @@ export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvi
         let lineText = document.lineAt(position.line).text;
 
         // provide auto completion for property name only, not on value
+        if (!range) {
+            return;
+        }
         var index = lineText.indexOf(':');
         if (index != -1 && index < range.end.character) {
             return;
