@@ -36,8 +36,6 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
     let workspaceFolders = params['workspaceFolders'];
     let workspaceRoot = params.rootPath;
 
-    let symbolSupport = hasClientCapability(params, 'workspace', 'symbol', 'dynamicRegistration');
-
     return {
         capabilities: {
             textDocumentSync: documents.syncKind,
@@ -166,31 +164,45 @@ function updateConfiguration() {
 }
 
 documents.onDidChangeContent((textDocumentChangeEvent) => {
-    triggerValidation(textDocumentChangeEvent.document);
+    try {
+        triggerValidation(textDocumentChangeEvent.document);
+    } catch {
+    }
 });
 
 documents.onDidClose(textDocumentChangeEvent => {
-    cleanPendingValidation(textDocumentChangeEvent.document);
-    connection.sendDiagnostics({ uri: textDocumentChangeEvent.document.uri, diagnostics: [] });
+    try {
+        cleanPendingValidation(textDocumentChangeEvent.document);
+        connection.sendDiagnostics({ uri: textDocumentChangeEvent.document.uri, diagnostics: [] });
+    } catch {
+    }
 });
 
 let pendingValidationRequests: { [uri: string]: NodeJS.Timer; } = {};
 const validationDelayMs = 200;
 
 function cleanPendingValidation(textDocument: TextDocument): void {
-    let request = pendingValidationRequests[textDocument.uri];
-    if (request) {
-        clearTimeout(request);
-        delete pendingValidationRequests[textDocument.uri];
+    try {
+        let request = pendingValidationRequests[textDocument.uri];
+        if (request) {
+            clearTimeout(request);
+            delete pendingValidationRequests[textDocument.uri];
+        }
+    } catch {
+
     }
 }
 
 function triggerValidation(textDocument: TextDocument): void {
-    cleanPendingValidation(textDocument);
-    pendingValidationRequests[textDocument.uri] = setTimeout(() => {
-        delete pendingValidationRequests[textDocument.uri];
-        validateTextDocument(textDocument);
-    }, validationDelayMs);
+    try {
+        cleanPendingValidation(textDocument);
+        pendingValidationRequests[textDocument.uri] = setTimeout(() => {
+            delete pendingValidationRequests[textDocument.uri];
+            validateTextDocument(textDocument);
+        }, validationDelayMs);
+    }
+    catch {
+    }
 }
 
 function validateTextDocument(textDocument: TextDocument): void {
