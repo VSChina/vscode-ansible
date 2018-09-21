@@ -31,7 +31,8 @@
     "onCommand:vscode-ansible.playbook-in-docker",
     "onCommand:vscode-ansible.playbook-in-localansible",
     "onCommand:vscode-ansible.ssh",
-    "onCommand:vscode-ansible.sync-folder-ssh"
+    "onCommand:vscode-ansible.sync-folder-ssh",
+    "onCommand:vscode-ansible.resource-module-samples"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -71,6 +72,11 @@
       {
         "command": "vscode-ansible.sync-folder-ssh",
         "title": "Copy folder to Remote Host",
+        "category": "Ansible"
+      },
+      {
+        "command": "vscode-ansible.resource-module-samples",
+        "title": "Samples for azure_rm_resource (PREVIEW)",
         "category": "Ansible"
       }
     ],
@@ -223,6 +229,11 @@
           "type": "string",
           "default": "microsoft/ansible:latest",
           "description": "Custom docker image when running playbook in Docker."
+        },
+        "ansible.azureRestSpec": {
+          "type": "string",
+          "default": "",
+          "description": "Location of Azure REST specification."
         }
       }
     }
@@ -248,6 +259,7 @@
     "azure-storage": "^2.10.1",
     "fs-extra": "^4.0.2",
     "fuzzaldrin-plus": "^0.6.0",
+    "git-clone": "^0.1.0",
     "ms-rest": "^2.3.6",
     "ms-rest-azure": "^2.5.7",
     "opn": "^5.3.0",

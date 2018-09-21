@@ -15,8 +15,8 @@ export class PlaybookManager {
                 text = vscode.window.activeTextEditor.document.getText();
             }
 
-            let authorizationTaskPosition: number = text.indexOf("- name: " + name);
-            return authorizationTaskPosition >= 0;
+            let authorisationTaskPosition: number = text.indexOf("- name: " + name);
+            return authorisationTaskPosition >= 0;
         }
 
         // just a simple approach for now
@@ -40,27 +40,33 @@ export class PlaybookManager {
                 tabSize = vscode.window.activeTextEditor.options.tabSize;
             }
 
+            let lineCount = 0;
             if (vscode.window.activeTextEditor.document.getText() == "") {
 
                 vscode.window.activeTextEditor.edit(function (edit) {
                     let prefix: string = "- hosts: localhost\r" +
+                        " ".repeat(tabSize) + "vars:\r" +
+                        " ".repeat(tabSize * 2) + "resource_group:\r" +
                         " ".repeat(tabSize) + "tasks:\r";
                     edit.insert(new vscode.Position(0, 0), prefix);
                 });
+
+                lineCount = 7;
+            } else {
+                lineCount = vscode.window.activeTextEditor.document.lineCount;
             }
 
             // add spaces below
             let lines: string[] = task.split('\r');
 
             for (var i = 0; i < lines.length; i++) {
-                // XXX - just 2 tabs at the moment, we have to detect exactly
                 let prefix = " ".repeat(tabSize * 2);
                 lines[i] = prefix + lines[i];
             }
 
             task = '\r' + lines.join('\r');
 
-            let insertionPoint = new vscode.Position(vscode.window.activeTextEditor.document.lineCount + 1, 0);
+            let insertionPoint = new vscode.Position(lineCount - 1, 0);
             vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(task), insertionPoint);
         }
     }
