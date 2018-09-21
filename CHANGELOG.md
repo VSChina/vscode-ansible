@@ -3,11 +3,11 @@ All notable changes to the "vscode-ansible" extension will be documented in this
 
 ## 0.5.0
 #### New features
-- New command to generate sample for azure_rm_resource module. [PR 178](https://github.com/VSChina/vscode-ansible/pull/178)
+- New command `Samples for azure_rm_resource (PREVIEW)` to generate samples for azure_rm_resource module. [PR 178](https://github.com/VSChina/vscode-ansible/pull/178)
 
 #### Bug fixing
 - Syntax highlighting error for parameters after attribute. [Issue 181](https://github.com/VSChina/vscode-ansible/issues/181)
-- Erros in output windows. [Issue 179](https://github.com/VSChina/vscode-ansible/issues/179)
+- Errors in output windows when editing yaml files. [Issue 179](https://github.com/VSChina/vscode-ansible/issues/179)
 
 #### Thank you
 @asinn826 for refining notification messages. [PR 180](https://github.com/VSChina/vscode-ansible/pull/180)
