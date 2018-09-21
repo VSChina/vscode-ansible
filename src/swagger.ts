@@ -78,9 +78,9 @@ export class Swagger {
                             if (subresourceCount == 1) {
                                 playbook += TAB + TAB + "subresource:\r";
                             }
-                            playbook += TAB + TAB + + TAB + "- type: " + resourceType + "\r";
+                            playbook += TAB + TAB + TAB + "- type: " + resourceType + "\r";
                             if (resourceName != null) {
-                                playbook += TAB + TAB + + TAB + "  name: \"{{ " + resourceName  + " }}\"\r";
+                                playbook += TAB + TAB + TAB + "  name: \"{{ " + resourceName  + " }}\"\r";
                             }
                         }
                         subresourceCount++;                
