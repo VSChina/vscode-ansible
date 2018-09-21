@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to the "vscode-ansible" extension will be documented in this file.
 
+## 0.5.0
+#### New features
+- New command to generate sample for azure_rm_resource module. [PR 178](https://github.com/VSChina/vscode-ansible/pull/178)
+
+#### Bug fixing
+- Syntax highlighting error for parameters after attribute. [Issue 181](https://github.com/VSChina/vscode-ansible/issues/181)
+- Erros in output windows. [Issue 179](https://github.com/VSChina/vscode-ansible/issues/179)
+
+#### Thank you
+@asinn826 for refining notification messages. [PR 180](https://github.com/VSChina/vscode-ansible/pull/180)
+
 ## 0.4.0
 #### New features
 - Customize docker image name. [PR 166](https://github.com/VSChina/vscode-ansible/pull/166), [Issue 163](https://github.com/VSChina/vscode-ansible/issues/163)
@@ -12,7 +23,7 @@ All notable changes to the "vscode-ansible" extension will be documented in this
 - Nested list of dictionaries not highlighted. [Issue 168](https://github.com/VSChina/vscode-ansible/issues/168)
 
 #### Thank you
-@muellerbe for fixing doc typo.
+@muellerbe for fixing doc typo. [PR 164](https://github.com/VSChina/vscode-ansible/pull/164)
 
 ## 0.3.1
 #### Bug fixing
