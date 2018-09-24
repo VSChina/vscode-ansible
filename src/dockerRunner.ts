@@ -20,41 +20,36 @@ export class DockerRunner extends TerminalBaseRunner {
         var cmdsToTerminal = [];
         let cmd: string = utilities.getCodeConfiguration<string>(null, Constants.Config_terminalInitCommand);
 
-        var sourcePath = path.dirname(playbook);
         var targetPath = '/playbook';
         var targetPlaybook = targetPath + '/' + path.basename(playbook);
         if (vscode.workspace.workspaceFolders) {
-            sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
             targetPath = '/' + vscode.workspace.name;
-            targetPlaybook = path.relative(sourcePath, playbook);
+            targetPlaybook = path.relative(vscode.workspace.rootPath, playbook);
             targetPlaybook = targetPlaybook.replace(/\\/g, '/');
         }
 
-        if (cmd === "default" || cmd === '') {
-            cmd = "docker run --rm -it -v \"$workspace:$targetFolder\"  --workdir \"$targetFolder\" --name $containerId";
-            cmd = cmd.replace('$workspace', sourcePath);
-            cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetPath);
-            cmd = cmd.replace('$containerId', terminalId);
+        cmd = cmd.replace(/\${workspaceFolder}/g, `${vscode.workspace.rootPath}`);
+        cmd = cmd.replace(/\${workspaceFolderBasename}/g, `${path.basename(vscode.workspace.rootPath)}`);
+        cmd = cmd.replace(/\${ansible.dockerImage}/g, this.getDockerImageName());
+        cmd = cmd.replace(/\${ansible.targetPlaybook}/g, targetPlaybook);
 
-            // add credential envs if any
-            if (envs) {
-                for (var item in envs) {
-                    cmd += ' -e ';
-                    cmd += item + '=' + envs[item] + ' ';
-                }
+        cmd = cmd.replace('${ansible.containerId}', terminalId);
+
+        // add credential envs if any
+        var cmdEnv = ""
+        if (envs) {
+            for (var item in envs) {
+                cmdEnv += ' -e ';
+                cmdEnv += item + '=' + envs[item] + ' ';
             }
-
-            // add azure user agent
-            if (utilities.isTelemetryEnabled()) {
-                cmd += ' -e ' + Constants.UserAgentName + '=' + utilities.getUserAgent() + ' ';
-            }
-
-            cmd += ' ' + this.getDockerImageName() + ' bash';
-            cmdsToTerminal.push(cmd);
-            cmdsToTerminal.push(this.getRunPlaybookCmd(targetPlaybook));
-        } else {
-            cmdsToTerminal.push(cmd);
         }
+        // add azure user agent
+        if (utilities.isTelemetryEnabled()) {
+            cmdEnv += ' -e ' + Constants.UserAgentName + '=' + utilities.getUserAgent() + ' ';
+        }
+        cmd = cmd.replace('${ansible.environments}', cmdEnv);
+
+        cmdsToTerminal.push(cmd);
 
         return cmdsToTerminal;
     }
