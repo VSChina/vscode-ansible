@@ -10,6 +10,7 @@ export class Constants {
     public static Config_credentialsFile = 'credentialsFile';
     public static Config_dockerImage = 'dockerImage';
     public static Config_terminalInitCommand = 'terminalInitCommand';
+    public static Config_fileCopyConfig = 'fileCopyConfig';
     public static GitHubApiHost = 'api.github.com';
     public static GitHubRawContentHost = 'raw.githubusercontent.com';
     public static AzureQuickStartTemplates = 'Azure/azure-quickstart-templates';

@@ -24,7 +24,7 @@ export class FileSyncer {
 
     constructor(outputChannel: vscode.OutputChannel) {
         this._outputChannel = outputChannel;
-        this._configuration = utilities.getCodeConfiguration('ansible', 'copyFileOnSave');
+        this._configuration = utilities.getCodeConfiguration('ansible', Constants.Config_fileCopyConfig);
         this._statusBar = vscode.window.createStatusBarItem(StatusBarAlignment.Right, 100);
     }
 
