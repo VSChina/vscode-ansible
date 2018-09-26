@@ -6,6 +6,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { SSHServer, FileCopyConfigs } from './interfaces';
 import * as sshHelper from './sshRunner';
+import { Constants } from './constants';
 
 const browseThePC = 'Browse the PC..';
 
@@ -101,7 +102,7 @@ export class FolderSyncer {
 
 
     private async getTargetFolder(srcFolder: string, targetHostName: string): Promise<string> {
-        let existingConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', 'fileCopyConfig');
+        let existingConfig = utilities.getCodeConfiguration<FileCopyConfigs>('ansible', Constants.Config_fileCopyConfig);
 
         let configuredTargetPath = "";
         if (existingConfig) {

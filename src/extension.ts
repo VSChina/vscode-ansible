@@ -15,6 +15,7 @@ import { SSHRunner } from './sshRunner';
 import { FolderSyncer } from './folderSyncer';
 import { FileSyncer } from './fileSyncer';
 import { RestSamples } from './restSamples';
+import { Constants } from './constants';
 
 const documentSelector = [
     { language: 'yaml', scheme: 'file' },
@@ -69,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((configChange) => {
-        if (configChange.affectsConfiguration("ansible.fileCopyConfig")) {
+        if (configChange.affectsConfiguration("ansible." + Constants.Config_fileCopyConfig)) {
             let config = vscode.workspace.getConfiguration('ansible').get('fileCopyConfig');
             fileSyncer.onConfigurationChange(config);
         }
