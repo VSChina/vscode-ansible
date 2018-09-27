@@ -131,7 +131,8 @@ export class FileSyncer {
     }
 
     private isExcluded(fileName): boolean {
-        if (fileName.endsWith('.vscode/settings.json') || fileName.endsWith('.vscode\\settings.json')) {
+        if (fileName.endsWith(path.join('.vscode', path.win32.sep, 'settings.json')) ||
+            fileName.endsWith(path.join('.vscode', path.posix.sep, 'settings.json'))) {
             return true;
         }
         return false;
