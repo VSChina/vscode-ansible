@@ -257,14 +257,33 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
                 reject(err);
             });
 
-            conn.end();
-
-            scp.scp(source, client, (err) => {
-                if (err) {
-                    vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
-                    return reject(err);
+            conn.on('ready', () => {
+                if (fsExtra.lstatSync(source).isDirectory()) {
+                    conn.exec("rm -fr " + dest, (error) => {
+                        conn.end();
+                        if (error) {
+                            vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + error);
+                            reject(error);
+                        } else {
+                            scp.scp(source, client, (err) => {
+                                if (err) {
+                                    vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
+                                    reject(err);
+                                }
+                                resolve();
+                            });
+                        }
+                    });
+                } else {
+                    conn.end();
+                    scp.scp(source, client, (err) => {
+                        if (err) {
+                            vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
+                            reject(err);
+                        }
+                        resolve();
+                    });
                 }
-                return resolve();
             });
 
         } catch (err) {

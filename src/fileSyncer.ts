@@ -91,11 +91,14 @@ export class FileSyncer {
             }
             if (fileName != null) {
                 // check if file under configured source path
+                if (this.isExcluded(fileName)) {
+                    continue;
+                }
                 if (utilities.isSubPath(fileName, item.sourcePath)) {
                     source = fileName;
                     target = path.join(item.targetPath, path.relative(item.sourcePath, fileName));
                 } else {
-                    return;
+                    continue;
                 }
             }
 
@@ -125,5 +128,12 @@ export class FileSyncer {
             }
         }
         return null;
+    }
+
+    private isExcluded(fileName): boolean {
+        if (fileName.endsWith('.vscode/settings.json') || fileName.endsWith('.vscode\\settings.json')) {
+            return true;
+        }
+        return false;
     }
 }
