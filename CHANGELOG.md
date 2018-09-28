@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to the "vscode-ansible" extension will be documented in this file.
 
+
+## 0.5.1
+#### Bug fixing
+- Fixing wrong configuration name. [PR 188](https://github.com/VSChina/vscode-ansible/pull/188)
+- Workarond scp not deleting folders/files existing on remote host only. [PR 190](https://github.com/VSChina/vscode-ansible/pull/190)
+
 ## 0.5.0
 #### New features
 - New command `Samples for azure_rm_resource (PREVIEW)` to generate samples for azure_rm_resource module. [PR 178](https://github.com/VSChina/vscode-ansible/pull/178)

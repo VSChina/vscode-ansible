@@ -91,10 +91,7 @@ export class FileSyncer {
             }
             if (fileName != null) {
                 // check if file under configured source path
-                if (this.isExcluded(fileName)) {
-                    continue;
-                }
-                if (utilities.isSubPath(fileName, item.sourcePath)) {
+                if ((!this.isExcluded(fileName)) && utilities.isSubPath(fileName, item.sourcePath)) {
                     source = fileName;
                     target = path.join(item.targetPath, path.relative(item.sourcePath, fileName));
                 } else {
