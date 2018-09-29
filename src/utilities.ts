@@ -203,7 +203,7 @@ export function updateCodeConfiguration(section, configName, configValue, global
     return vscode.workspace.getConfiguration(section).update(configName, configValue, global);
 }
 
-export function copyFilesRemote(source: string, dest: string, sshServer: SSHServer): Promise<void> {
+export function copyFilesRemote(source: string, dest: string, sshServer: SSHServer, forceDeletion: boolean = false): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         if (!sshServer) {
             reject('Invalid ssh server!');
@@ -258,7 +258,7 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
             });
 
             conn.on('ready', () => {
-                if (fsExtra.lstatSync(source).isDirectory()) {
+                if (forceDeletion && fsExtra.lstatSync(source).isDirectory()) {
                     conn.exec("rm -fr " + dest, (error) => {
                         conn.end();
                         if (error) {

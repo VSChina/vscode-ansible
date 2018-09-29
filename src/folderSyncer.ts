@@ -83,7 +83,7 @@ export class FolderSyncer {
 
         const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 800);
 
-        return utilities.copyFilesRemote(sourceFolder, targetPath, targetServer)
+        return utilities.copyFilesRemote(sourceFolder, targetPath, targetServer, true)
             .then(() => {
                 progress.cancel();
 
