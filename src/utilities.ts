@@ -156,7 +156,7 @@ export function parseCredentialsFile(outputChannel): string[] {
 }
 
 export function getCredentialsFile(): string {
-    var configValue = getCodeConfiguration<string>(null, Constants.Config_credentialsFile);
+    var configValue = getCodeConfiguration<string>('ansible', Constants.Config_credentialsFile);
 
     if (configValue === undefined || configValue === '') {
         configValue = path.join(os.homedir(), '.vscode', 'ansible-credentials.yml');

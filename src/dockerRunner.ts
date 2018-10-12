@@ -9,6 +9,7 @@ import { TerminalExecutor } from './terminalExecutor';
 import { TelemetryClient } from './telemetryClient';
 import { clearInterval } from 'timers';
 import { TerminalBaseRunner } from './terminalBaseRunner';
+import * as fsExtra from 'fs-extra';
 
 
 export class DockerRunner extends TerminalBaseRunner {
@@ -75,27 +76,27 @@ export class DockerRunner extends TerminalBaseRunner {
 
             if (!utilities.isCredentialConfigured()) {
                 const cancelItem: vscode.MessageItem = { title: "Not Now" };
-                const promptMsg = 'Please configure cloud credentials at ' + utilities.getCredentialsFile() + ' for first time';
+                const promptMsg = 'Please configure cloud credentials at ' + utilities.getCredentialsFile() + ' for first time.';
 
+                utilities.updateCodeConfiguration(null, Constants.Config_credentialConfigured, true);
+
+                let credentialFile = utilities.getCredentialsFile();
                 vscode.window.showWarningMessage(promptMsg, msgOption, msgItem, cancelItem).then(response => {
-                    utilities.updateCodeConfiguration(null, Constants.Config_credentialConfigured, true);
                     if (response === msgItem) {
-                        vscode.workspace.openTextDocument(utilities.getCredentialsFile()).then(doc => {
-                            vscode.window.showTextDocument(doc);
-                        });
-                    } else if (response === cancelItem) {
+                        if (fsExtra.existsSync(credentialFile)) {
+                            vscode.workspace.openTextDocument().then(doc => {
+                                vscode.window.showTextDocument(doc);
+                            });
+                        } else {
+                            this._outputChannel.appendLine("Please configure cloud credentials by following https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible");
+                            this._outputChannel.show();
+                        }
+                    } else {
                         this.startTerminal(terminalId, initCmd, Constants.AnsibleTerminalName + ' ' + Option.docker, true, subCmds, 180, false);
                     }
                 });
+
             } else {
-                const openItem: vscode.MessageItem = { title: "Open File" };
-                vscode.window.showInformationMessage('Use cloud credential file ' + utilities.getCredentialsFile(), msgOption, msgItem, openItem).then(response => {
-                    if (response === openItem) {
-                        vscode.workspace.openTextDocument(utilities.getCredentialsFile()).then(doc => {
-                            vscode.window.showTextDocument(doc);
-                        });
-                    }
-                });
                 this.startTerminal(terminalId, initCmd, Constants.AnsibleTerminalName + ' ' + Option.docker, true, subCmds, 180, false);
             }
         });
