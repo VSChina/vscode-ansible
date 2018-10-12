@@ -32,11 +32,11 @@ def get_module_list():
     module_paths = module_loader._get_paths()
     for path in module_paths:
         if use_old_loader:
-            doc_cli.find_plugins(path, "module"))
+            doc_cli.find_plugins(path, "module")
             module_list = doc_cli.plugin_list
         else:
             module_list.update(doc_cli.find_plugins(path, 'module'))
-            return sorted(set(module_list))
+    return sorted(set(module_list))
 
 
 def main():
@@ -44,6 +44,7 @@ def main():
     result = {'modules': [], 'directives': {}, 'lookup_plugins': []}
 
     for module in get_module_list():
+        print('module is: ' + module)
         if module in BLACKLIST_MODULES:
             continue
         filename = module_loader.find_plugin(module, mod_type='.py')
