@@ -10,7 +10,6 @@ The VSCode ansible extension is designed to increase developer productivity auth
 - [Configuration](#configuration)
 - [Prerequisites](#prerequisites)
 - [Usage](#usage) 
-   - [Auto completion](#auto-completion)
    - [Code Snippets](#code-snippets)
    - [Syntax highlighting](#syntax-highlighting)
    - Yaml validation
