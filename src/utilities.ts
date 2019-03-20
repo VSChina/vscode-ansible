@@ -13,6 +13,7 @@ import { SSHServer } from './interfaces';
 import * as scp from 'scp2';
 import { clearInterval } from 'timers';
 import * as ssh from 'ssh2';
+import { getStorageAccountforCloudShell } from './cloudConsoleLauncher';
 
 const sshConfigFile = path.join(os.homedir(), '.ssh', 'servers.json');
 
@@ -74,6 +75,11 @@ export function isDockerInstalled(outputChannel: vscode.OutputChannel, cb: Funct
 
 export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
     var cmd = process.platform === 'win32' ? 'ansible --version' : 'type ansible';
+
+    let useWSL = getCodeConfiguration<string>('ansible', Constants.Config_useWSL);
+    if (useWSL) {
+        cmd = 'wsl.exe -- ' + cmd;
+    }
 
     child_process.exec(cmd).on('exit', function (code) {
         if (!code) {

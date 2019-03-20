@@ -31,7 +31,22 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
         if (utilities.isTelemetryEnabled()) {
             cmdsToTerminal.push(envCmd + Constants.UserAgentName + '=' + utilities.getUserAgent());
         }
-        cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + playbook + "\""));
+
+        let useWSL = utilities.getCodeConfiguration<string>('ansible', Constants.Config_useWSL);
+        if (useWSL) {
+            var sourcePath = path.dirname(playbook);
+            var targetPath = '/playbook';
+            var targetPlaybook = targetPath + '/' + path.basename(playbook);
+            if (vscode.workspace.workspaceFolders) {
+                sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                targetPath = '/' + vscode.workspace.name;
+                targetPlaybook = path.relative(sourcePath, playbook);
+                targetPlaybook = targetPlaybook.replace(/\\/g, '/');
+            }
+            cmdsToTerminal.push("wsl.exe -- " + this.getRunPlaybookCmd("\"" + targetPlaybook + "\""));
+        } else {
+            cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + playbook + "\""));
+        }
         return cmdsToTerminal;
     }
 
