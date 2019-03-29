@@ -2,6 +2,7 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as utilities from './utilities';
 import { setInterval, clearInterval } from 'timers';
 
 const MAX_TERMINAL_COUNT = 20;
@@ -43,7 +44,7 @@ export class TerminalExecutor {
                 vscode.window.showErrorMessage('Reached max limit of active terminals: ' + terminalName + ', please delete unused terminals.');
                 return cb(null, null);
             }
-            var newterminal = vscode.window.createTerminal(terminalName);
+            var newterminal = utilities.isWslEnabled() ? vscode.window.createTerminal(terminalName, "wsl.exe") : vscode.window.createTerminal(terminalName);
             this.terminals[terminalName] = newterminal;
             terminalCount[terminalName]++;
         }

@@ -74,12 +74,7 @@ export function isDockerInstalled(outputChannel: vscode.OutputChannel, cb: Funct
 }
 
 export function isAnsibleInstalled(outputChannel: vscode.OutputChannel, cb: Function): void {
-    var cmd = process.platform === 'win32' ? 'ansible --version' : 'type ansible';
-
-    let useWSL = getCodeConfiguration<string>('ansible', Constants.Config_useWSL);
-    if (useWSL) {
-        cmd = 'wsl.exe -- ' + cmd;
-    }
+    var cmd = process.platform === 'win32' ? 'wsl -- ansible --version' : 'type ansible';
 
     child_process.exec(cmd).on('exit', function (code) {
         if (!code) {
@@ -118,6 +113,30 @@ export function IsNodeInstalled(): Promise<boolean> {
             }
         });
     })
+}
+
+export function IsWslInstalled(): Promise<boolean> {
+    var cmd = 'wsl.exe -- ls';
+    return new Promise<boolean>((resolve, reject) => {
+        child_process.exec(cmd).on('exit', function (code) {
+            if (!code) {
+                return resolve(true);
+            } else {
+                const open: vscode.MessageItem = { title: "View" };
+                vscode.window.showErrorMessage('Please install Windows Services for Linux.', open)
+                    .then(response => {
+                        if (response === open) {
+                            opn('https://docs.microsoft.com/en-us/windows/wsl/install-win10');
+                        }
+                        return resolve(false);
+                    });
+            }
+        });
+    })
+}
+
+export function isWslEnabled(): boolean {
+    return IsWslInstalled() && getCodeConfiguration('ansible', 'useWSL');
 }
 
 export function validatePlaybook(playbook: string): boolean {

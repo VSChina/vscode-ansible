@@ -19,9 +19,9 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
     protected getCmds(playbook: string, envs: string[], terminalId: string): string[] {
         var cmdsToTerminal = [];
 
-        var envCmd = this.isWindows() ? 'set ' : 'export ';
+        var envCmd = this.isWindows() && !utilities.isWslEnabled() ? 'set ' : 'export ';
 
-        if (envs) {
+        if (envs.length > 0) {
             for (var item in envs) {
                 cmdsToTerminal.push(envCmd + item + '=' + envs[item]);
             }
@@ -32,8 +32,7 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
             cmdsToTerminal.push(envCmd + Constants.UserAgentName + '=' + utilities.getUserAgent());
         }
 
-        let useWSL = utilities.getCodeConfiguration<string>('ansible', Constants.Config_useWSL);
-        if (useWSL) {
+        if (utilities.isWslEnabled()) {
             var sourcePath = path.dirname(playbook);
             var targetPath = '/playbook';
             var targetPlaybook = targetPath + '/' + path.basename(playbook);
@@ -43,7 +42,7 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
                 targetPlaybook = path.relative(sourcePath, playbook);
                 targetPlaybook = targetPlaybook.replace(/\\/g, '/');
             }
-            cmdsToTerminal.push("wsl.exe -- " + this.getRunPlaybookCmd("\"" + targetPlaybook + "\""));
+            cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + targetPlaybook + "\""));
         } else {
             cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + playbook + "\""));
         }
