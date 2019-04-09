@@ -13,12 +13,13 @@ import { SSHServer } from './interfaces';
 import * as scp from 'scp2';
 import { clearInterval } from 'timers';
 import * as ssh from 'ssh2';
+import * as childprocess from 'child_process';
 
 const sshConfigFile = path.join(os.homedir(), '.ssh', 'servers.json');
 
 export function localExecCmd(cmd: string, args: string[], outputChannel: vscode.OutputChannel, cb: Function): void {
     try {
-        var cp = require('child_process').spawn(cmd, args);
+        var cp = childprocess.spawn(cmd, args);
 
         cp.stdout.on('data', function (data) {
             if (outputChannel) {

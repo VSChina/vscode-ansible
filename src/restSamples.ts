@@ -6,6 +6,7 @@ import { PlaybookManager } from './playbookManager';
 import * as utilities from './utilities';
 var path = require("path");
 var fs = require('fs');
+var clone = require('git-clone');
 var pm = new PlaybookManager();
 
 export class RestSamples {
@@ -91,7 +92,6 @@ export class RestSamples {
                 const progress = utilities.delayedInterval(() => { this._outputChannel.append('.') }, 500);
 
                 this._outputChannel.append("Getting Azure REST API specifications.");
-                let clone = require('git-clone');
                 //let home: string = path.join(vscode.extensions.getExtension("vscoss.vscode-ansible").extensionPath, 'azure-rest-api-specs');
                 let home = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.vscode', 'rest');
                 clone("https://github.com/Azure/azure-rest-api-specs.git", home, null, (result) => {

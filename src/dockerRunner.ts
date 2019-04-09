@@ -10,6 +10,7 @@ import { TelemetryClient } from './telemetryClient';
 import { clearInterval } from 'timers';
 import { TerminalBaseRunner } from './terminalBaseRunner';
 import * as fsExtra from 'fs-extra';
+import * as child_process from 'child_process';
 
 
 export class DockerRunner extends TerminalBaseRunner {
@@ -105,7 +106,7 @@ export class DockerRunner extends TerminalBaseRunner {
     private startTerminal(terminalId: string, initCmd: string, terminalName: string, waitAfterInit: boolean, subCmds: string[], interval: number, reuse: boolean): void {
         TerminalExecutor.runInTerminal(initCmd, terminalName, waitAfterInit, subCmds, interval, reuse, function (terminal, interval) {
             if (terminal) {
-                require('child_process').exec('docker ps --filter name=' + terminalId, (err, stdout, stderr) => {
+                child_process.exec('docker ps --filter name=' + terminalId, (err, stdout, stderr) => {
                     if (err || stderr) {
                         console.log('err: ' + err + ' ' + stderr);
                         return;
