@@ -233,7 +233,7 @@
         "ansible.useWSL": {
           "type": "boolean",
           "default": "",
-          "description": "Use local WSL to run Ansible"
+          "description": "Use local Windows Subsystem for Linux to run Ansible"
         },
         "ansible.azureRestSpec": {
           "type": "string",

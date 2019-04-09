@@ -123,7 +123,7 @@ export function IsWslInstalled(): Promise<boolean> {
                 return resolve(true);
             } else {
                 const open: vscode.MessageItem = { title: "View" };
-                vscode.window.showErrorMessage('Please install Windows Services for Linux.', open)
+                vscode.window.showErrorMessage('Please install Windows Subsystem for Linux.', open)
                     .then(response => {
                         if (response === open) {
                             opn('https://docs.microsoft.com/en-us/windows/wsl/install-win10');
