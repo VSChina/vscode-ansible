@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { Constants } from './constants';
 import * as utilities from './utilities';
+var https = require('https');
 
 export class AzureHelpers {
     constructor() {
@@ -23,8 +24,6 @@ export class AzureHelpers {
         }
 
         // XXX - check if credentials are valid
-
-        var https = require('https');
         let __this = this;
 
         let postData: string = "resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id=" + azure_client_id + "&grant_type=client_credentials&client_secret=" + azure_secret;
