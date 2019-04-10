@@ -33,9 +33,15 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
         }
 
         if (utilities.isWslEnabled()) {
-            var targetPlaybook = '/mnt/' + playbook
-                .replace(/:/, '')
-                .replace(/\\/g, '/');
+            var sourcePath = path.dirname(playbook);
+            var targetPath = '/mnt/' + playbook.replace(/:/, '');
+            var targetPlaybook = targetPath + '/' + path.basename(playbook);
+            if (vscode.workspace.workspaceFolders) {
+                sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                targetPath = '/' + vscode.workspace.name;
+                targetPlaybook = path.relative(sourcePath, playbook);
+            }
+            targetPlaybook = targetPlaybook.replace(/\\/g, '/');
             cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + targetPlaybook + "\""));
         } else {
             cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + playbook + "\""));
