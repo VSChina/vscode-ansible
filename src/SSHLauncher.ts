@@ -3,14 +3,13 @@ import * as ssh from 'ssh2';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as ost from 'os';
-import * as fsExtra from 'fs-extra';
 
 async function connectTerminal(host: string, port: string, user: string, password: string, keyfile: string, passphrase: string) {
     const tempFile = path.join(ost.tmpdir(), 'vscodeansible-ssh-' + host + '.log');
     var connected = false;
 
-    if (fsExtra.existsSync(tempFile)) {
-        fsExtra.removeSync(tempFile);
+    if (fs.existsSync(tempFile)) {
+        fs.removeSync(tempFile);
     }
 
     console.log('Connecting host ' + host + '...');

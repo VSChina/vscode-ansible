@@ -1,5 +1,4 @@
 import * as fsextra from 'fs-extra';
-import { open } from 'fs';
 import { CompletionItem, CompletionItemKind, SnippetString } from 'vscode';
 import { filter } from 'fuzzaldrin-plus';
 import * as path from 'path';
