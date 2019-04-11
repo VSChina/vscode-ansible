@@ -184,7 +184,7 @@
         },
         "ansible.terminalInitCommand": {
           "type": "string",
-          "default": "default",
+          "default": "docker run --rm -it -v \"${workspaceFolder}:/${workspaceFolderBasename}\" ${ansible.environments} --workdir \"/${workspaceFolderBasename}\" --name \"${ansible.containerId}\" \"${ansible.dockerImage}\" bash -c \"ansible-playbook ${ansible.targetPlaybook}; bash\"",
           "description": "Command to be run in terminal after it starts"
         },
         "ansible.credentialsConfigured": {
