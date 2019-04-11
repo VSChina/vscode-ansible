@@ -2,9 +2,6 @@ import * as vscode from 'vscode';
 import { CompletionEngine } from './completionEngine';
 import * as utilities from './utilities';
 
-const pattern_variable = new RegExp('\\S+: \".*{{\\s*(}}.)*\"*\\s*#*.*$');
-const pattern_firstLine = new RegExp('^#\\s*ansible-configured$', 'gm');
-
 export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvider {
     private completionEngine: CompletionEngine;
 
@@ -30,11 +27,7 @@ export class AnsibleCompletionItemProvider implements vscode.CompletionItemProvi
             return;
         }
 
-        if (pattern_variable.exec(lineText)) {
-            return this.completionEngine.getVariablesCompletionItem(document, prefix, lineText);
-        } else {
-            return this.completionEngine.getCompletionItems(prefix, lineText);
-        }
+        return this.completionEngine.getCompletionItems(prefix, lineText);
     }
 
     private enableAutoCompletion(document: vscode.TextDocument): boolean {
