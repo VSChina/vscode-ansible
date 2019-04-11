@@ -33,10 +33,8 @@ export class DockerRunner extends TerminalBaseRunner {
         }
 
         if (cmd === "default" || cmd === '') {
-            cmd = "docker run --rm -it -v \"$workspace:$targetFolder\"  --workdir \"$targetFolder\" --name $containerId";
-            cmd = cmd.replace('$workspace', sourcePath);
-            cmd = cmd.replace(new RegExp('\\$targetFolder', 'g'), targetPath);
-            cmd = cmd.replace('$containerId', terminalId);
+            cmd = "docker run --rm -it -v \"" + sourcePath + ":" + targetPath + "\"" +
+                " --workdir \"" + targetPath + "\"" + " --name " + terminalId;
 
             // add credential envs if any
             if (envs) {
