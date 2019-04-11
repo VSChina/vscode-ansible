@@ -19,9 +19,9 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
     protected getCmds(playbook: string, envs: string[], terminalId: string): string[] {
         var cmdsToTerminal = [];
 
-        var envCmd = this.isWindows() ? 'set ' : 'export ';
+        var envCmd = this.isWindows() && !utilities.isWslEnabled() ? 'set ' : 'export ';
 
-        if (envs) {
+        if (envs.length > 0) {
             for (var item in envs) {
                 cmdsToTerminal.push(envCmd + item + '=' + envs[item]);
             }
@@ -31,7 +31,21 @@ export class LocalAnsibleRunner extends TerminalBaseRunner {
         if (utilities.isTelemetryEnabled()) {
             cmdsToTerminal.push(envCmd + Constants.UserAgentName + '=' + utilities.getUserAgent());
         }
-        cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + playbook + "\""));
+
+        if (utilities.isWslEnabled()) {
+            var sourcePath = path.dirname(playbook);
+            var targetPath = '/mnt/' + playbook.replace(/:/, '');
+            var targetPlaybook = targetPath + '/' + path.basename(playbook);
+            if (vscode.workspace.workspaceFolders) {
+                sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                targetPath = '/' + vscode.workspace.name;
+                targetPlaybook = path.relative(sourcePath, playbook);
+            }
+            targetPlaybook = targetPlaybook.replace(/\\/g, '/');
+            cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + targetPlaybook + "\""));
+        } else {
+            cmdsToTerminal.push(this.getRunPlaybookCmd("\"" + playbook + "\""));
+        }
         return cmdsToTerminal;
     }
 

@@ -230,6 +230,11 @@
           "default": "microsoft/ansible:latest",
           "description": "Custom docker image when running playbook in Docker."
         },
+        "ansible.useWSL": {
+          "type": "boolean",
+          "default": "",
+          "description": "Use local Windows Subsystem for Linux to run Ansible"
+        },
         "ansible.azureRestSpec": {
           "type": "string",
           "default": "",
