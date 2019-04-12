@@ -71,6 +71,7 @@ export class SSHRunner extends TerminalBaseRunner {
         }
 
         // set default source file/folder, destination file/folder, destination playbook name
+        // default copy playbook to home directory
         let source = playbook;
         let target = path.join('\./', path.basename(playbook));
         let targetPlaybook = target;
@@ -86,9 +87,12 @@ export class SSHRunner extends TerminalBaseRunner {
                 if (!fileConfig.copyOnSave) {
                     await utilities.copyFilesRemote(source, targetPlaybook, targetServer);
                 }
+
+                // set ssh session default folder to target folder
+                cmds.push("cd " + fileConfig.targetPath);
             }
         } else {
-            // if no config in settings.json, ask for promote whether to copy workspace, thend do copy, then run it.
+            // if no config in settings.json, ask for promote whether to copy workspace, then do copy, then run it.
             const okItem: vscode.MessageItem = { title: "always" };
             const cancelItem: vscode.MessageItem = { title: "no, not show this again" };
             let response = await vscode.window.showWarningMessage('Copy workspace to remote host?', okItem, cancelItem);
@@ -123,6 +127,8 @@ export class SSHRunner extends TerminalBaseRunner {
                     }
                     return;
                 }
+
+                cmds.push("cd " + fileConfig.targetPath);
             } else {
                 fileConfig.targetPath = Constants.NotShowThisAgain;
                 // if cancel, copy playbook only
