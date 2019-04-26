@@ -88,7 +88,9 @@ export class SSHRunner extends TerminalBaseRunner {
                     await utilities.copyFilesRemote(source, targetPlaybook, targetServer);
                 }
 
+                // set ssh session default folder to target folder
                 targetFolder = fileConfig.targetPath;
+                cmds.push("cd " + fileConfig.targetPath);
             }
         } else {
             // if no config in settings.json, ask for promote whether to copy workspace, then do copy, then run it.
@@ -128,6 +130,7 @@ export class SSHRunner extends TerminalBaseRunner {
                 }
 
                 targetFolder = fileConfig.targetPath;
+                cmds.push("cd " + fileConfig.targetPath);
             } else {
                 fileConfig.targetPath = Constants.NotShowThisAgain;
                 // if cancel, copy playbook only
