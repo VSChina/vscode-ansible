@@ -13,7 +13,6 @@ import { openSSHConsole } from './SSHConsole';
 import * as os from 'os';
 import { setInterval, clearInterval } from 'timers';
 import { FolderSyncer } from './folderSyncer';
-import { FileSyncer } from './fileSyncer';
 
 const addNewHost = 'Add New Host';
 const browseThePC = 'Browse the PC..';
@@ -71,8 +70,10 @@ export class SSHRunner extends TerminalBaseRunner {
         }
 
         // set default source file/folder, destination file/folder, destination playbook name
+        // default copy playbook to home directory
         let source = playbook;
         let target = path.join('\./', path.basename(playbook));
+        let targetFolder = ".";
         let targetPlaybook = target;
 
         // check configuration
@@ -86,9 +87,11 @@ export class SSHRunner extends TerminalBaseRunner {
                 if (!fileConfig.copyOnSave) {
                     await utilities.copyFilesRemote(source, targetPlaybook, targetServer);
                 }
+
+                targetFolder = fileConfig.targetPath;
             }
         } else {
-            // if no config in settings.json, ask for promote whether to copy workspace, thend do copy, then run it.
+            // if no config in settings.json, ask for promote whether to copy workspace, then do copy, then run it.
             const okItem: vscode.MessageItem = { title: "always" };
             const cancelItem: vscode.MessageItem = { title: "no, not show this again" };
             let response = await vscode.window.showWarningMessage('Copy workspace to remote host?', okItem, cancelItem);
@@ -123,6 +126,8 @@ export class SSHRunner extends TerminalBaseRunner {
                     }
                     return;
                 }
+
+                targetFolder = fileConfig.targetPath;
             } else {
                 fileConfig.targetPath = Constants.NotShowThisAgain;
                 // if cancel, copy playbook only
@@ -130,18 +135,17 @@ export class SSHRunner extends TerminalBaseRunner {
             }
 
             // update config
-            existingConfig.push(fileConfig);
+            existingConfig.push(fileConfig);            
             utilities.updateCodeConfiguration('ansible', 'fileCopyConfig', existingConfig);
         }
         // run playbook
+        cmds.push("cd " + targetFolder);
+        cmds.push(this.getRunPlaybookCmd(path.relative(targetFolder, targetPlaybook)));
         this.OpenTerminal(targetServer, targetPlaybook, cmds);
     }
 
     private OpenTerminal(server: SSHServer, targetPlaybook: string, cmds): void {
         let terminal = undefined;
-
-        let runPlaybookCmd = this.getRunPlaybookCmd(targetPlaybook);
-        cmds.push(runPlaybookCmd);
 
         let reuse = utilities.getCodeConfiguration<boolean>('ansible', 'reuseSSHTerminal');
         if (reuse) {
