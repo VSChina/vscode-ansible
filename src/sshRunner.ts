@@ -13,7 +13,6 @@ import { openSSHConsole } from './SSHConsole';
 import * as os from 'os';
 import { setInterval, clearInterval } from 'timers';
 import { FolderSyncer } from './folderSyncer';
-import { FileSyncer } from './fileSyncer';
 
 const addNewHost = 'Add New Host';
 const browseThePC = 'Browse the PC..';
@@ -74,6 +73,7 @@ export class SSHRunner extends TerminalBaseRunner {
         // default copy playbook to home directory
         let source = playbook;
         let target = path.join('\./', path.basename(playbook));
+        let targetFolder = ".";
         let targetPlaybook = target;
 
         // check configuration
@@ -89,6 +89,7 @@ export class SSHRunner extends TerminalBaseRunner {
                 }
 
                 // set ssh session default folder to target folder
+                targetFolder = fileConfig.targetPath;
                 cmds.push("cd " + fileConfig.targetPath);
             }
         } else {
@@ -128,6 +129,7 @@ export class SSHRunner extends TerminalBaseRunner {
                     return;
                 }
 
+                targetFolder = fileConfig.targetPath;
                 cmds.push("cd " + fileConfig.targetPath);
             } else {
                 fileConfig.targetPath = Constants.NotShowThisAgain;
@@ -136,18 +138,17 @@ export class SSHRunner extends TerminalBaseRunner {
             }
 
             // update config
-            existingConfig.push(fileConfig);
+            existingConfig.push(fileConfig);            
             utilities.updateCodeConfiguration('ansible', 'fileCopyConfig', existingConfig);
         }
         // run playbook
+        cmds.push("cd " + targetFolder);
+        cmds.push(this.getRunPlaybookCmd(path.relative(targetFolder, targetPlaybook)));
         this.OpenTerminal(targetServer, targetPlaybook, cmds);
     }
 
     private OpenTerminal(server: SSHServer, targetPlaybook: string, cmds): void {
         let terminal = undefined;
-
-        let runPlaybookCmd = this.getRunPlaybookCmd(targetPlaybook);
-        cmds.push(runPlaybookCmd);
 
         let reuse = utilities.getCodeConfiguration<boolean>('ansible', 'reuseSSHTerminal');
         if (reuse) {
