@@ -245,7 +245,6 @@
   },
   "scripts": {
     "compile": "cd server && npm install && cd .. && tsc -p ./ && tsc -p server/",
-    "eslint": "./node_modules/.bin/eslint .",
     "pkgvars": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
@@ -255,7 +254,6 @@
   "devDependencies": {
     "@types/mocha": "^5.2.6",
     "@types/node": "11.13.8",
-    "eslint": "^5.16.0",
     "typescript": "^3.4.5",
     "vscode": "^1.1.33"
   },
