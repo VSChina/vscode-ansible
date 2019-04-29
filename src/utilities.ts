@@ -14,6 +14,7 @@ import * as scp from 'scp2';
 import { clearInterval } from 'timers';
 import * as ssh from 'ssh2';
 import * as childprocess from 'child_process';
+var Rsync = require('rsync');
 
 const sshConfigFile = path.join(os.homedir(), '.ssh', 'servers.json');
 
@@ -238,63 +239,35 @@ export function copyFilesRemote(source: string, dest: string, sshServer: SSHServ
             reject('No such file or directory: ' + source);
         }
 
-        var client: {};
-
+        var rsh_cmd = "sshpass";
         if (sshServer.password) {
-            client = {
-                host: sshServer.host,
-                port: sshServer.port,
-                username: sshServer.user,
-                password: sshServer.password,
-                path: dest
-            };
-
+            rsh_cmd = "sshpass -p " + sshServer.password + " -o StrictHostKeyChecking=no";
         } else if (sshServer.key) {
             if (!fsExtra.existsSync(sshServer.key)) {
                 vscode.window.showErrorMessage('File does not exist: ' + sshServer.key);
                 reject('File does not exist: ' + sshServer.key);
             }
 
-            client = {
-                host: sshServer.host,
-                port: sshServer.port,
-                username: sshServer.user,
-                privateKey: String(fsExtra.readFileSync(sshServer.key)),
-                passphrase: sshServer.passphrase,
-                path: dest
-            };
+            rsh_cmd = "ssh -i " + sshServer.key + " -o StrictHostKeyChecking=no " + " -i " + sshServer.port;
         }
 
-        try {
+        var rsync = new Rsync()
+            .shell("ssh")
+            .flags("azv")
+            .source(source)
+            .destination(sshServer.user + "@" + sshServer.host + ":" + dest)
+            .set('rsh', rsh_cmd);
 
-            var conn = new ssh.Client();
+        var command = rsync.command();
+        console.log("rsync command: " + command);
 
-            conn.connect({
-                host: sshServer.host,
-                port: sshServer.port,
-                username: sshServer.user,
-                password: sshServer.password,
-                passphrase: sshServer.passphrase,
-                privateKey: sshServer.key ? fsExtra.readFileSync(sshServer.key) : sshServer.key
-            });
-
-            conn.on('error', (err) => {
-                reject(err);
-            });
-
-            conn.end();
-            scp.scp(source, client, (err) => {
-                if (err) {
-                    vscode.window.showErrorMessage('Failed to copy ' + source + ' to ' + sshServer.host + ': ' + err);
-                    return reject(err);
-                } else {
-
-                    return resolve();
-                }
-            });
-        } catch (err) {
-            reject('scp error: ' + err);
-        }
+        rsync.execute((error, code, cmd) => {
+            if (error) {
+                vscode.window.showErrorMessage("rsync error: " + error);
+                reject(error);
+            }
+            resolve(code);
+        });
     });
 }
 
