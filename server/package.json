@@ -18,13 +18,13 @@
         "pkgvars": "node ./node_modules/vscode/bin/install"
     },
     "dependencies": {
-        "es6-promisify": "^6.0.0",
-        "fs-extra": "^5.0.0",
-        "request-light": "^0.2.3",
-        "typescript": "^2.9.2",
-        "vscode-json-languageservice": "^3.1.6",
-        "vscode-languageserver": "^3.5.1",
-        "vscode-languageserver-protocol": "3.5.0",
-        "yaml-language-server": "0.0.18"
+        "es6-promisify": "^6.0.1",
+        "fs-extra": "^7.0.1",
+        "request-light": "^0.2.4",
+        "typescript": "^3.4.5",
+        "vscode-json-languageservice": "^3.2.0",
+        "vscode-languageserver": "^5.2.1",
+        "vscode-languageserver-protocol": "3.14.1",
+        "yaml-language-server": "0.4.0"
     }
 }

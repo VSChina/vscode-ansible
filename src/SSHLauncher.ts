@@ -19,12 +19,12 @@ async function connectTerminal(host: string, port: string, user: string, passwor
 
     conn.connect({
         host: host,
-        port: port,
+        port: parseInt(port),
         username: user,
         password: password,
         privateKey: keyfile ? fs.readFileSync(keyfile) : keyfile,
         passphrase: passphrase,
-        keepaliveInternal: 4000
+        keepaliveInterval: 4000
     });
 
     conn.on('error', (err) => {
@@ -45,7 +45,7 @@ async function connectTerminal(host: string, port: string, user: string, passwor
         var sshShellOption = {
             cols: 200, rows: 30
         };
-        conn.shell(sshShellOption, { pty: sshShellOption }, (err, stream) => {
+        conn.shell(sshShellOption, (err, stream) => {
 
             if (err) {
                 process.stdout.write('ssh failed to start shell: ' + err);
