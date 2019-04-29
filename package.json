@@ -245,7 +245,7 @@
   },
   "scripts": {
     "compile": "cd server && npm install && cd .. && tsc -p ./ && tsc -p server/",
-    "eslint": "node ./node_modules/eslint/bin/eslint.js .",
+    "eslint": "./node_modules/.bin/eslint .",
     "pkgvars": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
