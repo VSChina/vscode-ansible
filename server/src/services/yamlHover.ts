@@ -58,7 +58,7 @@ export class YAMLHover {
                         if (taskNode.location === 'tasks' || (taskNode.type === 'array' && this.moduleNames.indexOf(node.value) > -1)) {
                             let hoverRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
 
-                            return Promise.resolve(this.createHover(node.getValue(), hoverRange)).then();
+                            return this.promise.resolve(this.createHover(node.getValue(), hoverRange));
                         }
                     }
                 }

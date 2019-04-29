@@ -157,7 +157,9 @@ function updateConfiguration() {
 
     let settings: LanguageSettings = {
         schemas: [],
-        validate: enableValidation
+        validate: enableValidation,
+        completion: false,
+        foramt: false
     }
     languageService.configure(settings, clientSetting);
     documents.all().forEach(triggerValidation);
