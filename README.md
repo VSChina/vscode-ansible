@@ -50,7 +50,7 @@ This extension provides below configurations in settings.json.
 |`ansible.hover`| `true`| Enable/Disable hover over module name functionality. |
 |`ansible.reuseSSHTerminal`|`true`| Enable/Disable SSH terminal reusing. |
 |`ansible.credentialsFile` |`$HOME/.vscode/ansible-credentials.yml` |Specify ansible credentials file path, used when run playbook in Docker/Local Ansible. |
-|`ansible.termininalInitCommand`|Default is `docker run` command for Docker.| Specify customized terminal init command when run playbook in Docker. |
+|`ansible.terminalInitCommand`|Default is `docker run` command for Docker.| Specify customized terminal init command when run playbook in Docker. |
 |`ansible.dockerImage`|`microsoft/ansible:latest`|Docker image name when running playbook in Docker.|
 |`ansible.customOptions`| `null` | Customize run playbook options. eg. `-i xxxx -vvv`.|
 |`ansible.fileCopyConfig`| `null` | File copying configuration when running playbook remotely via SSH. It's array of configuration. Please see detail at [here](#files-copy-to-remote-on-saving)|
