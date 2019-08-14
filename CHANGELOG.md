@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the "vscode-ansible" extension will be documented in this file.
 
+## 0.5.3
+#### Bug fixing/Improvements
+- Add right click context to convert curl to uri
+
 ## 0.5.2
 #### Bug fixing/Improvements
 - Update docker image and code snippets for Ansible 2.7.0.
