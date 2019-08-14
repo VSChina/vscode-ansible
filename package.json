@@ -32,7 +32,8 @@
     "onCommand:vscode-ansible.playbook-in-localansible",
     "onCommand:vscode-ansible.ssh",
     "onCommand:vscode-ansible.sync-folder-ssh",
-    "onCommand:vscode-ansible.resource-module-samples"
+    "onCommand:vscode-ansible.resource-module-samples",
+    "onCommand:vscode-ansible.curl-to-uri"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -77,6 +78,11 @@
       {
         "command": "vscode-ansible.resource-module-samples",
         "title": "Samples for azure_rm_resource (PREVIEW)",
+        "category": "Ansible"
+      },
+      {
+        "command": "vscode-ansible.curl-to-uri",
+        "title": "Convert curl command to URI",
         "category": "Ansible"
       }
     ],
@@ -163,6 +169,13 @@
           "command": "vscode-ansible.ssh",
           "when": "resourceLangId == ansible",
           "group": "vscode-ansible@4"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "vscode-ansible.curl-to-uri",
+          "when": "resourceLangId == ansible",
+          "group": "vscode-ansible@5"
         }
       ]
     },
@@ -261,6 +274,8 @@
     "@types/ssh2": "^0.5.38",
     "azure-arm-resource": "^7.3.0",
     "azure-storage": "^2.10.3",
+    "clipboardy": "^2.1.0",
+    "curlconverter": "^2.10.0",
     "fs-extra": "^7.0.1",
     "fuzzaldrin-plus": "^0.6.0",
     "git-clone": "^0.1.0",

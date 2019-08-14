@@ -15,6 +15,7 @@ import { SSHRunner } from './sshRunner';
 import { FolderSyncer } from './folderSyncer';
 import { FileSyncer } from './fileSyncer';
 import { RestSamples } from './restSamples';
+import { CurlToUriConverter } from './curlToUriConverter';
 import { Constants } from './constants';
 
 const documentSelector = [
@@ -43,6 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
     var folderSyncer = new FolderSyncer(outputChannel);
     var fileSyncer = new FileSyncer(outputChannel);
     var restSamples = new RestSamples(outputChannel);
+    var curlToUriConverter = new CurlToUriConverter();
 
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.playbook-in-docker', (playbook) => {
         dockerRunner.runPlaybook(playbook ? playbook.fsPath : null);
@@ -63,6 +65,11 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.sync-folder-ssh', () => {
         let srcFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
         folderSyncer.syncFolder(srcFolder, null, true);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('vscode-ansible.curl-to-uri', () => {
+        console.log("FOOO")
+        curlToUriConverter.convert()
     }));
 
     let disposable = vscode.commands.registerCommand('vscode-ansible.resource-module-samples', () => {

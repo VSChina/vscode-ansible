@@ -12,6 +12,7 @@ The VSCode ansible extension is designed to increase developer productivity auth
 - [Usage](#usage) 
    - [Code Snippets](#code-snippets)
    - [Syntax highlighting](#syntax-highlighting)
+   - [Curl to uri conversion](#curl-to-uri-conversion)
    - Yaml validation
    - [Run Ansible playbook](#run-ansible-playbook) 
        - [Run Playbook in Docker](#run-playbook-in-docker)
@@ -79,6 +80,11 @@ Code snippets will be in auto-completed list with suffix `_snippet`. Press `tab`
 ### Syntax highlighting
 Enable syntax highlighting by adding `files.associations` in `settings.json`, to associate your paths with `ansible` language, please see [sample](#usage).
 
+### Curl to uri conversion
+
+1. Load a curl command into the clipboard (i.e. copy as curl from a browser)
+2. Open a project file that has Ansible as the language
+3. Right-click Paste as URI
 
 ### Run Ansible playbook   
 ![run playbook](./images/menu.png)
