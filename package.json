@@ -265,7 +265,7 @@
     "fuzzaldrin-plus": "^0.6.0",
     "git-clone": "^0.1.0",
     "ms-rest": "^2.5.3",
-    "ms-rest-azure": "^3.0.0",
+    "ms-rest-azure": "^2.5.5",
     "opn": "^6.0.0",
     "os": "^0.1.1",
     "path": "^0.12.7",
