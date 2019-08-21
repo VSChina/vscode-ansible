@@ -17,5 +17,4 @@ install:
   - npm install -g vsce
 
 script:
-  - npm test --silent
   - vsce package

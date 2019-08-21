@@ -11,7 +11,7 @@ suite("Extension Tests", () => {
     });
 
     test("should be able to activate", function () {
-        this.timeout(5 * 1000);
+        this.timeout(10 * 1000);
         const extension = vscode.extensions.getExtension(extensionId);
         if (!extension.isActive) {
             extension.activate().then(function () {
