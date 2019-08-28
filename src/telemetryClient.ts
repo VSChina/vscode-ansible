@@ -14,4 +14,11 @@ export class TelemetryClient {
     }
 
     private static _client = (packageJson.aiKey === 'undefined' || packageJson.aiKey === '') ? null : new TelemetryReporter(Constants.ExtensionId, packageJson.version, packageJson.aiKey);
+
+    public static dispose(): Promise<any> {
+        if (this._client) {
+            return this._client.dispose();
+        }
+        return Promise.resolve(null);
+    }
 }
