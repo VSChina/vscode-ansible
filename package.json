@@ -223,7 +223,7 @@
         "ansible.fileCopyConfig": {
           "type": "array",
           "default": "",
-          "description": "Config file copying to remote host, including weather copy file on save. E.g. [ { \"server\": \"host\", \"sourcePath\":\"/mypath/\", \"targetPath\": \"/destpath/\", \"copyOnSave\", \"true\" }]"
+          "description": "Config file copying to remote host, including whether copy file on save. E.g. [ { \"server\": \"host\", \"sourcePath\":\"/mypath/\", \"targetPath\": \"/destpath/\", \"copyOnSave\", \"true\" }]"
         },
         "ansible.dockerImage": {
           "type": "string",
