@@ -239,6 +239,11 @@
           "type": "string",
           "default": "",
           "description": "Location of Azure REST specification."
+        },
+        "ansible.targetName": {
+          "type": "string",
+          "default": "",
+          "descritption": "Specify which folder will be used on the target."
         }
       }
     }

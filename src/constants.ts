@@ -3,12 +3,14 @@ export class Constants {
     public static LineSeperator = Array(50).join('=');
     public static AzureAccountExtensionId = 'ms-vscode.azure-account';
     public static DockerImageName = 'microsoft/ansible:latest';
+    public static TargetName = '${workspaceFolderBasename}';
     public static AnsibleTerminalName = 'Ansible';
     public static UserAgentName = 'VSCODEEXT_USER_AGENT';
     public static Config_cloudShellConfirmed = 'cloudShellConfirmed';
     public static Config_credentialConfigured = 'credentialsConfigured';
     public static Config_credentialsFile = 'credentialsFile';
     public static Config_dockerImage = 'dockerImage';
+    public static Config_targetName = 'targetName';
     public static Config_useWSL = 'useWSL';
     public static Config_terminalInitCommand = 'terminalInitCommand';
     public static Config_fileCopyConfig = 'fileCopyConfig';
