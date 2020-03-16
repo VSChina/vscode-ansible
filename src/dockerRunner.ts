@@ -12,10 +12,17 @@ import { TerminalBaseRunner } from './terminalBaseRunner';
 import * as fsExtra from 'fs-extra';
 import * as child_process from 'child_process';
 
-
 export class DockerRunner extends TerminalBaseRunner {
     constructor(outputChannel: vscode.OutputChannel) {
         super(outputChannel);
+    }
+
+    private getTargetName(): string {
+        let customTarget = utilities.getCodeConfiguration<string>('ansible', Constants.Config_targetName);
+        if (!customTarget) {
+            customTarget = Constants.TargetName;
+        }
+        return customTarget;
     }
 
     protected getCmds(playbook: string, envs: string[], terminalId: string): string[] {
@@ -25,16 +32,19 @@ export class DockerRunner extends TerminalBaseRunner {
         var sourcePath = path.dirname(playbook);
         var targetPath = '/playbook';
         var targetPlaybook = targetPath + '/' + path.basename(playbook);
+        targetPlaybook = path.relative(sourcePath, playbook);
+        targetPlaybook = targetPlaybook.replace(/\\/g, '/');
         if (vscode.workspace.workspaceFolders) {
             sourcePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
             targetPath = '/' + vscode.workspace.name;
             targetPlaybook = path.relative(sourcePath, playbook);
             targetPlaybook = targetPlaybook.replace(/\\/g, '/');
-        }
+	}
+
 
         if (cmd === "default" || cmd === '') {
-            cmd = "docker run --rm -it -v \"" + sourcePath + ":" + targetPath + "\"" +
-                " --workdir \"" + targetPath + "\"" + " --name " + terminalId;
+            cmd = "docker run --rm -it -v \"" + sourcePath + ":/" + this.getTargetName() + "\"" +
+                " --workdir \"/" + this.getTargetName() + "\"" + " --name " + terminalId;
 
             // add credential envs if any
             if (envs) {
