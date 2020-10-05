@@ -70,7 +70,7 @@ export class YAMLHover {
 
     private createHover(content: string, range: Range): Hover {
         let result: Hover = {
-            contents: `module, documentation at http://docs.ansible.com/ansible/${content}_module.html`,
+            contents: `module, documentation at http://docs.ansible.com/ansible/modules/${content}_module.html`,
             range: range
         }
         return result;

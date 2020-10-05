@@ -21,7 +21,7 @@ export function parseAnsibleCompletionFile(sourcefile: string): Promise<AnsibleC
         modules = data.modules.map((module) => {
             let item = new AnsibleCompletionItem(module.module, CompletionItemKind.Function);
             item.detail = 'module: \n' + `${module.short_description || ''}`;
-            item.documentation = `http://docs.ansible.com/ansible/${module.module}_module.html`;
+            item.documentation = `http://docs.ansible.com/ansible/modules/${module.module}_module.html`;
 
             if (module.deprecated) {
                 item.detail = `(Deprecated) ${item.detail}`;
