@@ -4,7 +4,7 @@ All notable changes to the "vscode-ansible" extension will be documented in this
 
 ## 0.6.0 - 2020-12-10
 
-Extension has been retired as is no longer maintained.
+Extension has been retired as it is no longer maintained.
 
 ## 0.5.2
 #### Bug fixing/Improvements
