@@ -2,7 +2,7 @@
 
 import { TextDocument, Position, Hover, Range } from "vscode-languageserver/lib/main";
 import * as Parser from 'vscode-json-languageservice/lib/umd/parser/jsonParser';
-import { SingleYAMLDocument } from 'yaml-language-server/out/server/src/languageservice/parser/yamlParser';
+import { SingleYAMLDocument } from 'yaml-language-server/out/server/src/languageservice/parser/yamlParser07';
 import { PromiseConstructor } from 'vscode-json-languageservice';
 import * as path from 'path';
 import * as fsextra from 'fs-extra';
@@ -39,11 +39,11 @@ export class YAMLHover {
         }
 
         let node = currentDoc.getNodeFromOffset(offset);
-        if (!node || (node.type === 'object' || node.type === 'array') && offset > node.start + 1 && offset < node.end - 1) {
+        if (!node || (node.type === 'object' || node.type === 'array') && offset > node.offset + 1 && offset < node.offset + node.length - 1) {
             return this.promise.resolve(void 0);
         }
 
-        if (node.type === 'string' && node.isKey && node.value != 'name') {
+        if (node.type === 'string' && node.value != 'name') {
 
             if (node.parent && node.parent.type === 'property') {
                 let parent = <Parser.PropertyASTNode>node.parent;
@@ -56,9 +56,9 @@ export class YAMLHover {
                         let taskNode = <Parser.ArrayASTNode>grandparent.parent;
 
                         if (taskNode.location === 'tasks' || (taskNode.type === 'array' && this.moduleNames.indexOf(node.value) > -1)) {
-                            let hoverRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
+                            let hoverRange = Range.create(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
 
-                            return this.promise.resolve(this.createHover(node.getValue(), hoverRange));
+                            return this.promise.resolve(this.createHover(node.value, hoverRange));
                         }
                     }
                 }

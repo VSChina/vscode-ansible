@@ -2,10 +2,10 @@
 
 import { IConnection, createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType, TextDocument } from 'vscode-languageserver';
 import { LanguageService, LanguageSettings } from 'yaml-language-server/out/server/src/languageservice/yamlLanguageService';
-import { parse as parseYAML } from 'yaml-language-server/out/server/src/languageservice/parser/yamlParser';
+import { parse as parseYAML } from 'yaml-language-server/out/server/src/languageservice/parser/yamlParser07';
 import { removeDuplicatesObj } from 'yaml-language-server/out/server/src/languageservice/utils/arrUtils';
-import { URI } from 'yaml-language-server/out/server/src/languageservice/utils/uri';
-import { CustomSchemaContentRequest } from 'yaml-language-server/out/server/src/server';
+import { URI } from 'vscode-uri';
+import { CustomSchemaContentRequest } from 'yaml-language-server/out/server/src/requestTypes';
 import { getLanguageService, ClientSettings } from './yamlLanguageService';
 
 import { xhr, XHRResponse, configure as configureHttpRequests, getErrorStatusDescription } from 'request-light';
@@ -159,7 +159,7 @@ function updateConfiguration() {
         schemas: [],
         validate: enableValidation,
         completion: false,
-        foramt: false
+        format: false
     }
     languageService.configure(settings, clientSetting);
     documents.all().forEach(triggerValidation);
