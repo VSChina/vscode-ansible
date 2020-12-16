@@ -80,7 +80,7 @@
     "menus": {}
   },
   "scripts": {
-    "compile": "cd server && npm install && cd .. && tsc -p ./ && tsc -p server/",
+    "compile": "tsc -p ./",
     "vscode:prepublish": "tsc -p ./",
     "watch": "tsc -watch -p ./"
   },
