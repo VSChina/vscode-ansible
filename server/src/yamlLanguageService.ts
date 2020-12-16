@@ -1,7 +1,8 @@
 'use strict'
 
 import { YamlDocumentSymbols } from './services/yamlDocumentSymbol';
-import { SchemaRequestService, YAMLDocument, LanguageSettings } from 'yaml-language-server/out/server/src/languageservice/yamlLanguageService';
+import { SchemaRequestService, LanguageSettings } from 'yaml-language-server/out/server/src/languageservice/yamlLanguageService';
+import { YAMLDocument } from 'yaml-language-server/out/server/src/languageservice/parser/yamlParser07';
 import { YAMLValidation } from 'yaml-language-server/out/server/src/languageservice/services/yamlValidation';
 import { JSONSchemaService } from 'yaml-language-server/out/server/src/languageservice/services/jsonSchemaService';
 import { schemaContributions } from 'vscode-json-languageservice/lib/umd/services/configuration';
