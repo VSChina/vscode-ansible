@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the "vscode-ansible" extension will be documented in this file.
 
+
+## 0.6.0 - 2020-12-10
+
+Extension has been retired as it is no longer maintained.
+
 ## 0.5.2
 #### Bug fixing/Improvements
 - Update docker image and code snippets for Ansible 2.7.0.
